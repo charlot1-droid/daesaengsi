@@ -1,0 +1,243 @@
+{
+  "manifestVersion": 3,
+  "name": "대생시 Design System",
+  "namespace": "Daesaengsi",
+  "files": [
+    "ARCHITECTURE.md",
+    "ART-DIRECTION.md",
+    "assets/Backgrounds/README.md",
+    "assets/Characters/README.md",
+    "assets/Key Visual/README.md",
+    "assets/Props/README.md",
+    "components/Checkpoint/README.md",
+    "components/ChoiceBoard/README.md",
+    "components/DialogueBox/README.md",
+    "components/Lobby/README.md",
+    "components/Notice/README.md",
+    "components/Notify/README.md",
+    "components/PhoneDM/README.md",
+    "components/PlayerScreens/README.md",
+    "components/Prop/README.md",
+    "components/QuestionCard/README.md",
+    "components/StageSplash/README.md",
+    "components/Timer/README.md",
+    "components/bundle.css",
+    "components/bundle.js",
+    "fonts/WantedSans-Black.woff2",
+    "fonts/WantedSans-Bold.woff2",
+    "fonts/WantedSans-ExtraBold.woff2",
+    "fonts/WantedSans-Medium.woff2",
+    "fonts/WantedSans-SemiBold.woff2",
+    "tokens.css"
+  ],
+  "libraries": [],
+  "components": [
+    {
+      "name": "DialogueBox",
+      "group": "무대 화면",
+      "summary": "대사창은 화면 위쪽에 놓이는 흰색 유리 판(84% 흰색 + 뒤 그림 블러)이고, 왼쪽 위에 화자 이름 탭이 걸쳐 있어요. 강당 뒷줄에서는 앞사람 머리가 화면 아래를 가리기 때문에 일반 미연시와 달리 위에 둬요."
+    },
+    {
+      "name": "ChoiceBoard",
+      "group": "무대 화면",
+      "summary": "선택지는 화면 위쪽에 질문 판과 세 줄의 답 카드를 세로로 쌓아요. 세 카드는 모두 같은 핑크빛 흰색 유리이고, 잉크색 번호 배지(1·2·3)로만 구분해요."
+    },
+    {
+      "name": "Timer",
+      "group": "무대 화면",
+      "summary": "타이머는 얇은 원형 진행선과 숫자로 남은 시간을 보여 줘요."
+    },
+    {
+      "name": "Notify",
+      "group": "무대 화면",
+      "summary": "알림은 대사창 바로 아래에 잠깐 내려오는 판으로, 팔로우·DM·호감도처럼 남주와의 관계가 바뀌는 순간에만 써요."
+    },
+    {
+      "name": "PhoneDM",
+      "group": "무대 화면",
+      "summary": "DM 화면은 Stage 2·4·5의 메시지 장면에서 화면 가운데에 크게 떠요. 이야기 속 실제 휴대폰을 보는 느낌이라, 테마와 상관없이 항상 흰 화면이에요."
+    },
+    {
+      "name": "Notice",
+      "group": "무대 화면",
+      "summary": "공지는 화면 위쪽 가운데 놓이는 한 문장짜리 판이에요. 게임 규칙, 심장 BPM, 차단 알림처럼 대사가 아닌 화면 문구에 써요."
+    },
+    {
+      "name": "Prop",
+      "group": "무대 화면",
+      "summary": "소품은 이야기 속 실제 물건(냅킨 쪽지, 메뉴판, 통장, 시간표)을 가까이서 보여 주는 장면이에요. 판에 글자만 띄우지 않고, 생성한 그림 위에 글자를 얹어요."
+    },
+    {
+      "name": "StageSplash",
+      "group": "무대 화면",
+      "summary": "스테이지 표지는 새 스테이지가 시작될 때 그 장면의 일러스트 위쪽 가운데에 제목을 띄워요. 판 없이 흰 제목과 어두운 블러 후광, 그림자만 써서 제목이 그림 위에 떠 보여요."
+    },
+    {
+      "name": "Checkpoint",
+      "group": "무대 화면",
+      "summary": "배드 엔딩 판은 로맨스가 갑자기 예능 자막으로 바뀌는 순간이에요. 큰 결말 문장 하나와 '다시 고르기' 버튼 하나만 둬요."
+    },
+    {
+      "name": "QuestionCard",
+      "group": "무대 화면",
+      "summary": "팀 나눔 질문은 Stage 6에서 팀끼리 이야기할 질문 하나를 크게 띄우는 판이에요."
+    },
+    {
+      "name": "Lobby",
+      "group": "무대 화면",
+      "summary": "로비는 게임 시작 전 무대에 접속 주소, 6자리 입장 번호, QR, 들어온 사람 수를 보여 줘요."
+    },
+    {
+      "name": "PlayerScreens",
+      "group": "관객 휴대폰",
+      "summary": "관객 휴대폰 화면은 로그인 없이 입장 번호와 이름만으로 들어와, 번호가 붙은 세 버튼 중 하나를 누르는 모바일 UI예요."
+    }
+  ],
+  "assetGroups": [
+    {
+      "name": "Key Visual",
+      "tile": "l",
+      "order": [
+        "kv-title.webp"
+      ],
+      "files": [
+        {
+          "path": "assets/Key Visual/kv-title.webp",
+          "id": "fc1dbdffb9db13624a1121470bbb5ec6"
+        }
+      ]
+    },
+    {
+      "name": "Characters",
+      "order": [
+        "namju-sheet.webp",
+        "face-smile.webp",
+        "face-laugh.webp",
+        "face-cool.webp",
+        "face-serious.webp",
+        "face-flustered.webp",
+        "face-soft.webp"
+      ],
+      "files": [
+        {
+          "path": "assets/Characters/namju-sheet.webp",
+          "id": "626045e13f2a0aefd4b599ca35241650"
+        },
+        {
+          "path": "assets/Characters/face-smile.webp",
+          "id": "a4c0b39f5cb4505564be5bf08daaf879"
+        },
+        {
+          "path": "assets/Characters/face-laugh.webp",
+          "id": "3e1bbb2ee074c15ccaa74d67cc41b5dc"
+        },
+        {
+          "path": "assets/Characters/face-cool.webp",
+          "id": "288a0f997eccc33017078ebb4b64db52"
+        },
+        {
+          "path": "assets/Characters/face-serious.webp",
+          "id": "44651274ae408c4d4a39577aecd336aa"
+        },
+        {
+          "path": "assets/Characters/face-flustered.webp",
+          "id": "54686ec1186b6502233d9d86b5fd44fd"
+        },
+        {
+          "path": "assets/Characters/face-soft.webp",
+          "id": "70e18a43f3c3f8d617ee4fec7ca6658d"
+        }
+      ]
+    },
+    {
+      "name": "Backgrounds",
+      "tile": "l",
+      "order": [
+        "bg-campus-gate.webp"
+      ],
+      "files": [
+        {
+          "path": "assets/Backgrounds/bg-campus-gate.webp",
+          "id": "ddf7ca8d53ce916d01c6264aa293bc12"
+        }
+      ]
+    },
+    {
+      "name": "Props",
+      "order": [
+        "pr-napkin.webp"
+      ],
+      "files": [
+        {
+          "path": "assets/Props/pr-napkin.webp",
+          "id": "42ff75d03d089a7995911875d938ae10"
+        }
+      ]
+    }
+  ],
+  "storage": {
+    "files": {
+      "assets/Backgrounds/bg-campus-gate.webp": {
+        "store": "blob",
+        "id": "ddf7ca8d53ce916d01c6264aa293bc12",
+        "bytes": 390832,
+        "type": "image/webp"
+      },
+      "assets/Characters/face-cool.webp": {
+        "store": "blob",
+        "id": "288a0f997eccc33017078ebb4b64db52",
+        "bytes": 26552,
+        "type": "image/webp"
+      },
+      "assets/Characters/face-flustered.webp": {
+        "store": "blob",
+        "id": "54686ec1186b6502233d9d86b5fd44fd",
+        "bytes": 26792,
+        "type": "image/webp"
+      },
+      "assets/Characters/face-laugh.webp": {
+        "store": "blob",
+        "id": "3e1bbb2ee074c15ccaa74d67cc41b5dc",
+        "bytes": 26758,
+        "type": "image/webp"
+      },
+      "assets/Characters/face-serious.webp": {
+        "store": "blob",
+        "id": "44651274ae408c4d4a39577aecd336aa",
+        "bytes": 26640,
+        "type": "image/webp"
+      },
+      "assets/Characters/face-smile.webp": {
+        "store": "blob",
+        "id": "a4c0b39f5cb4505564be5bf08daaf879",
+        "bytes": 26718,
+        "type": "image/webp"
+      },
+      "assets/Characters/face-soft.webp": {
+        "store": "blob",
+        "id": "70e18a43f3c3f8d617ee4fec7ca6658d",
+        "bytes": 27234,
+        "type": "image/webp"
+      },
+      "assets/Characters/namju-sheet.webp": {
+        "store": "blob",
+        "id": "626045e13f2a0aefd4b599ca35241650",
+        "bytes": 185814,
+        "type": "image/webp"
+      },
+      "assets/Key Visual/kv-title.webp": {
+        "store": "blob",
+        "id": "fc1dbdffb9db13624a1121470bbb5ec6",
+        "bytes": 262656,
+        "type": "image/webp"
+      },
+      "assets/Props/pr-napkin.webp": {
+        "store": "blob",
+        "id": "42ff75d03d089a7995911875d938ae10",
+        "bytes": 237390,
+        "type": "image/webp"
+      }
+    },
+    "blobBytesUsed": 1237386
+  }
+}
