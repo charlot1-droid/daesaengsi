@@ -5,12 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npm run check && tsc --noEmit && vite build",
+    "build": "vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "check": "tsx scripts/check-scenario.ts",
     "art": "tsx scripts/art-status.ts",
-    "simulate": "tsx scripts/simulate.ts"
+    "simulate": "tsx scripts/simulate.ts",
+    "verify": "npm run check && tsc --noEmit"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.0",

@@ -1,0 +1,83 @@
+/* 앱 껍데기 — 디자인 시스템(ds.css)에 없는 것만. 색·모서리·글꼴은 토큰만 써요. */
+
+html, body, #root { margin: 0; height: 100%; }
+body { background: var(--ground); }
+button { font-family: inherit; }
+
+/* ---------- 무대: 1920×1080을 화면에 맞추고 남는 곳은 검게 ---------- */
+.app-host { position: fixed; inset: 0; display: grid; place-items: center; background: #000; overflow: hidden; cursor: none; user-select: none; }
+.app-host[data-cursor] { cursor: default; }
+.app-host > .ds-stage { position: relative; width: calc(1920 * var(--u)); }
+.app-host .ds-screen { width: calc(1920 * var(--u)); background-color: var(--ground); transition: background-image var(--m-scene) var(--ease); }
+
+/* 그림 층(스탠딩·연출)은 판 뒤에, 판과 아래 칩은 앞에 */
+.ds-screen > .app-under { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+.ds-screen > :not(.app-under) { position: relative; z-index: 1; }
+.ds-screen[data-dim] > .app-under::before { content: ''; position: absolute; inset: 0; background: rgba(58, 39, 36, .34); }
+.ds-screen[data-shake] { animation: ds-jolt 200ms var(--ease); }
+
+/* ---------- 남주 스탠딩 (2:3) — 얼굴이 화면 위에서 35~55%에 오게 ---------- */
+.app-sprite { position: absolute; left: 50%; top: calc(var(--sprite-top, 250) * var(--u)); height: calc(var(--sprite-h, 1500) * var(--u)); aspect-ratio: 2 / 3; transform: translateX(-50%); animation: app-fade var(--m-line) var(--ease-enter); }
+.app-sprite img { width: 100%; height: 100%; object-fit: contain; object-position: top; }
+@keyframes app-fade { from { opacity: 0; } }
+
+/* ---------- 이미지 필요 자리 표시 (그림을 만들면 사라져요) ---------- */
+.app-missing { display: grid; gap: calc(6 * var(--u)); justify-items: center; text-align: center; color: var(--muted); font: 600 calc(28 * var(--u)) / 1.35 var(--font); }
+.app-missing b { color: var(--ink); font-weight: 800; letter-spacing: -0.01em; }
+.app-missing__tag { display: inline-block; padding: calc(6 * var(--u)) calc(18 * var(--u)); border-radius: var(--r-ui); border: calc(2 * var(--u)) dashed currentColor; font-size: calc(24 * var(--u)); font-weight: 700; }
+.app-missing--bg { position: absolute; left: calc(64 * var(--u)); bottom: calc(150 * var(--u)); justify-items: start; text-align: left; } /* 스탠딩·판과 겹치지 않게 왼쪽 아래 */
+.app-missing--box { position: absolute; inset: 0; place-content: center; border: calc(3 * var(--u)) dashed var(--muted); border-radius: var(--r-ui); background: var(--panel-2); }
+.app-sprite .app-missing--box { inset: 0 8% 30%; place-content: start center; padding-top: 22%; border-radius: calc(200 * var(--u)) calc(200 * var(--u)) var(--r-ui) var(--r-ui); background: transparent; }
+.ds-bad__face .app-missing--box, .ds-notify__face .app-missing--box { font-size: calc(18 * var(--u)); }
+.app-missing--fallback { position: absolute; left: 50%; bottom: calc(10 * var(--u)); transform: translateX(-50%); white-space: nowrap; padding: calc(4 * var(--u)) calc(12 * var(--u)); border-radius: var(--r-ui); background: var(--panel); color: var(--muted); font: 700 calc(18 * var(--u)) / 1.2 var(--font); }
+
+/* ---------- 대사 한 줄 전체가 0.7초 안에 드러남 ---------- */
+.app-type .ds-line__text { animation: app-type var(--m-type) linear; }
+.app-type[data-done] .ds-line__text { animation: none; }
+@keyframes app-type { from { clip-path: inset(0 100% 0 0); } }
+
+/* ---------- 휴대폰이 없는 선택지(팻말 모드) 안내 ---------- */
+.app-hint { justify-self: center; font: 600 calc(30 * var(--u)) / 1.3 var(--font); color: var(--muted); }
+
+/* ---------- 수강신청 모니터 (화면 속 화면, 항상 흰 화면) ---------- */
+.app-monitor { justify-self: center; width: calc(1180 * var(--u)); padding: calc(18 * var(--u)); background: #3a2724; border-radius: calc(36 * var(--u)); box-shadow: var(--panel-edge); animation: ds-in var(--m-line) var(--ease-enter); }
+.app-monitor__screen { border-radius: calc(22 * var(--u)); background: #fff9fc; color: #523b37; overflow: hidden; }
+.app-monitor__bar { display: flex; justify-content: space-between; padding: calc(22 * var(--u)) calc(36 * var(--u)); border-bottom: calc(2 * var(--u)) solid #f3e3ea; font: 700 calc(30 * var(--u)) / 1 var(--font); }
+.app-monitor__clock { font-variant-numeric: tabular-nums; }
+.app-monitor__body { padding: calc(44 * var(--u)) calc(48 * var(--u)); display: grid; gap: calc(14 * var(--u)); }
+.app-monitor__big { font: 800 calc(64 * var(--u)) / 1.2 var(--font); letter-spacing: -0.02em; }
+.app-monitor__sub { font: 600 calc(36 * var(--u)) / 1.3 var(--font); color: #7d6663; }
+.app-monitor__row { display: grid; grid-template-columns: 1fr auto; padding: calc(16 * var(--u)) 0; border-top: calc(2 * var(--u)) solid #f3e3ea; font: 600 calc(34 * var(--u)) / 1.2 var(--font); }
+
+/* ---------- 전단지 폭격 ---------- */
+.app-flyers { position: absolute; inset: 0; overflow: hidden; }
+.app-flyer { position: absolute; top: -30%; width: calc(260 * var(--u)); aspect-ratio: 3 / 4; display: grid; place-items: center; padding: calc(20 * var(--u)); border-radius: calc(10 * var(--u)); background: #fff center / contain no-repeat; box-shadow: 0 calc(10 * var(--u)) calc(24 * var(--u)) rgba(82, 45, 50, .25); font: 800 calc(34 * var(--u)) / 1.2 var(--font); color: #523b37; text-align: center; animation: app-fall 2.6s cubic-bezier(.3, .1, .6, 1) both; }
+@keyframes app-fall { to { transform: translateY(calc(1500 * var(--u))) rotate(var(--spin, 20deg)); } }
+
+/* ---------- 진행자 도움말 (H) ---------- */
+.app-help { position: absolute; right: calc(64 * var(--u)); bottom: calc(140 * var(--u)); z-index: 5; width: calc(900 * var(--u)); max-height: calc(820 * var(--u)); overflow: auto; padding: calc(36 * var(--u)) calc(44 * var(--u)); cursor: default; }
+.app-help h2 { font: 800 calc(40 * var(--u)) / 1.2 var(--font); margin-bottom: calc(16 * var(--u)); }
+.app-help dl { display: grid; grid-template-columns: auto 1fr; gap: calc(8 * var(--u)) calc(24 * var(--u)); margin: 0 0 calc(20 * var(--u)); font: 500 calc(26 * var(--u)) / 1.35 var(--font); }
+.app-help dt { font-weight: 800; }
+.app-help dd { margin: 0; color: var(--muted); }
+.app-help__scenes { display: flex; flex-wrap: wrap; gap: calc(10 * var(--u)); }
+.app-help__scenes button { padding: calc(8 * var(--u)) calc(16 * var(--u)); border-radius: var(--r-ui); border: calc(2 * var(--u)) solid var(--line); background: var(--panel-2); color: var(--ink); font: 600 calc(22 * var(--u)) / 1 var(--font); cursor: pointer; }
+.app-help__scenes button[aria-current] { background: var(--action); color: var(--on-action); }
+.app-help__meta { font: 500 calc(24 * var(--u)) / 1.4 var(--font); color: var(--muted); margin-top: calc(16 * var(--u)); }
+
+/* ---------- 관객 휴대폰 ---------- */
+.app-phone-page { min-height: 100dvh; background: var(--ground); }
+.app-phone-page .ds-phone { min-height: 100dvh; max-width: 430px; }
+.app-phone-banner { padding: 12px 16px; border-radius: var(--r-ui); background: var(--panel-2); font: 600 16px / 1.4 var(--font); color: var(--ink); }
+
+/* ---------- 대본 미리보기 (/script) ---------- */
+.app-board { padding: 32px; display: grid; gap: 40px; font-family: var(--font); color: var(--ink); background: var(--ground); min-height: 100vh; box-sizing: border-box; }
+.app-board__title { margin: 0; font: 900 40px / 1.1 var(--font); letter-spacing: -0.03em; }
+.app-board__scene { margin: 0 0 12px; font: 800 24px / 1.2 var(--font); }
+.app-board__scene small { font-weight: 500; color: var(--muted); margin-left: 10px; font-size: 16px; }
+.app-board__row { display: grid; grid-template-columns: repeat(auto-fill, minmax(384px, 1fr)); gap: 16px; }
+.app-board__cell { display: grid; gap: 6px; font: 500 13px / 1.4 var(--font); color: var(--muted); }
+.app-board__cell > .ds-stage { --u: 0.2px; width: 384px; border-radius: 8px; overflow: hidden; }
+.app-board__cell .ds-screen { width: 384px; background-color: var(--ground); }
+.app-board__cell .ds-stage * { animation: none !important; }
+.app-board__meta { font: 500 16px / 1.5 var(--font); color: var(--muted); }

@@ -1,0 +1,195 @@
+/* 대생시 Design System — generated from tokens.json */
+:root, [data-theme="day"] {
+  --ground: #fbf4f7; /* 일러스트가 없는 화면의 바탕(휴대폰 등). 아주 옅은 벚꽃 핑크. */
+  --panel: rgba(255, 249, 252, 0.86); /* 모든 판(대사창, 선택지, 알림, 결과). 핑크빛이 도는 흰 유리: 86% #fff9fc + 뒤 그림 18px 블러. */
+  --panel-2: rgba(248, 236, 242, 0.9); /* 판 안의 한 단계 낮은 면: 나레이터 대사창, 받은 메시지, 입력칸, 빈 막대. 같은 블러. */
+  --ink: #523b37; /* 글자, 번호 배지, 선. 부드러운 코코아 브라운이라 핑크 판과 어울려요. 판 위 9.9:1 / 밤 13:1. */
+  --muted: #7d6663; /* 뒷줄에서 꼭 읽지 않아도 되는 보조 정보만: 지문, 스테이지 번호, 인원. 판 위 5.1:1. */
+  --line: rgba(255, 255, 255, 0.9); /* 유리 판의 2px 테두리. 낮에는 흰 빛 테두리로 판 가장자리를 세워요. */
+  --action: #523b37; /* 화면마다 하나뿐인 채움 버튼과 포커스 링. */
+  --on-action: #fff9fc; /* action 위 글자. */
+  --rose: #bd4069; /* 감정과 결과에만: 호감도 하트, 투표 1등 카드, 내가 고른 답. 벚꽃에서 가져온 따뜻한 장미색. 판 위 4.9:1 / 밤 7.3:1. */
+  --rose-mist: #fbe1eb; /* 장미색이 쓰인 카드의 바탕(1등 답, 내가 고른 답, 호감도 상승 알림). */
+  --on-rose: #ffffff; /* rose 위 번호와 글자. 5.1:1. */
+  --warn: #a35f3a; /* 타이머 10초 이하. 브라운 톤 주황. */
+  --alert: #b0343f; /* 타이머 5초 이하, 입력 오류, 전송 실패. 장미 쪽 빨강. */
+  --ok: #4f7a5f; /* 투표 접수 완료 점. 채도 낮은 세이지. */
+  --panel-edge: 0 12px 36px rgba(82, 45, 50, 0.2); /* 일러스트 위 판을 그림에서 떼어 내는 그림자. 판에만. */
+  --focus: 0 0 0 2px #fff9fc, 0 0 0 4px #523b37; /* 키보드 포커스 링. 애니메이션 없음. */
+}
+[data-theme="night"] {
+  --ground: #1f1619;
+  --panel: rgba(46, 32, 36, 0.82);
+  --panel-2: rgba(60, 43, 47, 0.86);
+  --ink: #fbf1f2;
+  --muted: #d9c6c8;
+  --line: rgba(251, 241, 242, 0.16);
+  --action: #fbf1f2;
+  --on-action: #2e2024;
+  --rose: #f097b2;
+  --rose-mist: #4a2a35;
+  --warn: #e8ac85;
+  --alert: #ff9a9f;
+  --ok: #9fcfae;
+  --panel-edge: 0 12px 36px rgba(20, 10, 12, 0.55);
+  --focus: 0 0 0 2px #2e2024, 0 0 0 4px #fbf1f2;
+}
+:root {
+  --s-1: 4px; /* 아이콘과 글자. */
+  --s-2: 8px; /* 촘촘한 묶음. */
+  --s-3: 12px; /* 휴대폰 버튼 사이. */
+  --s-4: 16px; /* 휴대폰 화면 여백. */
+  --s-5: 24px; /* 휴대폰 카드 안쪽, 무대 카드 사이. */
+  --s-6: 32px; /* 무대 판 안쪽 세로 여백. */
+  --s-7: 48px; /* 무대 판 안쪽 가로 여백. */
+  --s-8: 64px; /* 무대 화면 가장자리 여백 (프로젝터 잘림 방지). */
+  --r-ui: 24px; /* 모든 판, 선택지 카드, 버튼, 입력칸, 이름 탭, 칩, 번호 배지, 말풍선. 무대에서는 24 × --u. */
+  --m-press: 90ms; /* 버튼 누름: 1px 내려가고 0.985배. */
+  --m-line: 250ms; /* 대사창 등장(아래에서 12px + 페이드), 대사 교체 160~220ms. */
+  --m-stagger: 100ms; /* 선택지 1·2·3이 차례로 나타나는 간격. 셋 다 보인 뒤에 투표가 열려요. */
+  --m-reveal: 750ms; /* 결과 막대가 왼쪽에서 차오르는 시간. */
+  --m-heart: 450ms; /* 하트가 1.15배로 커졌다 돌아오는 시간. */
+  --m-scene: 600ms; /* 스테이지 전환 크로스페이드. */
+  --m-type: 700ms; /* 대사 한 줄 전체가 드러나는 시간(글자당이 아니라 줄 전체). 클릭하면 즉시 전체 표시. */
+  --font-line: 'Gowun Dodum', 'Wanted Sans', sans-serif;
+  --font-sans: 'Wanted Sans', Pretendard, 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif;
+  --text-stage-title: 900 112px/1.15 var(--font-sans); /* 스테이지 표지 제목, 배드 엔딩 제목(96px), 타이틀 로고, CCC 공개. */
+  --text-stage-name: 800 38px/1.2 var(--font-sans); /* 대사창 이름 탭. */
+  --text-stage-question: 800 54px/1.3 var(--font-sans); /* 선택지 질문, 팀 나눔 질문. 바로 읽고 판단할 정보라 산세리프. */
+  --text-stage-dialog: 400 50px/1.45 var(--font-line); /* 대사. 고운돋움 50px, 1~2줄, 한 줄 20~28자. 지문 ( )은 Wanted Sans. */
+  --text-stage-choice: 600 42px/1.3 var(--font-sans); /* 선택지 문장. */
+  --text-stage-number: 800 64px/1 var(--font-sans); /* 타이머 숫자, 입장 번호(더 크게), 결과 표 수. */
+  --text-stage-notice: 800 56px/1.35 var(--font-sans); /* 화면 가운데 한 문장(공지, 쪽지, 독백). */
+  --text-stage-meta: 500 32px/1.35 var(--font-sans); /* 보조 정보. 꼭 읽어야 하는 정보는 36px 아래로 내리지 않아요. */
+  --text-phone-title: 800 28px/1.25 var(--font-sans); /* 휴대폰 화면 제목. */
+  --text-phone-question: 800 24px/1.35 var(--font-sans); /* 질문. */
+  --text-phone-choice: 600 19px/1.3 var(--font-sans); /* 투표 버튼 글자. */
+  --text-phone-body: 400 16px/1.55 var(--font-sans); /* 안내문. */
+  --text-phone-status: 600 18px/1.4 var(--font-sans); /* 투표 상태 한 줄. */
+}
+.stage-title {
+  font-family: var(--font-sans);
+  font-size: 112px;
+  line-height: 1.15;
+  font-weight: 900;
+  letter-spacing: -0.035em;
+}
+.stage-name {
+  font-family: var(--font-sans);
+  font-size: 38px;
+  line-height: 1.2;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+.stage-question {
+  font-family: var(--font-sans);
+  font-size: 54px;
+  line-height: 1.3;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.stage-dialog {
+  font-family: var(--font-line);
+  font-size: 50px;
+  line-height: 1.45;
+  font-weight: 400;
+  letter-spacing: 0em;
+}
+.stage-choice {
+  font-family: var(--font-sans);
+  font-size: 42px;
+  line-height: 1.3;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+.stage-number {
+  font-family: var(--font-sans);
+  font-size: 64px;
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+.stage-notice {
+  font-family: var(--font-sans);
+  font-size: 56px;
+  line-height: 1.35;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.stage-meta {
+  font-family: var(--font-sans);
+  font-size: 32px;
+  line-height: 1.35;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+.phone-title {
+  font-family: var(--font-sans);
+  font-size: 28px;
+  line-height: 1.25;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+}
+.phone-question {
+  font-family: var(--font-sans);
+  font-size: 24px;
+  line-height: 1.35;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+.phone-choice {
+  font-family: var(--font-sans);
+  font-size: 19px;
+  line-height: 1.3;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+.phone-body {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.55;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.phone-status {
+  font-family: var(--font-sans);
+  font-size: 18px;
+  line-height: 1.4;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+@font-face {
+  font-family: "Wanted Sans";
+  src: url("/fonts/WantedSans-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Wanted Sans";
+  src: url("/fonts/WantedSans-SemiBold.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Wanted Sans";
+  src: url("/fonts/WantedSans-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Wanted Sans";
+  src: url("/fonts/WantedSans-ExtraBold.woff2") format("woff2");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Wanted Sans";
+  src: url("/fonts/WantedSans-Black.woff2") format("woff2");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
