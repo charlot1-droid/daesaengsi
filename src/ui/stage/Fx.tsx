@@ -26,6 +26,7 @@ export function Flyers() {
         <div
           key={name}
           className="app-flyer"
+          data-art={src ? '' : undefined}
           style={{
             left: `${6 + ((i * 37) % 88)}%`,
             animationDelay: `${(i % 5) * 0.18 + Math.floor(i / 5) * 0.5}s`,

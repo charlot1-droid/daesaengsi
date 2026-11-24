@@ -3,7 +3,7 @@ import { useEffect, useState, type CSSProperties } from 'react';
 import { faceId, type ArtId } from '../../art/manifest';
 import type { NoticeBeat, NotifyBeat, PropBeat, ScreenBeat, ShareBeat, SplashBeat } from '../../scenario/schema';
 import type { Frame } from '../../engine/frames';
-import { Art, ArtBox, Hearts, Timer, txt } from './bits';
+import { Art, ArtBox, Hearts, No, Timer, txt } from './bits';
 
 /* ---------- 공지: 위쪽 가운데 한 문장 ---------- */
 export function Notice({ b }: { b: NoticeBeat }) {
@@ -44,7 +44,9 @@ export function PhoneDM({ phone }: { phone: NonNullable<Frame['phone']> }) {
         </div>
         <div className="ds-dm__msgs">
           {phone.time && <span className="ds-dm__note">{phone.time}</span>}
-          {phone.msgs.map((m, i) => (
+          {phone.msgs.map((m, i) => m.from === 'note' ? (
+            <span key={i} className="ds-dm__note">{txt(m.text)}</span>
+          ) : (
             <p key={i} className="ds-msg" data-from={m.from}>
               {m.name && m.from === 'them' && <small>{txt(m.name)}</small>}
               {txt(m.text)}
@@ -62,7 +64,7 @@ export function Prop({ b }: { b: PropBeat }) {
   const p = b.place ?? {};
   const style = { '--x': p.x, '--y': p.y, '--w': p.w, '--rot': p.rot, '--fs': p.fs } as CSSProperties;
   return (
-    <figure className="ds-prop" style={{ '--prop-w': b.size ?? 720 } as CSSProperties}>
+    <figure className="ds-prop" data-frame={b.frame ? '' : undefined} style={{ '--prop-w': b.size ?? 720 } as CSSProperties}>
       <Art id={b.art} className="ds-prop__img" alt="" />
       <p className="ds-prop__text" data-hand={b.hand} style={style}>{txt(b.text)}</p>
     </figure>
@@ -74,7 +76,7 @@ export function StageSplash({ b, n }: { b: SplashBeat; n?: string }) {
   return (
     <div className="ds-cover">
       {n && <p className="ds-cover__n">{n}</p>}
-      <h1 className="ds-cover__title">{txt(b.title)}</h1>
+      <h1 className="ds-cover__title" style={{ whiteSpace: 'pre-line' }}>{txt(b.title)}</h1>
       {b.sub && txt(b.sub) && <p className="ds-cover__sub">{txt(b.sub)}</p>}
     </div>
   );
@@ -95,7 +97,7 @@ export function Checkpoint({ title, back, react, onRetry }: { title: string; bac
   );
 }
 
-/* ---------- 팀 나눔 질문 (40초) ---------- */
+/* ---------- 팀 나눔 질문 · 다 같이 하는 활동 (타이머) ---------- */
 export function QuestionCard({ b, index, of, startedAt }: { b: ShareBeat; index: number; of: number; startedAt: number }) {
   const total = b.seconds ?? 40;
   const [now, setNow] = useState(() => Date.now());
@@ -103,13 +105,24 @@ export function QuestionCard({ b, index, of, startedAt }: { b: ShareBeat; index:
     const t = setInterval(() => setNow(Date.now()), 200);
     return () => clearInterval(t);
   }, []);
-  const left = Math.max(0, total * 1000 - (now - startedAt));
+  // 시작 직후 한 박자 동안 total보다 크게 나오지 않게 (3:21처럼 1초 더 보이는 것 방지)
+  const left = Math.min(total * 1000, Math.max(0, total * 1000 - (now - startedAt)));
   return (
     <div className="ds-panel ds-share">
       <div>
-        <p className="ds-share__n">팀 나눔 질문 {index} / {of}</p>
-        <h2 className="ds-share__q">{txt(b.q)}</h2>
+        <p className="ds-share__n">{b.label ? txt(b.label) : b.items ? '팀 나눔' : `팀 나눔 질문 ${index} / ${of}`}</p>
+        <h2 className="ds-share__q" data-list={b.items ? '' : undefined}>{txt(b.q)}</h2>
         {b.hint && <p className="ds-share__hint">{txt(b.hint)}</p>}
+        {b.items && (
+          <ol className="app-share-list">
+            {b.items.map((it, i) => (
+              <li key={i}>
+                <No n={i + 1} />
+                <span>{txt(it.q)}{it.hint && <small>{txt(it.hint)}</small>}</span>
+              </li>
+            ))}
+          </ol>
+        )}
       </div>
       <Timer left={left} total={total} />
     </div>
