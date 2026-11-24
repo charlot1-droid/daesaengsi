@@ -63,7 +63,8 @@ export interface NotifyBeat extends BeatBase {
 }
 
 export interface PhoneMsg {
-  from: 'me' | 'them';
+  /** note = 말풍선이 아닌 가운데 안내 줄 ('○○ 님이 읽었습니다', '○○ 님이 나갔습니다') */
+  from: 'me' | 'them' | 'note';
   text: string;
   /** 단톡방에서 받은 말풍선 위 보낸 사람 이름 */
   name?: string;
@@ -92,6 +93,8 @@ export interface PropBeat extends BeatBase {
   /** 글자 위치 (%) · 기울기 · 크기(1080p px) — 물건마다 맞춰요 */
   place?: { x?: string; y?: string; w?: string; rot?: string; fs?: number };
   size?: number;
+  /** 인물 컷인처럼 가장자리에서 잘린 그림을 둥근 판 안에 넣어 보여 줘요 (글자 없는 그림용) */
+  frame?: boolean;
 }
 
 /** 스테이지 표지 */
@@ -121,6 +124,16 @@ export interface ShareBeat extends BeatBase {
   q: string;
   hint?: string;
   seconds?: number;
+  /**
+   * 팀 나눔이 아니라 다 같이 하는 활동(율동 따라 하기 등)일 때 판 위 작은 글씨.
+   * 있으면 '팀 나눔 질문 n / m' 대신 이 글씨가 뜨고, 휴대폰에는 '무대를 보고 함께해요'가 떠요.
+   */
+  label?: string;
+  /**
+   * 질문 여러 개를 한 판에 번호로 늘어놓기 (원하는 질문을 골라 자유롭게 나누는 방식, 타이머는 하나).
+   * 있으면 q는 판의 제목이 되고, label은 그대로 작은 글씨로만 쓰여요. 휴대폰에도 같은 목록이 떠요.
+   */
+  items?: { q: string; hint?: string }[];
 }
 
 /** HTML로 그리는 '화면 속 화면' (수강신청 모니터 등) */

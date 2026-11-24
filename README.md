@@ -37,7 +37,8 @@ npm run dev          # http://localhost:5173/host  과  http://localhost:5173/
 
 ## 대본 고치기 (구조는 그대로, 문장만)
 
-대본은 **`src/scenario/daesaengsi.ts` 한 파일**이에요. 지금은 임시본이라 자리채움 문장에 `[대본]`이 붙어 있어요(무대에는 안 보임).
+대본은 **`src/scenario/daesaengsi.ts` 한 파일**이에요. 지금은 「대생시_대본_수정본 1.docx」를 옮겨 둔 상태예요 (대본과 다르게 한 곳은 파일 맨 위에 적혀 있어요).
+아직 못 정한 문장은 앞에 `[대본]`을 붙여 두면 무대에는 안 보이고, `npm run check`가 남은 개수를 알려 줘요.
 
 ```ts
 { t: 'say', who: 'namju', text: '혹시 새내기예요? 반가워요!', face: 'smile' }   // 대사 (+ 남주 표정)
@@ -47,6 +48,10 @@ npm run dev          # http://localhost:5173/host  과  http://localhost:5173/
 { t: 'prop', art: 'pr-napkin', hand: 'pen', text: '…' }                         // 소품 + 글씨
 { t: 'bg', art: 'cg-band-spotlight' }  { t: 'sprite', face: 'cool', outfit: 'b' } // 배경·스탠딩만 바꾸기
 { t: 'splash' } { t: 'share' } { t: 'screen' }                                   // 표지 / 팀 나눔 / 화면 속 화면
+{ t: 'share', label: '관객 참여', q: '다 같이 율동 따라 하기!', seconds: 15 }    // 팀 나눔 대신 '다 같이 하는 활동' (타이머만)
+{ from: 'note', text: '팀원B 님이 채팅방을 나갔습니다.' }                         // phone 메시지 중 가운데 안내 줄 (읽음·나감)
+{ t: 'share', label: '팀 나눔 · 총 10분', q: '제목', seconds: 600, items: [{ q: '질문 1' }, { q: '질문 2', hint: '작은 글씨' }] }  // 질문 여러 개를 한 판에 (타이머 하나, 휴대폰에도 목록)
+{ t: 'prop', art: 'pr-cheer-captain', hand: 'print', text: '', frame: true }      // 글자 없는 인물 컷인 (둥근 판 안에)
 ```
 
 선택지는 장면의 `choice`에, 답마다 `go`(갈 장면) 또는 `bad`(배드 엔딩 → 같은 선택지로 15초 재투표).
@@ -56,7 +61,7 @@ npm run dev          # http://localhost:5173/host  과  http://localhost:5173/
 
 ```bash
 npm run check      # 장면 연결 · 한 줄 28자 · 2줄 넘는 대사 · 남은 [대본] 개수
-npm run simulate   # 처음부터 끝까지 자동 진행 (배드 → 재투표 포함)
+npm run simulate   # Stage 1의 세 갈래를 모두 처음부터 끝까지 자동 진행 (배드 → 재투표 포함)
 ```
 
 ## 이미지 (ChatGPT로 나중에 생성)
@@ -89,7 +94,9 @@ docs/  architecture.md · prompts.md (아트 디렉션) · ART-STATUS.md
 
 ## 행사 전에 채울 것 (`TODO` 검색)
 
-- 대본 문장 (`[대본]`), 동아리 이름(`Fx.tsx`), 수강신청 화면 문구(`Panels.tsx`)
+- 전단지에 적힐 동아리 이름(`Fx.tsx`), 마지막 화면의 수원 CCC 로고
+- 효과음: 대본의 꼬르륵·드럼롤은 아직 소리가 없어요 (`audio/sfx.ts`에 추가 → 대본에서 `sfx`로 연결)
+- 대본이 바뀌면: `src/scenario/daesaengsi.ts`만 고치고 `npm run check`
 - 닉네임 금칙어 (`realtime/nickname.ts` + SQL `join_room`)
 - 마지막 안내 링크 (`config.ts` → `endLink`)
 - 관객 200명 넘으면 Supabase Pro (무료 실시간 동시 접속 200)

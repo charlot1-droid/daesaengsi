@@ -29,7 +29,7 @@ export function Script() {
 
       {story.scenario.scenes.map((sc) => {
         const c = story.get(sc.id);
-        const shares = c.frames.filter((f) => f.beat?.t === 'share');
+        const shares = c.frames.filter((f) => f.beat?.t === 'share' && !f.beat.label);
         return (
           <section key={sc.id}>
             <h2 className="app-board__scene">{sc.id}<small>{sc.stage ? `${sc.stage.n} · ${txt(sc.stage.name)}` : ''} → {sc.choice ? '선택지' : sc.end ? '끝' : sc.next}</small></h2>

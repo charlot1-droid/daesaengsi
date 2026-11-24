@@ -38,7 +38,9 @@ export function Timer({ left, total, label }: { left: number; total: number; lab
   return (
     <div className="ds-timer" data-state={label ? 'done' : timerState(s)} style={{ '--p': total ? Math.max(0, left / (total * 1000)) : 0 } as CSSProperties}>
       <svg viewBox="0 0 100 100" aria-hidden="true"><circle className="track" cx="50" cy="50" r="46" /><circle className="arc" cx="50" cy="50" r="46" /></svg>
-      <span className="ds-timer__n">{label ?? (s <= 0 ? '마감' : s)}</span>
+      <span className="ds-timer__n" style={!label && s > 99 ? { fontSize: `calc(${s > 599 ? 36 : 44} * var(--u))` } : undefined}>
+        {label ?? (s <= 0 ? '마감' : s > 99 ? `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}` : s)}
+      </span>
     </div>
   );
 }

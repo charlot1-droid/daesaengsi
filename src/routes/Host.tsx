@@ -243,7 +243,7 @@ export function Host() {
     );
   } else {
     const frames = story.get(run.scene).frames;
-    const shareFrames = frames.filter((f) => f.beat?.t === 'share');
+    const shareFrames = frames.filter((f) => f.beat?.t === 'share' && !f.beat.label);
     const v = beatView(frame, {
       scenario: story.scenario, stage: sc.stage, affinity: run.affinity, typed, stageMode,
       share: { index: shareFrames.indexOf(frame) + 1, of: shareFrames.length, startedAt: shareAt },
