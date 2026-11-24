@@ -56,7 +56,7 @@ export function validate(sc: Scenario): Report {
         case 'prop': use(b.art, where); ph(b.text); break;
         case 'splash': ph(b.title); ph(b.sub); break;
         case 'bg': use(b.art, where); break;
-        case 'share': ph(b.q); break;
+        case 'share': ph(b.q); ph(b.hint); ph(b.label); b.items?.forEach((it) => { ph(it.q); ph(it.hint); }); break;
         case 'screen': ph(b.text); ph(b.sub); break;
         case 'sprite': break;
       }
