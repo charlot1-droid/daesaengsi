@@ -101,7 +101,7 @@ export function Player() {
   else if (s.phase === 'vote') body = <VotePad key={s.round} s={s} receivedAt={room!.at} mine={mine} send={send} onPick={pick} />;
   else if (s.phase === 'closed') body = <Closed s={s} mine={mine} />;
   else if (s.phase === 'result') body = <Verdict s={s} mine={mine} />;
-  else if (s.phase === 'share') body = <ShareWait q={s.q} />;
+  else if (s.phase === 'share') body = <ShareWait q={s.q} label={s.label} items={s.items} />;
   else body = <End link={s.link} label={CONFIG.endLinkLabel} />;
 
   return <PhoneFrame me={me.nickname} night={s?.night}>{body}</PhoneFrame>;
