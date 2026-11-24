@@ -23,7 +23,7 @@ import { txt } from '../scenario/text';
 import { ChoiceBoard } from '../ui/stage/ChoiceBoard';
 import { Lobby } from '../ui/stage/Lobby';
 import { Checkpoint } from '../ui/stage/Panels';
-import { beatView, Foot, StageScreen } from '../ui/stage/StageScreen';
+import { beatView, Foot, StageScreen, wantsBand } from '../ui/stage/StageScreen';
 
 function useStageScale() {
   const calc = () => Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
@@ -66,6 +66,9 @@ export function Host() {
   const frame = currentFrame(run);
   const vote = run.vote;
   const offline = link?.kind === 'offline';
+  // 배포 주소인데 Supabase 정보가 없으면 휴대폰이 절대 연결되지 않아요 → 로비에 크게 알려요
+  const rehearsalOnly = link?.kind === 'local' && !['localhost', '127.0.0.1'].includes(location.hostname) && new URLSearchParams(location.search).get('link') !== 'local';
+  const lobbyError = linkError ?? (rehearsalOnly ? 'Supabase 연결 정보가 없어서 휴대폰이 연결되지 않아요. Vercel 환경 변수 VITE_SUPABASE_URL · VITE_SUPABASE_ANON_KEY를 넣고 다시 배포해 주세요.' : undefined);
 
   /* ---------- 연결 ---------- */
   useEffect(() => {
@@ -88,10 +91,11 @@ export function Host() {
   /* ---------- 휴대폰으로 상태 보내기 (내용이 바뀔 때만) ---------- */
   const draft = useMemo(() => deriveRoom(run, Date.now()), [run]);
   const key = roomKey(draft);
+  // 진행자 화면을 새로고침해도 번호가 뒤로 가지 않게 시각 기반으로 (휴대폰은 더 작은 번호를 무시해요)
   const seq = useRef(0);
   useEffect(() => {
     if (!link) return;
-    seq.current += 1;
+    seq.current = Math.max(seq.current + 1, Date.now());
     link.publish({ ...deriveRoom(runRef.current, Date.now()), seq: seq.current } as never).then(
       () => setSendError(undefined),
       (e: Error) => setSendError(`상태 전송 실패: ${e.message}`),
@@ -209,7 +213,7 @@ export function Host() {
     screen = (
       <StageScreen
         frame={{ bg: 'kv-title', night: false, sprite: null }}
-        read={<Lobby url={joinUrl(link?.pin ?? '')} pin={link?.pin ?? ''} players={poll.players} names={poll.names} offline={offline} connecting={!link} error={linkError} />}
+        read={<Lobby url={joinUrl(link?.pin ?? '')} pin={link?.pin ?? ''} players={poll.players} names={poll.names} offline={offline} connecting={!link} error={lobbyError} />}
         style={stageStyle}
         overlay={help && <HelpPanel run={run} dispatch={dispatch} link={link} error={sendError ?? linkError} stageMode={stageMode} muted={muted} />}
       />
@@ -218,6 +222,7 @@ export function Host() {
     screen = (
       <StageScreen
         frame={frame}
+        band={wantsBand(null, true)}
         read={
           <ChoiceBoard
             q={txt(sc.choice.q)}
@@ -252,6 +257,7 @@ export function Host() {
     screen = (
       <StageScreen
         frame={frame}
+        band={wantsBand(frame.beat)}
         read={v.read}
         foot={v.foot ? foot : null}
         dim={v.dim}

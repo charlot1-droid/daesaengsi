@@ -16,9 +16,18 @@ button { font-family: inherit; }
 .ds-screen[data-dim] > .app-under::before { content: ''; position: absolute; inset: 0; background: rgba(58, 39, 36, .34); }
 .ds-screen[data-shake] { animation: ds-jolt 200ms var(--ease); }
 
-/* ---------- 남주 스탠딩 (2:3) — 얼굴이 화면 위에서 35~55%에 오게 ---------- */
-.app-sprite { position: absolute; left: 50%; top: calc(var(--sprite-top, 250) * var(--u)); height: calc(var(--sprite-h, 1500) * var(--u)); aspect-ratio: 2 / 3; transform: translateX(-50%); animation: app-fade var(--m-line) var(--ease-enter); }
-.app-sprite img { width: 100%; height: 100%; object-fit: contain; object-position: top; }
+/* ---------- 그림 층 ----------
+   배경은 화면 전체에 그대로. 대사창이 인물 얼굴을 가리지 않도록 대사 화면(data-band)에서는 스탠딩만 대사창 아래로 내려요. */
+.app-art { position: absolute; inset: 0; background: var(--ground) center / cover no-repeat; transition: background-image var(--m-scene) var(--ease); }
+
+/* ---------- 스탠딩 (2:3) — 대사 화면에서는 대사창 바로 아래에서 시작, 얼굴이 화면 위에서 40~55%에 ---------- */
+.app-sprite { position: absolute; left: 50%; top: calc(var(--sprite-top, 250) * var(--u)); height: calc(var(--sprite-h, 1500) * var(--u)); aspect-ratio: 2 / 3; transform: translateX(-50%); }
+.ds-screen[data-band] .app-sprite { --sprite-top: 345; --sprite-h: 1240; }
+.app-sprite[data-who="saebom"] { --sprite-top: 330; --sprite-h: 1340; }
+.ds-screen[data-band] .app-sprite[data-who="saebom"] { --sprite-top: 420; --sprite-h: 1140; } /* 새봄 162cm · 남주 183cm */
+.app-sprite[data-at="left"] { left: 31%; }
+.app-sprite[data-at="right"] { left: 69%; }
+.app-sprite img { width: 100%; height: 100%; object-fit: contain; object-position: top; animation: app-fade var(--m-line) var(--ease-enter); }
 @keyframes app-fade { from { opacity: 0; } }
 
 /* ---------- 이미지 필요 자리 표시 (그림을 만들면 사라져요) ---------- */
@@ -96,3 +105,8 @@ button { font-family: inherit; }
 .app-board__cell .ds-screen { width: 384px; background-color: var(--ground); }
 .app-board__cell .ds-stage * { animation: none !important; }
 .app-board__meta { font: 500 16px / 1.5 var(--font); color: var(--muted); }
+
+/* ---------- 로비: 키 비주얼 오른쪽의 남주가 보이도록 판을 왼쪽에 ---------- */
+.app-host .ds-lobby, .app-board .ds-lobby { justify-self: start; width: calc(1180 * var(--u)); margin-left: calc(-96 * var(--u)); }
+.app-host .ds-lobby .ds-lobby__pin { font-size: calc(150 * var(--u)); white-space: nowrap; }
+.app-host .ds-lobby .ds-lobby__qr { width: calc(360 * var(--u)); }

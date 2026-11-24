@@ -3,7 +3,7 @@
  * 렌더러는 Frame 하나만 보고 그리면 돼요(배경·스탠딩·DM 누적이 이미 계산돼 있어요).
  */
 import type { ArtId } from '../art/manifest';
-import type { Beat, Face, Outfit, PhoneBeat, PhoneMsg, Scene } from '../scenario/schema';
+import type { Beat, Face, Outfit, PhoneBeat, PhoneMsg, SaebomFace, Scene } from '../scenario/schema';
 
 export type ShownBeat = Exclude<Beat, { t: 'bg' } | { t: 'sprite' }>;
 
@@ -11,6 +11,8 @@ export interface Ctx {
   bg: ArtId;
   night: boolean;
   sprite: { face: Face; outfit: Outfit } | null;
+  /** 새봄 스탠딩 */
+  saebom: SaebomFace | null;
   outfit: Outfit;
 }
 
@@ -18,6 +20,7 @@ export interface Frame {
   bg: ArtId;
   night: boolean;
   sprite: { face: Face; outfit: Outfit } | null;
+  saebom?: SaebomFace | null;
   /** null = 배경만 (보여 줄 비트가 없는 장면) */
   beat: ShownBeat | null;
   /** phone 비트일 때 지금까지 보인 메시지 */
@@ -29,7 +32,7 @@ export interface Frame {
 }
 
 export function startCtx(scene: Scene): Ctx {
-  return { bg: scene.bg, night: !!scene.night, sprite: null, outfit: 'a' };
+  return { bg: scene.bg, night: !!scene.night, sprite: null, saebom: null, outfit: 'a' };
 }
 
 export function compileBeats(beats: Beat[], ctx: Ctx, keyPrefix: string): { frames: Frame[]; ctx: Ctx } {
@@ -43,12 +46,14 @@ export function compileBeats(beats: Beat[], ctx: Ctx, keyPrefix: string): { fram
         c = { ...c, bg: b.art, night: b.night ?? c.night };
         return;
       case 'sprite':
+        if (b.who === 'saebom') { c = { ...c, saebom: (b.face as SaebomFace | null) ?? null }; return; }
         c = { ...c, outfit: b.outfit ?? c.outfit };
-        c.sprite = b.face ? { face: b.face, outfit: c.outfit } : null;
+        c.sprite = b.face ? { face: b.face as Face, outfit: c.outfit } : null;
+        if (!b.who && b.face === null) c.saebom = null; // 모두 내려가요
         return;
       case 'say':
-        if (b.face !== undefined && b.who === 'namju') c = { ...c, sprite: b.face ? { face: b.face, outfit: c.outfit } : null };
-        else if (b.face === null) c = { ...c, sprite: null };
+        if (b.who === 'namju' && b.face !== undefined) c = { ...c, sprite: b.face ? { face: b.face as Face, outfit: c.outfit } : null };
+        else if (b.who === 'saebom' && b.face !== undefined) c = { ...c, saebom: (b.face as SaebomFace | null) ?? null };
         break;
       case 'phone': {
         const { msgs, ...rest } = b;
@@ -56,7 +61,7 @@ export function compileBeats(beats: Beat[], ctx: Ctx, keyPrefix: string): { fram
         msgs.forEach((m, j) => {
           thread = [...thread, m];
           frames.push({
-            bg: c.bg, night: c.night, sprite: null, beat: b,
+            bg: c.bg, night: c.night, sprite: null, saebom: null, beat: b,
             phone: { ...rest, msgs: thread, latest: j === msgs.length - 1 },
             key: `${keyPrefix}:${i}.${j}`,
           });
@@ -67,7 +72,8 @@ export function compileBeats(beats: Beat[], ctx: Ctx, keyPrefix: string): { fram
     frames.push({
       bg: c.bg,
       night: c.night,
-      sprite: b.t === 'say' || b.t === 'notify' ? c.sprite : b.t === 'notice' ? c.sprite : null,
+      sprite: b.t === 'say' || b.t === 'notify' || b.t === 'notice' ? c.sprite : null,
+      saebom: b.t === 'say' || b.t === 'notify' || b.t === 'notice' ? c.saebom : null,
       beat: b,
       affinity: b.t === 'notify' ? b.affinity : undefined,
       key: `${keyPrefix}:${i}`,
@@ -88,10 +94,10 @@ export interface CompiledScene {
 
 export function compileScene(scene: Scene): CompiledScene {
   const { frames, ctx } = compileBeats(scene.beats, startCtx(scene), scene.id);
-  if (frames.length === 0) frames.push({ bg: ctx.bg, night: ctx.night, sprite: ctx.sprite, beat: null, key: `${scene.id}:empty` });
+  if (frames.length === 0) frames.push({ bg: ctx.bg, night: ctx.night, sprite: ctx.sprite, saebom: ctx.saebom, beat: null, key: `${scene.id}:empty` });
   const bad: Record<number, Frame[]> = {};
   scene.choice?.options.forEach((o, i) => {
-    if (o.bad) bad[i + 1] = compileBeats(o.bad.beats ?? [], { ...ctx, sprite: null }, `${scene.id}:bad${i + 1}`).frames;
+    if (o.bad) bad[i + 1] = compileBeats(o.bad.beats ?? [], { ...ctx, sprite: null, saebom: null }, `${scene.id}:bad${i + 1}`).frames;
   });
   return { scene, frames, end: ctx, bad };
 }

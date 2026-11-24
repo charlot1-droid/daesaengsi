@@ -1,17 +1,27 @@
-/** 판 뒤 그림 층: 남주 스탠딩, 전단지 폭격 */
+/** 판 뒤 그림 층: 스탠딩(남주·새봄), 전단지 폭격 */
 import type { CSSProperties } from 'react';
-import { artSrc, spriteId } from '../../art/manifest';
-import type { Face, Outfit } from '../../scenario/schema';
+import { artSrc, saebomSpriteId, spriteId, type ArtId } from '../../art/manifest';
+import type { Face, Outfit, SaebomFace } from '../../scenario/schema';
 import { Missing } from './bits';
 
-export function Sprite({ face, outfit }: { face: Face; outfit: Outfit }) {
-  const id = spriteId(face, outfit);
+function Stand({ id, alt, at, who }: { id: ArtId | null; alt: string; at: 'center' | 'left' | 'right'; who: 'namju' | 'saebom' }) {
   if (!id) return null;
   const src = artSrc(id);
   return (
-    <div className="app-sprite" key={id}>
-      {src ? <img src={src} alt={`김남주 (${face})`} draggable={false} /> : <Missing id={id} variant="box" />}
+    <div className="app-sprite" data-at={at} data-who={who}>
+      {src ? <img key={id} src={src} alt={alt} draggable={false} /> : <Missing id={id} variant="box" />}
     </div>
+  );
+}
+
+/** 혼자면 가운데, 둘이면 새봄 왼쪽 · 남주 오른쪽 */
+export function Sprites({ namju, saebom }: { namju: { face: Face; outfit: Outfit } | null; saebom?: SaebomFace | null }) {
+  const both = !!namju && !!saebom;
+  return (
+    <>
+      {saebom && <Stand id={saebomSpriteId(saebom)} alt={`새봄 (${saebom})`} at={both ? 'left' : 'center'} who="saebom" />}
+      {namju && <Stand id={spriteId(namju.face, namju.outfit)} alt={`김남주 (${namju.face})`} at={both ? 'right' : 'center'} who="namju" />}
+    </>
   );
 }
 

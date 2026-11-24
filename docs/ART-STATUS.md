@@ -2,7 +2,7 @@
 
 > `npm run art`가 만드는 파일이에요. 손으로 고치지 말고 `src/art/manifest.ts`를 고쳐요.
 
-필요 **0장** · 완료 37장
+필요 **0장** · 완료 44장
 
 ## 필요 (ChatGPT로 생성 → docs/prompts.md 템플릿)
 
@@ -38,9 +38,15 @@
 | `sp-namju-a-soft` | 스탠딩 | 스탠딩 A · 다정 |
 | `sp-namju-b-cool` | 스탠딩 | 스탠딩 B(무대 의상) · 시크 |
 | `sp-namju-b-laugh` | 스탠딩 | 스탠딩 B(무대 의상) · 웃음 |
+| `saebom-sheet` | 기준 | 새봄 캐릭터 시트 (기준 이미지) |
+| `sp-saebom-smile` | 스탠딩 | 새봄 스탠딩 · 미소 |
+| `sp-saebom-laugh` | 스탠딩 | 새봄 스탠딩 · 빵 터짐 |
+| `sp-saebom-surprised` | 스탠딩 | 새봄 스탠딩 · 눈이 동그래짐 |
+| `sp-saebom-wave` | 스탠딩 | 새봄 스탠딩 · 손을 크게 흔듦 |
+| `sp-saebom-wink` | 스탠딩 | 새봄 스탠딩 · 헤헤 (윙크) |
 | `cg-band-spotlight` | CG | 밴드 공연 기타 솔로, 스포트라이트 |
 | `cg-bench-talk` | CG | Stage 5 노을 벤치 깊은 대화 |
-| `cg-true-ending` | CG | TRUE ENDING · 남주, 여주(뒷모습), 새봄과 꽃가루 |
+| `cg-true-ending` | CG | TRUE ENDING · 남주와 새봄(새생시를 건넴), 꽃가루. 여주는 무대에 있으니 그림에 없음 |
 | `rx-namju-lol` | 리액션 | 배드 엔딩 · "ㅋㅋ 뭐래" |
 | `rx-namju-broke` | 리액션 | 배드 엔딩 · 텅 빈 통장 |
 | `rx-namju-blocked` | 리액션 | 배드 엔딩 · 차단 |
@@ -49,4 +55,5 @@
 | `pr-menu-board` | 소품 | Stage 3 식당 빈 칠판 메뉴판 |
 | `pr-bankbook` | 소품 | Stage 3 배드 엔딩 펼친 빈 통장 |
 | `pr-drinks` | 소품 | 에필로그 새봄의 음료 세 잔 (동아리 환영 선물) |
+| `pr-saesaengsi` | 소품 | 에필로그 새봄이 건네는 「새생활의 시작」 책자 (제목은 화면에서 얹음) |
 | `pr-cheer-captain` | 소품 | Stage 1 ① 응원단장 컷인 (인물 컷) |

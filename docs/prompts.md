@@ -15,10 +15,17 @@ Namju: 21-year-old Korean university sophomore, chemistry major and lead guitari
 ```
 의상 B (무대): `open black overshirt over the same white tee, black guitar strap, same necklace and ring.`
 
-**CHARACTER LOCK — 김여주 (플레이어 시점)**
+**여주는 그림에 넣지 않아요 (11/25)**
+여주는 배우가 무대에서 직접 연기해요. 그래서 모든 그림은 **여주의 눈으로 본 장면**이고, 여주는 뒷모습·머리카락·손으로도 나오지 않아요. 매 프롬프트에 붙여요.
 ```
-Yeoju is seen ONLY from behind, over-the-shoulder, or as first-person hands — her face is never visible. Long wavy chestnut-brown hair to mid-back, white ribbon in a half-up style, light-pink knit cardigan, beige tote bag.
+IMPORTANT: Yeoju (the heroine) must NOT appear anywhere in this image — no back view, no hair, no hands, no shoulder. She is played live on stage, so the image is drawn from her point of view.
 ```
+
+**CHARACTER LOCK — 새봄 (여주의 친구)** · 기준 이미지 `saebom-sheet`
+```
+Saebom: 20-year-old Korean university freshman girl, Yeoju's cheerful best friend, about 162cm. Chin-length warm dark-brown bob with soft side-swept bangs and a small butter-yellow hair clip on the left side, bright round eyes with warm brown irises, rosy cheeks, energetic friendly face. Outfit: oversized light sky-blue hoodie, light-wash straight jeans, white sneakers, small cream crossbody bag. Keep her face, hair and outfit EXACTLY identical to the Saebom character sheet.
+```
+새봄 스탠딩: `sp-saebom-{smile, laugh, surprised, wave, wink}` — 남주 스탠딩과 같은 2:3 투명, 허벅지 위. 둘이 함께 서면 새봄 왼쪽 · 남주 오른쪽.
 
 **NEGATIVE**
 ```
@@ -31,7 +38,7 @@ No school uniforms, no blazers, no neckties (university students). No extra fing
 | --- | --- | --- | --- |
 | 배경 | 16:9, 1792×1024 | 눈높이, 사람 없음, **위 1/3은 하늘·벚꽃처럼 단순하게** (대사창·선택지 자리) | `bg-<장소>.png` |
 | 스탠딩 | 2:3 세로, 투명 배경 PNG | 정면 3/4, 허리 위, 모든 표정이 같은 구도. 무대에서는 얼굴이 화면 가운데(위에서 35~55%)에 오도록 배치 | `sp-namju-<의상>-<표정>.png` |
-| CG | 16:9 | 캐릭터 + 장면, 여주는 뒷모습만, **위 1/3 비움**(대사창), 인물 얼굴은 화면 가운데 | `cg-<장면>.png` |
+| CG | 16:9 | 캐릭터 + 장면, **여주 없음**(여주 시점), 인물 얼굴은 화면 가운데~아래쪽 (무대에서는 위 30%가 대사 띠로 쓰여서 그림이 그 아래에 그려져요) | `cg-<장면>.png` |
 | 리액션 컷 | 1:1 | 가슴 위, 과장된 표정 (BAD ENDING용) | `rx-namju-<상황>.png` |
 | 소품 | 1:1, 투명 배경 PNG | 이야기 속 물건을 가까이서 본 그림. **글씨는 절대 그리지 않고 빈 면으로** 생성해요. 내용은 화면에서 손글씨·인쇄체 글꼴로 얹어요(한글이 깨지지 않고, 대본을 바꾸면 바로 바뀌어요) | `pr-<물건>.png` |
 
@@ -90,12 +97,12 @@ Image N: a PROP for an in-game close-up, same art style as images 1-3. Subject: 
 
 **CG**
 ```
-Image N: CG, landscape 16:9. <장면>. Namju <행동·표정>. Yeoju only from behind in the <위치> foreground. Leave <위치> calm for UI. [CHARACTER LOCK ×2] [STYLE LOCK] [NEGATIVE]
+Image N: CG, landscape 16:9. <장면>. Namju <행동·표정>, looking toward the viewer (Yeoju's point of view). Faces in the middle band. [여주 없음 블록] [CHARACTER LOCK] [STYLE LOCK] [NEGATIVE]
 ```
 
 ## 5. 검수 체크리스트 (매 장)
 - 남주: 앞머리 길이, 왼눈 밑 점, 은반지, 피크 목걸이, 크림 니트 꽈배기 무늬가 시트와 같은가
-- 여주 얼굴이 보이지 않는가
+- 여주가 그림 어디에도 없는가 (뒷모습·머리카락·손도 없음)
 - 글자·간판·로고가 생기지 않았는가 (생기면 같은 프롬프트로 "remove all text"를 요청해 수정)
 - 배경 위 1/3이 단순한가 (대사창 자리), 인물 얼굴이 위 1/3에 걸리지 않는가
 - 색감이 기준 배경과 같은 파스텔 톤인가 (너무 진하면 "match the palette of the campus-gate background"로 수정)

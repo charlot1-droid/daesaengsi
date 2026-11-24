@@ -9,7 +9,7 @@ import { validate } from '../scenario/validate';
 import { isPlaceholder, txt } from '../scenario/text';
 import { ChoiceBoard } from '../ui/stage/ChoiceBoard';
 import { Checkpoint } from '../ui/stage/Panels';
-import { beatView, Foot, StageScreen } from '../ui/stage/StageScreen';
+import { beatView, Foot, StageScreen, wantsBand } from '../ui/stage/StageScreen';
 
 const beatText = (b: unknown) => JSON.stringify(b ?? '');
 
@@ -38,7 +38,7 @@ export function Script() {
                 const v = beatView(f, { scenario: story.scenario, stage: sc.stage, affinity: 2, still: true, share: { index: shares.indexOf(f) + 1, of: shares.length, startedAt: Date.now() } });
                 return (
                   <div key={f.key} className="app-board__cell">
-                    <StageScreen frame={f} read={v.read} foot={v.foot ? <Foot stage={sc.stage} affinity={2} hearts={story.scenario.hearts} players={128} /> : null} dim={v.dim} />
+                    <StageScreen frame={f} band={wantsBand(f.beat)} read={v.read} foot={v.foot ? <Foot stage={sc.stage} affinity={2} hearts={story.scenario.hearts} players={128} /> : null} dim={v.dim} />
                     <span>#{i + 1} {f.beat?.t ?? '배경'}{isPlaceholder(beatText(f.beat)) ? ' · 자리채움' : ''}</span>
                   </div>
                 );
@@ -46,7 +46,8 @@ export function Script() {
               {sc.choice && (
                 <div className="app-board__cell">
                   <StageScreen
-                    frame={{ bg: c.end.bg, night: c.end.night, sprite: c.end.sprite }}
+                    band
+                    frame={{ bg: c.end.bg, night: c.end.night, sprite: c.end.sprite, saebom: c.end.saebom }}
                     read={<ChoiceBoard q={txt(sc.choice.q)} options={sc.choice.options.map((o) => txt(o.label)) as [string, string, string]} phase="open" counts={[0, 0, 0]} voters={96} players={128} leftMs={sc.choice.seconds * 1000} seconds={sc.choice.seconds} paused={false} win={null} offline={false} />}
                     foot={<Foot stage={sc.stage} affinity={2} hearts={story.scenario.hearts} players={128} />}
                   />
@@ -61,7 +62,7 @@ export function Script() {
                     const v = beatView(f, { scenario: story.scenario, stage: sc.stage, affinity: 2, still: true });
                     return (
                       <div key={f.key} className="app-board__cell">
-                        <StageScreen frame={f} read={v.read} dim={v.dim} />
+                        <StageScreen frame={f} band={wantsBand(f.beat)} read={v.read} dim={v.dim} />
                         <span>배드 {n} · {f.beat?.t}</span>
                       </div>
                     );

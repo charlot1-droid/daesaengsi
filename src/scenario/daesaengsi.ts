@@ -9,6 +9,7 @@
  *  4. 대본에 없는 짧은 문구: 휴대폰 결과 카드 제목(verdict), 일부 배드 엔딩 판 제목(대본 문장에서 따옴),
  *     팀 나눔 판의 제목(나레이터 대사에서 따옴).
  *
+ * 11/25 추가: 새봄이 스탠딩으로 등장(말할 때 표정, 남주와 함께면 왼쪽), 에필로그 선물이 「새생활의 시작」(새생시) 책자로 바뀜.
  * 대본 3차 수정(11/25) 반영: 팀 나눔이 '질문 5개 중 원하는 것으로 10분 자유 나눔'으로 바뀌어 한 판에 모았고,
  * 마지막 [화면](혼자 시작하지 마세요 + 로고)이 대본에서 빠져서 마지막 장면은 나레이터 인사로 끝나요.
  *
@@ -394,7 +395,7 @@ export const scenario: Scenario = {
       bg: 'bg-restaurant',
       beats: [
         { t: 'splash', title: '밥약 메뉴 고르기' },
-        { t: 'prop', art: 'pr-menu-board', hand: 'chalk', text: '김치찌개 8,000\n제육볶음 9,000\n오마카세 시가', place: { x: '13%', y: '26%', w: '68%', rot: '0deg', fs: 64 } },
+        // 대본 수정본에서 '[화면] 오늘의 메뉴판' 줄이 빠져서 메뉴판 소품도 뺐어요 (pr-menu-board는 그대로 남겨 둠)
         // 대본의 (꼬르륵 효과음)은 아직 소리가 없어요 → audio/sfx.ts에 추가하면 여기 sfx로 연결
         { t: 'say', who: 'narrator', text: '드디어 밥약 당일!\n남주 선배가 묻습니다.' },
         { t: 'say', who: 'namju', text: '뭐 먹고 싶어요? 편하게 골라요!', face: 'smile' },
@@ -542,8 +543,8 @@ export const scenario: Scenario = {
         { t: 'say', who: 'narrator', text: '발표는 무사히 끝났습니다.' },
         { t: 'say', who: 'yeoju', text: '(울컥하며) 새봄아… 진짜 고마워.' },
         { t: 'say', who: 'yeoju', text: '대학에서 이렇게 내 편이 되어 주는\n친구가 생길 줄 몰랐어.' },
-        { t: 'say', who: 'saebom', text: '에이, 친구끼리 당연하지!' },
-        { t: 'say', who: 'saebom', text: '근데… 사실 나 혼자 도와준 거 아니야.\n나중에 알려 줄게, 헤헤.' },
+        { t: 'say', who: 'saebom', text: '에이, 친구끼리 당연하지!', face: 'laugh' },
+        { t: 'say', who: 'saebom', text: '근데… 사실 나 혼자 도와준 거 아니야.\n나중에 알려 줄게, 헤헤.', face: 'wink' },
       ],
       next: 's4-end',
     },
@@ -618,8 +619,9 @@ export const scenario: Scenario = {
       beats: [
         { t: 'splash', title: '동아리의 정체' },
         { t: 'say', who: 'narrator', text: '바로 그 순간!\n저 멀리서 누군가 걸어옵니다.' },
-        { t: 'say', who: 'saebom', text: '(손을 크게 흔들며) 선배~!\n여기 계셨어요?' },
-        { t: 'say', who: 'saebom', text: '아까 말씀하신 거 다 챙겨 왔어요!\n음료도 세 잔이요!' },
+        { t: 'sprite', face: null }, // 걸어오는 새봄이부터
+        { t: 'say', who: 'saebom', text: '(손을 크게 흔들며) 선배~!\n여기 계셨어요?', face: 'wave' },
+        { t: 'say', who: 'saebom', text: '아까 말씀하신 거 다 챙겨 왔어요!\n음료도 세 잔이요!', face: 'smile' },
         { t: 'say', who: 'namju', text: '(자연스럽게) 오, 새봄아! 고마워.\n역시 믿음직하다.', face: 'smile' },
         { t: 'say', who: 'yeoju', text: '(속마음) 뭐야…\n새봄이가 왜 선배를 알아?' },
         { t: 'say', who: 'yeoju', text: '심지어 선배 부탁을 받아서\n뭘 챙겨 왔다고?' },
@@ -640,7 +642,7 @@ export const scenario: Scenario = {
               back: '말을 걸기 전으로 회귀! 15초 안에 다시 고르세요.',
               react: 'face-laugh',
               beats: [
-                { t: 'say', who: 'saebom', text: '(벤치 뒤를 들여다보며) …여주야?\n너 거기서 뭐 해?' },
+                { t: 'say', who: 'saebom', text: '(벤치 뒤를 들여다보며) …여주야?\n너 거기서 뭐 해?', face: 'surprised' },
                 { t: 'say', who: 'yeoju', text: '(얼어붙으며) 아, 아니… 그게…\n개미 관찰…?', sfx: 'bad' },
               ],
             },
@@ -673,15 +675,16 @@ export const scenario: Scenario = {
       bg: 'bg-bench-sunset',
       beats: [
         { t: 'sprite', face: 'smile' },
+        { t: 'sprite', who: 'saebom', face: 'smile' },
         { t: 'say', who: 'yeoju', text: '(떨리는 목소리로) 저기…\n둘이… 무슨 사이예요?' },
-        { t: 'say', who: 'saebom', text: '(눈이 동그래지며) 응? 무슨 사이긴!' },
-        { t: 'say', who: 'saebom', text: '(빵 터지며) 우리 같은 동아리야!' },
+        { t: 'say', who: 'saebom', text: '(눈이 동그래지며) 응? 무슨 사이긴!', face: 'surprised' },
+        { t: 'say', who: 'saebom', text: '(빵 터지며) 우리 같은 동아리야!', face: 'laugh' },
         { t: 'say', who: 'namju', text: '(웃으며) 아, 새봄이도\n우리 동아리 새내기예요.', face: 'laugh' },
         { t: 'say', who: 'namju', text: '원래 오늘 여주 씨 발표 끝나면\n둘 다 같이 있을 때 얘기하려고 했어요.', face: 'smile' },
-        { t: 'say', who: 'saebom', text: '어젯밤에 내가 연락했던 선배들,\n조별과제 팁 알려 준 분들도' },
+        { t: 'say', who: 'saebom', text: '어젯밤에 내가 연락했던 선배들,\n조별과제 팁 알려 준 분들도', face: 'smile' },
         { t: 'say', who: 'saebom', text: '다 우리 동아리 사람들이야.' },
         { t: 'say', who: 'saebom', text: '사실 처음 만났을 때부터\n말하고 싶었는데,' },
-        { t: 'say', who: 'saebom', text: '깜짝 놀라게 해 주고 싶어서\n참았어, 헤헤.' },
+        { t: 'say', who: 'saebom', text: '깜짝 놀라게 해 주고 싶어서\n참았어, 헤헤.', face: 'wink' },
         { t: 'say', who: 'namju', text: '새봄이가 "친구가 혼자\n힘들어하고 있어요"라고 연락했을 때,', face: 'soft' },
         { t: 'say', who: 'namju', text: '다들 바로 자기 일처럼 나섰어요.' },
         { t: 'say', who: 'yeoju', text: '(어리둥절) 같은 동아리…?\n그러니까 그 동아리가 대체 뭔데요?!' },
@@ -691,11 +694,12 @@ export const scenario: Scenario = {
         { t: 'say', who: 'namju', text: '우리는 CCC라는\n대학교 중앙 기독교 동아리예요.', face: 'smile', sfx: 'reveal' },
         { t: 'say', who: 'namju', text: '대학 캠퍼스에서 같이 예배하고,\n같이 공부하고,' },
         { t: 'say', who: 'namju', text: '서로의 삶을 응원하는 동아리예요.' },
-        { t: 'say', who: 'saebom', text: '여주가 힘들 때\n내가 옆에 있었던 것처럼,' },
+        { t: 'say', who: 'saebom', text: '여주가 힘들 때\n내가 옆에 있었던 것처럼,', face: 'smile' },
         { t: 'say', who: 'saebom', text: '우리 동아리 사람들도 서로에게\n그런 친구가 되어 주거든.' },
-        { t: 'say', who: 'saebom', text: '(음료를 건네며) 그리고 이건\n오늘 발표 수고했다고,' },
+        { t: 'say', who: 'saebom', text: '(새생시를 건네며) 그리고 이건\n오늘 발표 수고했다고,' },
         { t: 'say', who: 'saebom', text: '동아리 환영 선물이야!' },
-        { t: 'prop', art: 'pr-drinks', hand: 'print', text: '', size: 760, sfx: 'pop' }, // 음료 세 잔 (글자 없음)
+        // 새봄이 건네는 「새생활의 시작」(새생시) 책자. 그림은 글자 없는 노란 책자, 제목은 화면에서 얹어요.
+        { t: 'prop', art: 'pr-saesaengsi', hand: 'print', text: '새생활의 시작', place: { x: '27%', y: '28%', w: '46%', rot: '-3deg', fs: 62 }, size: 820, sfx: 'pop' },
         { t: 'say', who: 'namju', text: '모든 새내기가\n외롭지 않았으면 좋겠어요.', face: 'soft' },
         { t: 'say', who: 'namju', text: '여주 씨도요.' },
         { t: 'say', who: 'yeoju', text: '(감동하며) 그래서 다들 그렇게\n따뜻했던 거였구나…' },

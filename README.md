@@ -19,7 +19,7 @@ npm run dev          # http://localhost:5173/host  과  http://localhost:5173/
 ```
 
 - **Supabase 없이도 돌아가요.** `.env`가 비어 있으면 *리허설 모드*: 같은 브라우저에서 `/host` 탭 하나 + `/` 탭 여러 개로 투표까지 전부 확인할 수 있어요.
-- **실제 행사:** Supabase 프로젝트에 `supabase/migrations/001_init.sql`을 실행하고 `.env`(→ Vercel 환경 변수)에 URL·anon key를 넣어요.
+- **실제 행사:** Supabase 프로젝트에 `supabase/migrations/001_init.sql`과 `002_phone_sync.sql`을 차례로 실행하고 `.env`(→ Vercel 환경 변수)에 URL·anon key를 넣어요.
 - **팻말 모드:** `/host?link=offline` — 와이파이가 죽어도 진행자가 1·2·3 키로 골라 진행.
 - 그 밖에: `/host?scene=s3` 그 장면부터 · `/host?fresh` 새 방 번호.
 
@@ -88,7 +88,7 @@ src/
   art/         manifest.ts (이미지 목록)
   audio/       sfx.ts (WebAudio 효과음, 파일 없음)
   styles/      tokens.css · ds.css (디자인 시스템) · app.css (앱 껍데기만)
-supabase/migrations/001_init.sql
+supabase/migrations/001_init.sql, 002_phone_sync.sql
 docs/  architecture.md · prompts.md (아트 디렉션) · ART-STATUS.md
 ```
 

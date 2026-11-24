@@ -6,7 +6,9 @@ export function DialogueBox({ cast, text, typed, typing = true }: { cast: CastMe
   const who = cast.tab;
   return (
     <div className={`ds-panel ds-line${typing ? ' app-type' : ''}`} data-who={who} data-done={typed ? '' : undefined}>
-      {who !== 'narrator' && (
+      {who === 'narrator' ? (
+        <p className="ds-line__tab" aria-label="나레이션">나레이션</p>
+      ) : (
         <p className="ds-line__tab">
           {cast.name} {cast.sub && <small>{cast.sub}</small>}
         </p>

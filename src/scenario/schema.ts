@@ -12,6 +12,8 @@ import type { ArtId } from '../art/manifest';
 
 /** 남주 표정 (스탠딩 스프라이트 · 얼굴 컷 공용) */
 export type Face = 'smile' | 'laugh' | 'cool' | 'serious' | 'flustered' | 'soft';
+/** 새봄 표정 (스탠딩) */
+export type SaebomFace = 'smile' | 'laugh' | 'surprised' | 'wave' | 'wink';
 /** 남주 의상: A = 크림 니트(기본), B = 무대 */
 export type Outfit = 'a' | 'b';
 
@@ -41,8 +43,12 @@ export interface SayBeat extends BeatBase {
   t: 'say';
   who: SpeakerId;
   text: string;
-  /** 남주 스탠딩 표정. 한 번 정하면 다음 표정 지정 전까지 유지돼요. null이면 내려가요. */
-  face?: Face | null;
+  /**
+   * 말하는 사람의 스탠딩 표정 (남주: Face, 새봄: SaebomFace).
+   * 한 번 정하면 다음 표정 지정 전까지 유지돼요. null이면 그 사람이 내려가요.
+   * 둘 다 서 있으면 새봄은 왼쪽, 남주는 오른쪽.
+   */
+  face?: Face | SaebomFace | null;
 }
 
 /** 화면 위쪽 가운데 한 문장 (규칙, BPM, 차단 알림 등) */
@@ -111,10 +117,14 @@ export interface BgBeat {
   night?: boolean;
 }
 
-/** 스탠딩 바꾸기만 (화면이 따로 생기지 않아요) */
+/**
+ * 스탠딩 바꾸기만 (화면이 따로 생기지 않아요).
+ * who 없이 face: null이면 모두 내려가요. who: 'saebom'이면 새봄만.
+ */
 export interface SpriteBeat {
   t: 'sprite';
-  face: Face | null;
+  who?: 'namju' | 'saebom';
+  face: Face | SaebomFace | null;
   outfit?: Outfit;
 }
 

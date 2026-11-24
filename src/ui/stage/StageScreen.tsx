@@ -8,11 +8,18 @@ import type { Frame } from '../../engine/frames';
 import type { Scenario } from '../../scenario/schema';
 import { Hearts, Missing, txt } from './bits';
 import { DialogueBox } from './DialogueBox';
-import { Flyers, Sprite } from './Fx';
+import { Flyers, Sprites } from './Fx';
+import type { ShownBeat } from '../../engine/frames';
 import { Notice, Notify, PhoneDM, Prop, QuestionCard, ScreenView, StageSplash } from './Panels';
 
+/** 대사·공지·알림 화면: 배경은 그대로 두고 스탠딩만 대사창 아래로 내려서 얼굴이 가려지지 않게 해요. */
+export const wantsBand = (beat: ShownBeat | null | undefined, choice = false) =>
+  choice || !beat || beat.t === 'say' || beat.t === 'notice' || beat.t === 'notify';
+
 interface ScreenProps {
-  frame: Pick<Frame, 'bg' | 'night' | 'sprite'>;
+  frame: Pick<Frame, 'bg' | 'night' | 'sprite'> & { saebom?: Frame['saebom'] };
+  /** 대사창이 있는 화면 → 스탠딩을 대사창 아래로 (wantsBand) */
+  band?: boolean;
   read: ReactNode;
   foot?: ReactNode;
   dim?: boolean;
@@ -23,8 +30,9 @@ interface ScreenProps {
   overlay?: ReactNode;
 }
 
-export function StageScreen({ frame, read, foot, dim, shakeKey, flyersKey, style, overlay }: ScreenProps) {
+export function StageScreen({ frame, band, read, foot, dim, shakeKey, flyersKey, style, overlay }: ScreenProps) {
   const src = artSrc(frame.bg);
+  const img = src ? { backgroundImage: `url(${src})` } : undefined;
   return (
     <div className="ds-stage" data-theme={frame.night ? 'night' : 'day'} style={style}>
       <div
@@ -32,11 +40,12 @@ export function StageScreen({ frame, read, foot, dim, shakeKey, flyersKey, style
         className="ds-screen"
         data-dim={dim ? '' : undefined}
         data-shake={shakeKey ? '' : undefined}
-        style={src ? { backgroundImage: `url(${src})` } : undefined}
+        data-band={band ? '' : undefined}
       >
         <div className="app-under">
+          <div className="app-art" style={img} />
           {!src && <Missing id={frame.bg} variant="bg" />}
-          {frame.sprite && <Sprite face={frame.sprite.face} outfit={frame.sprite.outfit} />}
+          <Sprites namju={frame.sprite} saebom={frame.saebom} />
           {flyersKey && <Flyers key={flyersKey} />}
         </div>
         <div className="ds-screen__read" style={{ justifyItems: 'stretch' }}>{read}</div>

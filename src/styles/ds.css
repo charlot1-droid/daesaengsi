@@ -40,8 +40,13 @@
 .ds-line__text .dir { font-family: var(--font); font-weight: 500; font-size: calc(34 * var(--u)); color: var(--muted); }
 .ds-line__next { position: absolute; right: calc(40 * var(--u)); bottom: calc(30 * var(--u)); width: calc(18 * var(--u)); height: calc(18 * var(--u)); border-right: calc(4 * var(--u)) solid var(--muted); border-bottom: calc(4 * var(--u)) solid var(--muted); transform: rotate(45deg); }
 .ds-line[data-who="yeoju"] .ds-line__tab { background: #fff9fc; color: #523b37; box-shadow: inset 0 0 0 calc(3 * var(--u)) var(--ink); }
-.ds-line[data-who="narrator"] { background: var(--panel-2); margin-top: 0; padding-top: calc(34 * var(--u)); }
-.ds-line[data-who="narrator"] .ds-line__tab { display: none; }
+/* 나레이션: 인물 대사와 한눈에 구분되게 판 색을 뒤집어요 (낮 = 짙은 코코아 유리 + 밝은 글자, 밤 = 밝은 유리 + 코코아 글자).
+   가운데 정렬, 이름 탭 대신 작은 '나레이션' 표시. */
+.ds-line[data-who="narrator"] { display: grid; align-content: center; --nar-bg: rgba(74, 49, 52, 0.88); --nar-fg: #fff4f8; --nar-mute: #f3b9cc; background: var(--nar-bg); border-color: rgba(255, 255, 255, 0.16); color: var(--nar-fg); text-align: center; padding-top: calc(52 * var(--u)); }
+[data-theme="night"] .ds-line[data-who="narrator"] { display: grid; align-content: center; --nar-bg: rgba(255, 244, 248, 0.92); --nar-fg: #523b37; --nar-mute: #bd4069; border-color: rgba(82, 59, 55, 0.18); }
+.ds-line[data-who="narrator"] .ds-line__tab { left: 50%; top: calc(16 * var(--u)); transform: translateX(-50%); padding: 0; background: none; box-shadow: none; color: var(--nar-mute); font: 700 calc(24 * var(--u)) / 1 var(--font); letter-spacing: 0.08em; }
+.ds-line[data-who="narrator"] .ds-line__text .dir { color: var(--nar-mute); }
+.ds-line[data-who="narrator"] .ds-line__next { border-color: var(--nar-mute); }
 @keyframes ds-in { from { transform: translateY(calc(-12 * var(--u))); opacity: 0; } }
 
 /* ---------- 아래쪽 보조 정보 ---------- */

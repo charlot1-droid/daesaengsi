@@ -91,7 +91,7 @@ export function currentFrame(s: RunState, st: Story = story): Frame {
     if (s.bad.frame < bf.length) return bf[s.bad.frame];
     return { bg: c.end.bg, night: c.end.night, sprite: null, beat: null, key: `${s.scene}:checkpoint` };
   }
-  if (s.mode === 'choice') return { bg: c.end.bg, night: c.end.night, sprite: c.end.sprite, beat: null, key: `${s.scene}:choice` };
+  if (s.mode === 'choice') return { bg: c.end.bg, night: c.end.night, sprite: c.end.sprite, saebom: c.end.saebom, beat: null, key: `${s.scene}:choice` };
   return c.frames[Math.min(s.frame, c.frames.length - 1)];
 }
 

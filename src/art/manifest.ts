@@ -57,10 +57,18 @@ export const ART = A({
   'sp-namju-b-cool': { kind: 'sprite', file: '/art/sprites/sp-namju-b-cool.webp', status: 'ready', note: '스탠딩 B(무대 의상) · 시크' },
   'sp-namju-b-laugh': { kind: 'sprite', file: '/art/sprites/sp-namju-b-laugh.webp', status: 'ready', note: '스탠딩 B(무대 의상) · 웃음' },
 
+  /* 새봄 (여주의 친구) — 기준 시트 + 스탠딩 2:3 투명 */
+  'saebom-sheet': { kind: 'ref', file: '/art/ref/saebom-sheet.webp', status: 'ready', note: '새봄 캐릭터 시트 (기준 이미지)' },
+  'sp-saebom-smile': { kind: 'sprite', file: '/art/sprites/sp-saebom-smile.webp', status: 'ready', note: '새봄 스탠딩 · 미소' },
+  'sp-saebom-laugh': { kind: 'sprite', file: '/art/sprites/sp-saebom-laugh.webp', status: 'ready', note: '새봄 스탠딩 · 빵 터짐' },
+  'sp-saebom-surprised': { kind: 'sprite', file: '/art/sprites/sp-saebom-surprised.webp', status: 'ready', note: '새봄 스탠딩 · 눈이 동그래짐' },
+  'sp-saebom-wave': { kind: 'sprite', file: '/art/sprites/sp-saebom-wave.webp', status: 'ready', note: '새봄 스탠딩 · 손을 크게 흔듦' },
+  'sp-saebom-wink': { kind: 'sprite', file: '/art/sprites/sp-saebom-wink.webp', status: 'ready', note: '새봄 스탠딩 · 헤헤 (윙크)' },
+
   /* CG 16:9 */
   'cg-band-spotlight': { kind: 'cg', file: '/art/cg/cg-band-spotlight.webp', status: 'ready', note: '밴드 공연 기타 솔로, 스포트라이트' },
   'cg-bench-talk': { kind: 'cg', file: '/art/cg/cg-bench-talk.webp', status: 'ready', note: 'Stage 5 노을 벤치 깊은 대화' },
-  'cg-true-ending': { kind: 'cg', file: '/art/cg/cg-true-ending.webp', status: 'ready', note: 'TRUE ENDING · 남주, 여주(뒷모습), 새봄과 꽃가루' },
+  'cg-true-ending': { kind: 'cg', file: '/art/cg/cg-true-ending.webp', status: 'ready', note: 'TRUE ENDING · 남주와 새봄(새생시를 건넴), 꽃가루. 여주는 무대에 있으니 그림에 없음' },
 
   /* 리액션 1:1 (배드 엔딩) */
   'rx-namju-lol': { kind: 'reaction', file: '/art/reactions/rx-namju-lol.webp', status: 'ready', note: '배드 엔딩 · "ㅋㅋ 뭐래"', fallback: 'face-laugh' },
@@ -73,6 +81,7 @@ export const ART = A({
   'pr-menu-board': { kind: 'prop', file: '/art/props/pr-menu-board.webp', status: 'ready', note: 'Stage 3 식당 빈 칠판 메뉴판' },
   'pr-bankbook': { kind: 'prop', file: '/art/props/pr-bankbook.webp', status: 'ready', note: 'Stage 3 배드 엔딩 펼친 빈 통장' },
   'pr-drinks': { kind: 'prop', file: '/art/props/pr-drinks.webp', status: 'ready', note: '에필로그 새봄의 음료 세 잔 (동아리 환영 선물)' },
+  'pr-saesaengsi': { kind: 'prop', file: '/art/props/pr-saesaengsi.webp', status: 'ready', note: '에필로그 새봄이 건네는 「새생활의 시작」 책자 (제목은 화면에서 얹음)' },
   'pr-cheer-captain': { kind: 'prop', file: '/art/props/pr-cheer-captain.webp', status: 'ready', note: 'Stage 1 ① 응원단장 컷인 (인물 컷)' },
 });
 
@@ -99,6 +108,11 @@ export const spriteId = (face: string, outfit: 'a' | 'b' = 'a'): ArtId | null =>
   if (isArtId(id)) return id;
   const a = `sp-namju-a-${face}`;
   return isArtId(a) ? a : null;
+};
+
+export const saebomSpriteId = (face: string): ArtId | null => {
+  const id = `sp-saebom-${face}`;
+  return isArtId(id) ? id : null;
 };
 
 export const faceId = (face: string): ArtId => (isArtId(`face-${face}`) ? (`face-${face}` as ArtId) : 'face-smile');

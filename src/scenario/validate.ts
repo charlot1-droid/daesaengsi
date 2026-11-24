@@ -60,7 +60,9 @@ export function validate(sc: Scenario): Report {
         case 'screen': ph(b.text); ph(b.sub); break;
         case 'sprite': break;
       }
-      if ((b.t === 'say' && b.who === 'namju' && b.face) || (b.t === 'sprite' && b.face)) {
+      if ((b.t === 'say' && b.who === 'saebom' && b.face) || (b.t === 'sprite' && b.who === 'saebom' && b.face)) {
+        use(`sp-saebom-${b.face}` as ArtId, where);
+      } else if ((b.t === 'say' && b.who === 'namju' && b.face) || (b.t === 'sprite' && b.face)) {
         const outfit = b.t === 'sprite' ? b.outfit ?? 'a' : 'a';
         const id = `sp-namju-${outfit}-${b.face}` as ArtId;
         if (id in ART) use(id, where);
