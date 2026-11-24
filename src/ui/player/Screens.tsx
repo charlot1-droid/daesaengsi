@@ -149,12 +149,18 @@ export function Verdict({ s, mine }: { s: Extract<RoomState, { phase: 'result' }
 }
 
 /* ---------- 팀 나눔 · 끝 ---------- */
-export function ShareWait({ q }: { q: string }) {
+export function ShareWait({ q, label, items }: { q: string; label?: string; items?: { q: string; hint?: string }[] }) {
+  const activity = !!label && !items; // 율동처럼 다 같이 하는 활동
   return (
     <div className="ds-card">
-      <p className="ds-verdict__kicker">팀 나눔</p>
-      <h1 className="ds-card__title">팀과 이야기 나눠 주세요</h1>
+      <p className="ds-verdict__kicker">{label ?? '팀 나눔'}</p>
+      <h1 className="ds-card__title">{activity ? '무대를 보고 함께해요' : '팀과 이야기 나눠 주세요'}</h1>
       <p className="ds-card__body">{q}</p>
+      {items && (
+        <ol className="app-phone-list">
+          {items.map((it) => <li key={it.q}>{it.q}{it.hint && <small>{it.hint}</small>}</li>)}
+        </ol>
+      )}
     </div>
   );
 }
