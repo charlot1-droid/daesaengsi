@@ -16,7 +16,10 @@ export function deriveRoom(run: RunState, now: number, st: Story = story): RoomD
   if (run.mode === 'beats') {
     if (sc.end) return { phase: 'end', link: CONFIG.endLink || undefined };
     const b = currentFrame(run, st).beat;
-    if (b?.t === 'share') return { phase: 'share', q: txt(b.q), night };
+    if (b?.t === 'share') {
+      const items = b.items?.map((it) => ({ q: txt(it.q), hint: it.hint ? txt(it.hint) : undefined }));
+      return { phase: 'share', q: txt(b.q), label: b.label ? txt(b.label) : undefined, items, night };
+    }
     return { phase: 'wait', stage: sc.stage ? `${sc.stage.n} · ${txt(sc.stage.name)}` : undefined, night };
   }
 

@@ -38,7 +38,7 @@ export type RoomState = Base &
         affinity: number;
         hearts: number;
       }
-    | { phase: 'share'; q: string }
+    | { phase: 'share'; q: string; label?: string; items?: { q: string; hint?: string }[] }
     | { phase: 'end'; link?: string }
   );
 
