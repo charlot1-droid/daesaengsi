@@ -22,7 +22,8 @@ import { deriveRoom, roomKey } from '../realtime/derive';
 import { createHostLink, joinUrl } from '../realtime/index';
 import type { HostLink, Poll } from '../realtime/types';
 import { txt } from '../scenario/text';
-import { ChoiceBoard } from '../ui/stage/ChoiceBoard';
+import { ChoiceBoard, TIE_SPIN_MS } from '../ui/stage/ChoiceBoard';
+import { AutoRing } from '../ui/stage/AutoRing';
 import { Lobby } from '../ui/stage/Lobby';
 import { Checkpoint } from '../ui/stage/Panels';
 import { FullscreenButton, TitleScreen, useFullscreen } from '../ui/stage/Title';
@@ -183,12 +184,7 @@ export function Host() {
   useEffect(() => { setBgm(track); }, [track]);
   // 배드 엔딩 중엔 음악을 줄여요
   useEffect(() => { duckBgm(run.mode === 'bad' ? 0.35 : 1); }, [run.mode]);
-  // 로비에서 누가 들어오면 '띵'
-  const lastPlayers = useRef(0);
-  useEffect(() => {
-    if (run.mode === 'lobby' && !title && poll.players > lastPlayers.current) play('join');
-    lastPlayers.current = poll.players;
-  }, [poll.players]); // eslint-disable-line react-hooks/exhaustive-deps
+  // 입장 효과음은 뺐어요 (인원이 많으면 시끄러워서) — 숫자만 살짝 튀어요
 
   /* ---------- 화면이 바뀔 때 ---------- */
   useEffect(() => {
@@ -199,9 +195,46 @@ export function Host() {
     else if (frame.beat?.t === 'phone') play('dm');
   }, [frame.key]);
 
+  /* ---------- 자동 진행 ----------
+     투표 결과는 6초 보여 준 뒤, 체크포인트(다시 고르기 안내)는 5초 뒤 저절로 넘어가요.
+     대사는 늘 클릭으로. 자동으로 넘어가는 동안엔 화면 구석에 작은 카운트다운 링이 보여요 (P로 멈춤·계속). */
+  const auto = useMemo(() => {
+    if (run.mode === 'choice' && vote?.phase === 'result' && vote.win) {
+      const tie = vote.tie && vote.tie.length > 1;
+      return { key: `r:${run.scene}:${vote.round}:${vote.win}:${vote.resultAt ?? ''}`, wait: tie ? TIE_SPIN_MS + 600 : 0, ms: CONFIG.autoResultMs };
+    }
+    if (run.mode === 'bad' && isCheckpoint(run)) return { key: `c:${run.scene}:${run.round}`, wait: 0, ms: CONFIG.autoCheckpointMs };
+    return null;
+  }, [run]);
+  const [autoHold, setAutoHold] = useState(false);
+  const [autoStart, setAutoStart] = useState(0);
+  const autoRef = useRef(auto);
+  autoRef.current = auto;
+  const guardUntil = useRef(0);
+  useEffect(() => {
+    setAutoHold(false);
+    if (!auto) return;
+    const t0 = setTimeout(() => setAutoStart(Date.now()), auto.wait);
+    return () => clearTimeout(t0);
+  }, [auto?.key]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (!auto || autoHold || !autoStart) return;
+    const left = auto.ms - (Date.now() - autoStart);
+    const t = setTimeout(() => {
+      if (autoRef.current?.key !== auto.key) return;
+      guardUntil.current = Date.now() + 1000; // 넘어간 직후 클릭은 무시 (대사 건너뜀 방지)
+      dispatch({ type: 'NEXT' });
+    }, Math.max(0, left));
+    return () => clearTimeout(t);
+  }, [auto?.key, autoHold, autoStart]); // eslint-disable-line react-hooks/exhaustive-deps
+  // 멈췄다 다시 시작하면 처음부터 다시 세요
+  useEffect(() => { if (!autoHold && auto) setAutoStart((s) => (s ? Date.now() : s)); }, [autoHold]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { setAutoStart(0); }, [auto?.key]);
+
   /* ---------- 조작 ---------- */
   const advance = useCallback(() => {
     const s = runRef.current;
+    if (Date.now() < guardUntil.current) return;
     const f = currentFrame(s);
     if (s.mode === 'beats' && f.beat?.t === 'say' && Date.now() - frameAt.current < 700) {
       setTyped(true); // 줄이 드러나는 중이면 먼저 전체를 보여 줘요
@@ -224,7 +257,8 @@ export function Host() {
         if (s.mode === 'choice') dispatch({ type: 'RESTART_TIMER' });
         else setShareAt(Date.now());
       } else if (k === 'p') {
-        if (s.vote?.pausedLeft != null) dispatch({ type: 'RESUME', now: Date.now() });
+        if (autoRef.current) setAutoHold((h) => !h);
+        else if (s.vote?.pausedLeft != null) dispatch({ type: 'RESUME', now: Date.now() });
         else dispatch({ type: 'PAUSE', now: Date.now() });
       } else if (k === 's') setStageMode((v) => !v);
       else if (k === 'm') setMute((v) => { setMuted(!v); setBgmMuted(!v); return !v; });
@@ -317,6 +351,7 @@ export function Host() {
       }}
     >
       {screen}
+      {auto && autoStart > 0 && <AutoRing key={`${auto.key}:${autoStart}`} ms={auto.ms} startedAt={autoStart} held={autoHold} u={u} />}
       {!fs.on && <FullscreenButton onClick={fs.toggle} />}
     </div>
   );
@@ -335,7 +370,7 @@ function HelpPanel({ run, dispatch, link, error, stageMode, muted }: {
         <dt>← · Backspace</dt><dd>뒤로</dd>
         <dt>Enter</dt><dd>투표 지금 마감</dd>
         <dt>1 · 2 · 3</dt><dd>직접 고르기 (팻말 · 결과 바꾸기)</dd>
-        <dt>T / P</dt><dd>타이머 처음부터 / 멈춤·계속</dd>
+        <dt>T / P</dt><dd>타이머 처음부터 / 멈춤·계속 (자동 진행 링도 P로 멈춰요)</dd>
         <dt>S</dt><dd>무대 모드 {stageMode ? '켜짐' : '꺼짐'} (여주·나레이터 대사 숨김)</dd>
         <dt>M / F · Esc</dt><dd>소리 {muted ? '꺼짐' : '켜짐'} / 전체 화면 켜기 · 나가기</dd>
       </dl>

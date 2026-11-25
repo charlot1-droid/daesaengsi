@@ -40,7 +40,8 @@ export const scenario: Scenario = {
     /* ───────────── 오프닝 ───────────── */
     {
       id: 'opening',
-      bg: 'kv-title',
+      // 타이틀 그림(남주)은 첫 화면에서 보여 줘요. 규칙 설명은 대사창·카드가 얼굴을 가리지 않게 인물 없는 정문 배경으로
+      bg: 'bg-campus-gate',
       bgm: 'title',
       beats: [
         // 타이틀은 로비 앞 첫 화면(PRESS TO START)으로 옮겼어요

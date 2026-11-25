@@ -78,11 +78,6 @@ button { font-family: inherit; }
 .app-monitor__row { display: grid; grid-template-columns: 1fr auto; padding: calc(16 * var(--u)) 0; border-top: calc(2 * var(--u)) solid #f3e3ea; font: 600 calc(34 * var(--u)) / 1.2 var(--font); }
 
 /* ---------- 전단지 폭격 ---------- */
-.app-flyers { position: absolute; inset: 0; overflow: hidden; }
-.app-flyer { position: absolute; top: -30%; width: calc(260 * var(--u)); aspect-ratio: 3 / 4; display: grid; place-items: center; padding: calc(20 * var(--u)); border-radius: calc(10 * var(--u)); background: #fff center / contain no-repeat; box-shadow: 0 calc(10 * var(--u)) calc(24 * var(--u)) rgba(82, 45, 50, .25); font: 800 calc(34 * var(--u)) / 1.2 var(--font); color: #523b37; text-align: center; animation: app-fall 2.6s cubic-bezier(.3, .1, .6, 1) both; }
-/* 전단지 그림(pr-flyers)이 있으면 흰 카드 대신 그림 자체가 전단지 묶음이 돼요. 이름은 맨 앞 장 위에. */
-.app-flyer[data-art] { width: calc(310 * var(--u)); aspect-ratio: 1; padding: calc(76 * var(--u)) calc(40 * var(--u)) 0 calc(56 * var(--u)); box-sizing: border-box; background-color: transparent; box-shadow: none; filter: drop-shadow(0 calc(10 * var(--u)) calc(16 * var(--u)) rgba(82, 45, 50, .3)); }
-@keyframes app-fall { to { transform: translateY(calc(1500 * var(--u))) rotate(var(--spin, 20deg)); } }
 
 /* ---------- 진행자 도움말 (H) ---------- */
 .app-help { position: absolute; right: calc(64 * var(--u)); bottom: calc(140 * var(--u)); z-index: 5; width: calc(900 * var(--u)); max-height: calc(820 * var(--u)); overflow: auto; padding: calc(36 * var(--u)) calc(44 * var(--u)); cursor: default; }
@@ -166,3 +161,46 @@ button { font-family: inherit; }
 .app-line[data-kind="notice"] { text-align: center; }
 .app-line[data-kind="notice"] .app-line__who { background: var(--rose, #bd4069); color: #fff; }
 .app-phone-tie { display: inline-block; margin-bottom: 10px; padding: 6px 12px; border-radius: 999px; background: var(--rose, #bd4069); color: #fff; font: 700 13px / 1.2 var(--font); }
+
+/* ---------- 자동 진행 링 (결과 · 체크포인트) ---------- */
+.app-auto { position: absolute; right: calc(50% - 960 * var(--u) + 64 * var(--u)); bottom: calc(50% - 540 * var(--u) + 132 * var(--u)); z-index: 6; width: calc(76 * var(--u)); height: calc(76 * var(--u)); display: grid; place-items: center; border-radius: 50%; background: rgba(251, 236, 242, .88); box-shadow: 0 calc(6 * var(--u)) calc(18 * var(--u)) rgba(82, 45, 50, .2); -webkit-backdrop-filter: blur(calc(10 * var(--u))); backdrop-filter: blur(calc(10 * var(--u))); animation: ds-in .3s var(--ease-enter); pointer-events: none; }
+.app-auto svg { position: absolute; inset: calc(6 * var(--u)); transform: rotate(-90deg); }
+.app-auto circle { fill: none; stroke-width: 4; }
+.app-auto .track { stroke: rgba(82, 59, 55, .15); }
+.app-auto .arc { stroke: #bd4069; stroke-linecap: round; stroke-dasharray: 106.8; stroke-dashoffset: calc(106.8 * (1 - var(--p))); transition: stroke-dashoffset .1s linear; }
+.app-auto span { position: relative; font: 800 calc(28 * var(--u)) / 1 'Wanted Sans', sans-serif; color: #523b37; font-variant-numeric: tabular-nums; }
+.app-auto[data-held] .arc { stroke: rgba(82, 59, 55, .35); }
+.app-auto[data-held] span { font-size: calc(20 * var(--u)); letter-spacing: -.1em; }
+
+/* ---------- 게임 규칙처럼 번호 목록 공지 ---------- */
+.app-rules { justify-self: center; width: calc(1080 * var(--u)); padding: calc(40 * var(--u)) calc(64 * var(--u)) calc(48 * var(--u)); text-align: left; }
+.app-rules__title { font-size: calc(30 * var(--u)); font-weight: 700; color: var(--rose, #bd4069); letter-spacing: 0.04em; }
+.app-rules__list { margin: calc(20 * var(--u)) 0 0; padding: 0; list-style: none; display: grid; gap: calc(14 * var(--u)); }
+.app-rules__list li { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: calc(26 * var(--u)); min-height: calc(92 * var(--u)); padding: 0 calc(30 * var(--u)); border-radius: var(--r-ui); background: var(--panel-2); font-size: calc(46 * var(--u)); font-weight: 800; letter-spacing: -0.02em; line-height: 1.2; }
+.app-rules__list li[data-goal] { background: var(--rose-mist); box-shadow: inset 0 0 0 calc(3 * var(--u)) var(--rose); }
+.app-rules__list li[data-goal] .ds-no { background: var(--rose); color: var(--on-rose); }
+.app-rules__list li small { margin-right: calc(18 * var(--u)); font-size: calc(32 * var(--u)); font-weight: 700; color: var(--rose, #bd4069); }
+
+/* ---------- 전단지 폭격: 낱장이 하나씩 팔랑팔랑 ---------- */
+.app-flyers { position: absolute; inset: 0; overflow: hidden; perspective: calc(1400 * var(--u)); pointer-events: none; }
+.app-flyer { position: absolute; top: calc(-420 * var(--u)); aspect-ratio: 3 / 4; animation-name: app-fall, app-flutter; animation-timing-function: cubic-bezier(.35, .05, .55, 1), ease-in-out; animation-fill-mode: both, none; animation-iteration-count: 1, infinite; transform-style: preserve-3d; will-change: transform; }
+.app-flyer__sheet { position: absolute; inset: 0; display: grid; align-content: start; gap: calc(10 * var(--u)); padding: calc(26 * var(--u)) calc(22 * var(--u)); border-radius: calc(6 * var(--u)); background: var(--paper); box-shadow: 0 calc(8 * var(--u)) calc(18 * var(--u)) rgba(82, 45, 50, .22), inset 0 0 0 calc(1.5 * var(--u)) rgba(82, 45, 50, .08); color: var(--ink); text-align: left; backface-visibility: visible; }
+.app-flyer__band { display: block; height: calc(14 * var(--u)); width: 45%; border-radius: 99px; background: var(--ink); opacity: .85; }
+.app-flyer__sheet b { margin-top: calc(10 * var(--u)); font: 900 calc(38 * var(--u)) / 1.15 var(--font); letter-spacing: -0.03em; word-break: keep-all; }
+.app-flyer__sheet span { font: 700 calc(20 * var(--u)) / 1.2 var(--font); color: #523b37; opacity: .75; }
+.app-flyer__line { display: block; height: calc(8 * var(--u)); border-radius: 99px; background: rgba(82, 59, 55, .14); margin-top: calc(6 * var(--u)); }
+.app-flyer__line[data-short] { width: 60%; }
+/* 위에서 아래로 떨어지며 옆으로 흘러가고 돌아요 */
+@keyframes app-fall {
+  0% { transform: translate3d(0, 0, 0) rotate(0deg); opacity: 0; }
+  6% { opacity: 1; }
+  100% { transform: translate3d(var(--drift), calc(1680 * var(--u)), 0) rotate(var(--spin)); opacity: 1; }
+}
+/* 종이가 공기에 뒤집히듯 기울었다 펴졌다 */
+@keyframes app-flutter {
+  0%, 100% { rotate: x 0deg; }
+  25% { rotate: y 38deg; }
+  50% { rotate: x 52deg; }
+  75% { rotate: y -30deg; }
+}
+@media (prefers-reduced-motion: reduce) { .app-flyer { animation-name: app-fall; animation-duration: 2.4s !important; } }

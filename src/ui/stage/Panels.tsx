@@ -1,12 +1,40 @@
 /** 무대 화면의 판들 — 각 컴포넌트는 디자인 시스템 클래스(ds-*)를 그대로 써요. */
-import { useEffect, useState, type CSSProperties } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { play } from '../../audio/sfx';
 import { faceId, type ArtId } from '../../art/manifest';
 import type { NoticeBeat, NotifyBeat, PropBeat, ScreenBeat, ShareBeat, SplashBeat } from '../../scenario/schema';
 import type { Frame } from '../../engine/frames';
 import { Art, ArtBox, Hearts, No, Timer, txt } from './bits';
 
 /* ---------- 공지: 위쪽 가운데 한 문장 ---------- */
+/** '① …\n② …' 처럼 줄마다 번호가 붙은 공지는 정돈된 목록 카드로 (예: 게임 규칙) */
+const CIRCLED = '①②③④⑤⑥⑦⑧⑨';
+function asList(text: string): string[] | null {
+  const lines = text.split('\n').map((l) => l.trim()).filter(Boolean);
+  if (lines.length < 2 || !lines.every((l) => CIRCLED.includes(l[0]))) return null;
+  return lines.map((l) => l.slice(1).trim().replace(/①②③/g, '1 · 2 · 3'));
+}
+
 export function Notice({ b }: { b: NoticeBeat }) {
+  const items = asList(txt(b.text));
+  if (items) {
+    return (
+      <div className="ds-panel ds-notice app-rules">
+        {b.sub && <p className="app-rules__title">{txt(b.sub)}</p>}
+        <ol className="app-rules__list">
+          {items.map((it, i) => {
+            const goal = /^목표\s*[:：]/.test(it);
+            return (
+              <li key={i} data-goal={goal ? '' : undefined}>
+                <No n={i + 1} />
+                <span>{goal ? <><small>목표</small>{it.replace(/^목표\s*[:：]\s*/, '')}</> : it}</span>
+              </li>
+            );
+          })}
+        </ol>
+      </div>
+    );
+  }
   return (
     <div className="ds-panel ds-notice" data-tone={b.tone}>
       <p className="ds-notice__text">{txt(b.text)}</p>
@@ -107,6 +135,11 @@ export function QuestionCard({ b, index, of, startedAt }: { b: ShareBeat; index:
   }, []);
   // 시작 직후 한 박자 동안 total보다 크게 나오지 않게 (3:21처럼 1초 더 보이는 것 방지)
   const left = Math.min(total * 1000, Math.max(0, total * 1000 - (now - startedAt)));
+  // 시간이 다 되면 알림만 (자동으로 넘기지 않아요 — 사회자가 마무리하고 넘겨요)
+  const rang = useRef(false);
+  useEffect(() => {
+    if (left <= 0 && !rang.current) { rang.current = true; play('chime'); }
+  }, [left]);
   return (
     <div className="ds-panel ds-share">
       <div>
@@ -124,7 +157,7 @@ export function QuestionCard({ b, index, of, startedAt }: { b: ShareBeat; index:
           </ol>
         )}
       </div>
-      <Timer left={left} total={total} />
+      <Timer left={left} total={total} label={left <= 0 ? '종료' : undefined} />
     </div>
   );
 }
