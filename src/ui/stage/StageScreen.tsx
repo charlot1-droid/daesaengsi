@@ -92,7 +92,7 @@ export function beatView(f: Frame, c: BeatCtx): { read: ReactNode; foot: boolean
     case 'say': {
       const cast = c.scenario.cast[b.who] ?? { name: b.who, tab: 'namju' as const };
       if (c.stageMode && cast.tab !== 'namju') return { read: null, foot: true, dim: false };
-      return { read: <DialogueBox key={f.key} cast={cast} text={b.text} typed={c.typed} typing={!c.still} />, foot: true, dim: false };
+      return { read: <DialogueBox lineKey={f.key} cast={cast} text={b.text} typed={c.typed} typing={!c.still} />, foot: true, dim: false };
     }
     case 'notice':
       return { read: <Notice key={f.key} b={b} />, foot: true, dim: false };

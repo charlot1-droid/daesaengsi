@@ -100,6 +100,12 @@ export interface PropBeat extends BeatBase {
   text: string;
   /** 글자 위치 (%) · 기울기 · 크기(1080p px) — 물건마다 맞춰요 */
   place?: { x?: string; y?: string; w?: string; rot?: string; fs?: number };
+  /**
+   * 그림 속 표면의 네 모서리 (그림 크기 대비 %, 왼쪽 위 → 오른쪽 위 → 오른쪽 아래 → 왼쪽 아래).
+   * 주면 글자를 그 면에 원근까지 맞춰 '인쇄된 것처럼' 붙여요. place 대신 씀.
+   * surface.title: 면 안에서 글자 위치 (위에서 %, 크기 px@1080p), accent: 색을 바꿀 글자들
+   */
+  surface?: { quad: [[number, number], [number, number], [number, number], [number, number]]; aspect: number; top: number; fs: number; accent?: string; ink?: string; accentInk?: string };
   size?: number;
   /** 인물 컷인처럼 가장자리에서 잘린 그림을 둥근 판 안에 넣어 보여 줘요 (글자 없는 그림용) */
   frame?: boolean;

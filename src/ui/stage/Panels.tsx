@@ -1,5 +1,5 @@
 /** 무대 화면의 판들 — 각 컴포넌트는 디자인 시스템 클래스(ds-*)를 그대로 써요. */
-import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
 import { play } from '../../audio/sfx';
 import { faceId, type ArtId } from '../../art/manifest';
 import type { NoticeBeat, NotifyBeat, PropBeat, ScreenBeat, ShareBeat, SplashBeat } from '../../scenario/schema';
@@ -88,7 +88,57 @@ export function PhoneDM({ phone }: { phone: NonNullable<Frame['phone']> }) {
 }
 
 /* ---------- 소품: 빈 물건 그림 위에 글자 ---------- */
+/** 직사각형(0,0)-(w,h)을 네 점으로 보내는 CSS matrix3d (원근 변환) */
+function quadMatrix(w: number, h: number, q: [number, number][]): string {
+  const [[x0, y0], [x1, y1], [x2, y2], [x3, y3]] = q;
+  const dx1 = x1 - x2, dx2 = x3 - x2, dx3 = x0 - x1 + x2 - x3;
+  const dy1 = y1 - y2, dy2 = y3 - y2, dy3 = y0 - y1 + y2 - y3;
+  const den = dx1 * dy2 - dx2 * dy1;
+  const g = (dx3 * dy2 - dx2 * dy3) / den;
+  const hh = (dx1 * dy3 - dx3 * dy1) / den;
+  const a = x1 - x0 + g * x1, bb = x3 - x0 + hh * x3, c = x0;
+  const d = y1 - y0 + g * y1, e = y3 - y0 + hh * y3, f = y0;
+  // 단위 정사각형 → 사각형, 앞에 (1/w, 1/h) 축소를 곱해요
+  const m = [a / w, d / w, 0, g / w, bb / h, e / h, 0, hh / h, 0, 0, 1, 0, c, f, 0, 1];
+  return `matrix3d(${m.map((v) => +v.toFixed(8)).join(',')})`;
+}
+
+/** 그림 속 표면에 글자를 원근까지 맞춰 붙여요 (책 표지 등) */
+function SurfaceText({ s, text }: { s: NonNullable<PropBeat['surface']>; text: string }) {
+  const box = useRef<HTMLDivElement>(null);
+  const [m, setM] = useState<string>();
+  const W = 1000, H = Math.round(1000 / s.aspect);
+  useLayoutEffect(() => {
+    const el = box.current?.parentElement;
+    if (!el) return;
+    const fit = () => {
+      const P = el.offsetWidth;
+      setM(quadMatrix(W, H, s.quad.map(([x, y]) => [(x / 100) * P, (y / 100) * P])));
+    };
+    fit();
+    const ro = new ResizeObserver(fit);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [s, H]);
+  const parts = s.accent ? text.split(new RegExp(`([${s.accent}])`)) : [text];
+  return (
+    <div ref={box} className="ds-prop__surface" style={{ width: W, height: H, transform: m, visibility: m ? 'visible' : 'hidden' } as CSSProperties}>
+      <p style={{ top: `${s.top}%`, fontSize: s.fs * 2.2, color: s.ink }}>
+        {parts.map((t, i) => (s.accent && s.accent.includes(t) && t ? <span key={i} style={{ color: s.accentInk }}>{t}</span> : t))}
+      </p>
+    </div>
+  );
+}
+
 export function Prop({ b }: { b: PropBeat }) {
+  if (b.surface) {
+    return (
+      <figure className="ds-prop" style={{ '--prop-w': b.size ?? 720 } as CSSProperties}>
+        <Art id={b.art} className="ds-prop__img" alt="" />
+        <SurfaceText s={b.surface} text={txt(b.text)} />
+      </figure>
+    );
+  }
   const p = b.place ?? {};
   const style = { '--x': p.x, '--y': p.y, '--w': p.w, '--rot': p.rot, '--fs': p.fs } as CSSProperties;
   return (

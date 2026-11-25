@@ -712,7 +712,11 @@ export const scenario: Scenario = {
         { t: 'say', who: 'saebom', text: '(새생시를 건네며) 그리고 이건\n오늘 발표 수고했다고,' },
         { t: 'say', who: 'saebom', text: '동아리 환영 선물이야!' },
         // 새봄이 건네는 「새생활의 시작」(새생시) 책자. 그림은 글자 없는 노란 책자, 제목은 화면에서 얹어요.
-        { t: 'prop', art: 'pr-saesaengsi', hand: 'print', text: '새생활의 시작', place: { x: '27%', y: '28%', w: '46%', rot: '-3deg', fs: 62 }, size: 820, sfx: 'pop' },
+        {
+          t: 'prop', art: 'pr-saesaengsi', hand: 'print', text: '새생활의 시작', size: 820, sfx: 'pop',
+          // 그림 속 노란 표지의 네 모서리(%) — 글자를 표지 기울기·원근에 맞춰 인쇄된 것처럼. '생'은 실제 책처럼 주황
+          surface: { quad: [[14.2, 15], [72.9, 7.7], [85.8, 83.1], [23.7, 91.7]], aspect: 0.766, top: 41, fs: 60, accent: '생', ink: '#2b2321', accentInk: '#e0712c' },
+        },
         { t: 'say', who: 'namju', text: '모든 새내기가\n외롭지 않았으면 좋겠어요.', face: 'soft' },
         { t: 'say', who: 'namju', text: '여주 씨도요.' },
         { t: 'say', who: 'yeoju', text: '(감동하며) 그래서 다들 그렇게\n따뜻했던 거였구나…' },

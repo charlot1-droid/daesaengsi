@@ -204,3 +204,11 @@ button { font-family: inherit; }
   75% { rotate: y -30deg; }
 }
 @media (prefers-reduced-motion: reduce) { .app-flyer { animation-name: app-fall; animation-duration: 2.4s !important; } }
+
+/* 대사창: 말하는 사람이 바뀌면 판 색만 부드럽게 (창은 그대로) */
+.ds-line { transition: background-color .25s ease, border-color .25s ease, color .25s ease; }
+.ds-line__tab { transition: background-color .25s ease, color .25s ease; }
+
+/* 그림 속 표면에 인쇄된 글자 (원근 맞춤) — 종이에 찍힌 잉크처럼 곱하기 합성 */
+.ds-prop__surface { position: absolute; left: 0; top: 0; transform-origin: 0 0; pointer-events: none; }
+.ds-prop__surface p { position: absolute; left: 0; right: 0; margin: 0; text-align: center; font-family: var(--font); font-weight: 900; letter-spacing: -0.04em; line-height: 1.1; white-space: pre-line; mix-blend-mode: multiply; opacity: .93; filter: blur(.3px); }
