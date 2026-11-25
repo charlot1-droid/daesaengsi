@@ -2,7 +2,7 @@
  * 무대 한 화면 = 배경(+스탠딩·연출) / 위쪽 읽는 곳 / 아래 모서리 칩.
  * 진행자 화면과 /script 미리보기가 같이 써요.
  */
-import { useEffect, useState, type CSSProperties, type ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import { ART_DECALS, artSrc, type ArtId } from '../../art/manifest';
 import type { Frame } from '../../engine/frames';
 import type { Scenario } from '../../scenario/schema';
@@ -30,38 +30,9 @@ interface ScreenProps {
   overlay?: ReactNode;
 }
 
-/** 배경 전환: 검은 막이 좌우에서 닫히는 시간 · 막힌 채 머무는 시간 · 다시 열리는 시간 (ms) */
-const WIPE_IN = 420, WIPE_HOLD = 160, WIPE_OUT = 460;
-
-/**
- * 배경이 바뀌면 레트로 게임처럼: 검은 막이 좌우에서 스르륵 닫히고 → 그 사이에 배경을 바꾸고 → 다시 열려요.
- * 새 그림은 미리 받아 둔 뒤에 시작해서 막이 열렸을 때 빈 화면이 보이지 않아요.
- */
-function useBgWipe(src: string | null) {
-  const [shown, setShown] = useState(src);
-  const [wipe, setWipe] = useState<'idle' | 'in' | 'out'>('idle');
-  useEffect(() => {
-    if (!src || src === shown) return;
-    let alive = true;
-    const timers: ReturnType<typeof setTimeout>[] = [];
-    const go = () => {
-      if (!alive) return;
-      setWipe('in');
-      timers.push(setTimeout(() => { if (alive) { setShown(src); setWipe('out'); } }, WIPE_IN + WIPE_HOLD));
-      timers.push(setTimeout(() => alive && setWipe('idle'), WIPE_IN + WIPE_HOLD + WIPE_OUT));
-    };
-    const im = new Image();
-    im.onload = go;
-    im.onerror = go;
-    im.src = src;
-    return () => { alive = false; timers.forEach(clearTimeout); };
-  }, [src]); // eslint-disable-line react-hooks/exhaustive-deps
-  return { shown, wipe };
-}
-
 export function StageScreen({ frame, band, read, foot, dim, shakeKey, flyersKey, style, overlay }: ScreenProps) {
   const src = artSrc(frame.bg);
-  const { shown, wipe } = useBgWipe(src);
+  const shown = src; // 배경은 전환 효과 없이 바로 바꿔요
   return (
     <div className="ds-stage" data-theme={frame.night ? 'night' : 'day'} style={style}>
       <div
@@ -73,7 +44,7 @@ export function StageScreen({ frame, band, read, foot, dim, shakeKey, flyersKey,
       >
         <div className="app-under">
           <div className="app-art" style={shown ? { backgroundImage: `url(${shown})` } : undefined} />
-          {shown === src && ART_DECALS[frame.bg as ArtId] && (() => {
+          {ART_DECALS[frame.bg as ArtId] && (() => {
             const d = ART_DECALS[frame.bg as ArtId]!;
             return <div className="app-art-decal" style={{ aspectRatio: String(d.ratio) }}><SurfaceText s={d.surface} text={d.text} /></div>;
           })()}
@@ -85,7 +56,6 @@ export function StageScreen({ frame, band, read, foot, dim, shakeKey, flyersKey,
         <div />
         <div className="ds-screen__foot">{foot}</div>
       </div>
-      <div className="app-wipe" data-wipe={wipe} aria-hidden="true"><i /><i /></div>
       {overlay}
     </div>
   );

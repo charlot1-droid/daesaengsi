@@ -28,16 +28,8 @@ button { font-family: inherit; }
 /* ---------- 그림 층 ----------
    배경은 화면 전체에 그대로. 대사창이 인물 얼굴을 가리지 않도록 대사 화면(data-band)에서는 스탠딩만 대사창 아래로 내려요. */
 .app-art { position: absolute; inset: 0; background: var(--ground) center / cover no-repeat; }
-/* 배경 전환: 레트로 게임처럼 검은 막이 좌우에서 닫혔다가 다시 열려요 */
 /* 배경 그림 속 글자 (cover로 맞춘 그림과 같은 자리) */
 .app-art-decal { position: absolute; left: 50%; top: 50%; width: max(100%, calc(100% * var(--ar-fix, 1))); transform: translate(-50%, -50%); pointer-events: none; }
-.app-wipe { position: absolute; inset: 0; z-index: 8; overflow: hidden; pointer-events: none; }
-.app-wipe i { position: absolute; top: 0; bottom: 0; width: 50.6%; background: #0c0809; }
-.app-wipe i:first-child { left: 0; transform: translateX(-101%); box-shadow: inset calc(-3 * var(--u)) 0 0 rgba(189, 64, 105, .55); }
-.app-wipe i:last-child { right: 0; transform: translateX(101%); box-shadow: inset calc(3 * var(--u)) 0 0 rgba(189, 64, 105, .55); }
-.app-wipe[data-wipe="in"] i { transform: translateX(0); transition: transform 420ms cubic-bezier(.75, 0, .35, 1); }
-.app-wipe[data-wipe="out"] i { transition: transform 460ms cubic-bezier(.65, 0, .25, 1); }
-@media (prefers-reduced-motion: reduce) { .app-wipe i { transition: none !important; } }
 
 /* ---------- 스탠딩 (2:3) — 대사 화면에서는 대사창 바로 아래에서 시작, 얼굴이 화면 위에서 40~55%에 ---------- */
 .app-sprite { position: absolute; left: 50%; top: calc(var(--sprite-top, 250) * var(--u)); height: calc(var(--sprite-h, 1500) * var(--u)); aspect-ratio: 2 / 3; transform: translateX(-50%); }

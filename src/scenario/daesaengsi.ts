@@ -58,7 +58,7 @@ export const scenario: Scenario = {
         // 대본: '② 팻말 ①②③ 들기' → 휴대폰 투표로 바꿈
         { t: 'notice', text: '① 팀별로 상의하기\n② 휴대폰에서 ①②③ 누르기\n③ 목표: HAPPY ENDING ♡', sub: '게임 규칙', sfx: 'pop' },
         { t: 'say', who: 'narrator', text: '준비되셨나요?\n그럼 우리의 주인공을 소개합니다.' },
-        { t: 'say', who: 'narrator', text: '이름은 김여주!\n큰 박수로 맞아 주세요!', sfx: 'applause' },
+        { t: 'say', who: 'narrator', text: '이름은 김여주!\n큰 박수로 맞아 주세요!' }, // 박수는 관객이 직접
         { t: 'say', who: 'yeoju', text: '(손 흔들며) 안녕하세요~!\n잘 부탁드려요!' },
       ],
       next: 'prologue',
@@ -735,7 +735,7 @@ export const scenario: Scenario = {
       beats: [
         { t: 'splash', title: 'HAPPY ENDING ♡', sfx: 'fanfare' },
         { t: 'say', who: 'narrator', text: '축하합니다!\n여러분들이 해피엔딩에 도달했습니다!' },
-        { t: 'say', who: 'narrator', text: '큰 박수!', sfx: 'applause' },
+        { t: 'say', who: 'narrator', text: '큰 박수!' }, // 박수는 관객이 직접
       ],
       next: 'closing',
     },
