@@ -5,14 +5,14 @@
  */
 import type { Pick } from '../engine/affinity';
 import { nickProblem } from './nickname';
-import type { HostLink, JoinResult, Me, PlayerLink, Poll, RoomState } from './types';
+import type { HostLink, JoinMode, JoinResult, Me, PlayerLink, Poll, RoomState } from './types';
 
 const CH = 'daesaengsi-local';
 
 type Msg =
   | { k: 'state'; pin: string; state: RoomState }
   | { k: 'hello'; pin: string }
-  | { k: 'join'; pin: string; nick: string; req: string }
+  | { k: 'join'; pin: string; nick: string; mode: JoinMode; req: string }
   | { k: 'resume'; pin: string; playerId: string; secret: string; req: string }
   | { k: 'vote'; pin: string; playerId: string; secret: string; round: number; option: Pick; req: string }
   | { k: 'reply'; req: string; ok: boolean; me?: Me; reason?: string };
@@ -36,7 +36,12 @@ export function localHost(pin: string): HostLink {
         return;
       case 'join': {
         if (nickProblem(data.nick)) return reply(data.req, false, { reason: 'name-bad' });
-        if ([...players.values()].some((p) => p.nick === data.nick)) return reply(data.req, false, { reason: 'name-taken' });
+        const same = [...players.entries()].filter(([, p]) => p.nick === data.nick).sort((a, b) => b[1].at - a[1].at);
+        if (same.length && data.mode === 'ask') return reply(data.req, false, { reason: 'name-exists' });
+        if (same.length && data.mode === 'claim') {
+          const [playerId, p] = same[0];
+          return reply(data.req, true, { me: { pin, playerId, secret: p.secret, nickname: data.nick } });
+        }
         const playerId = rid(), secret = rid();
         players.set(playerId, { nick: data.nick, secret, at: Date.now() });
         return reply(data.req, true, { me: { pin, playerId, secret, nickname: data.nick } });
@@ -92,8 +97,8 @@ export function localPlayer(): PlayerLink {
 
   return {
     kind: 'local',
-    async join(pin, nick): Promise<JoinResult> {
-      const r = await ask({ k: 'join', pin, nick, req: rid() });
+    async join(pin, nick, mode = 'ask'): Promise<JoinResult> {
+      const r = await ask({ k: 'join', pin, nick, mode, req: rid() });
       if (!r) return { ok: false, reason: 'pin' }; // 응답하는 진행자 탭이 없음
       return r.ok && r.me ? { ok: true, me: r.me } : { ok: false, reason: (r.reason as 'pin') ?? 'pin' };
     },

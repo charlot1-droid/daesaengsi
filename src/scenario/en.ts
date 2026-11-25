@@ -268,7 +268,7 @@ export const EN: Record<string, string> = {
   "드디어 밝혀지는\n선배와 새봄이의 진실은?": "Finally revealed:\nthe truth about Namju and Saebom!",
   "우리는…": "We are…",
   "CCC예요.": "CCC.",
-  "그리고 전국에 있는 대학교에서\n영적 운동을 일으키는\n대학생선교 단체예요!": "And we're a student mission movement\nsparking spiritual movements\nat universities across the country!",
+  "그리고 전국에 있는 대학교에서\n영적 운동을 일으키는\n대학생 선교 단체예요!": "And we're a student mission movement\nsparking spiritual movements\nat universities across the country!",
   "대학 캠퍼스에서 같이 예배하고,\n같이 공부하고,": "We worship together on campus,\nstudy together,",
   "서로의 삶을 응원하는 동아리예요.": "and cheer each other on in life — that's our club.",
   "여주가 힘들 때\n내가 옆에 있었던 것처럼,": "Just like I was by your side\nwhen you were struggling,",

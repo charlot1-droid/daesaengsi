@@ -51,6 +51,8 @@ export interface SayBeat extends BeatBase {
    * 둘 다 서 있으면 새봄은 왼쪽, 남주는 오른쪽.
    */
   face?: Face | SaebomFace | null;
+  /** 말끝 '…'을 점 하나씩 천천히 찍어 보여요 (뜸 들이는 대사) */
+  dots?: boolean;
 }
 
 /** 화면 위쪽 가운데 한 문장 (규칙, BPM, 차단 알림 등) */

@@ -705,11 +705,11 @@ export const scenario: Scenario = {
         // 대본의 (드럼롤)은 아직 소리가 없어요 → audio/sfx.ts에 추가하면 여기 sfx로 연결
         { t: 'notice', text: '두구두구두구…', sfx: 'drumroll' },
         { t: 'say', who: 'narrator', text: '드디어 밝혀지는\n선배와 새봄이의 진실은?' },
-        { t: 'say', who: 'namju', text: '우리는…', face: 'smile' },
+        { t: 'say', who: 'namju', text: '우리는…', face: 'smile', dots: true },
         { t: 'say', who: 'namju', text: 'CCC예요.', sfx: 'reveal' },
         { t: 'say', who: 'namju', text: '대학 캠퍼스에서 같이 예배하고,\n같이 공부하고,' },
         { t: 'say', who: 'namju', text: '서로의 삶을 응원하는 동아리예요.' },
-        { t: 'say', who: 'namju', text: '그리고 전국에 있는 대학교에서\n영적 운동을 일으키는\n대학생선교 단체예요!' },
+        { t: 'say', who: 'namju', text: '그리고 전국에 있는 대학교에서\n영적 운동을 일으키는\n대학생 선교 단체예요!' },
         { t: 'say', who: 'saebom', text: '여주가 힘들 때\n내가 옆에 있었던 것처럼,', face: 'smile' },
         { t: 'say', who: 'saebom', text: '우리 동아리 사람들도 서로에게\n그런 친구가 되어 주거든.' },
         { t: 'say', who: 'namju', text: '모든 새내기가\n외롭지 않았으면 좋겠어요.', face: 'soft' },
