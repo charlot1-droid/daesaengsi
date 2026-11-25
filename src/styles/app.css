@@ -211,4 +211,7 @@ button { font-family: inherit; }
 
 /* 그림 속 표면에 인쇄된 글자 (원근 맞춤) — 종이에 찍힌 잉크처럼 곱하기 합성 */
 .ds-prop__surface { position: absolute; left: 0; top: 0; transform-origin: 0 0; pointer-events: none; }
-.ds-prop__surface p { position: absolute; left: 0; right: 0; margin: 0; text-align: center; font-family: var(--font); font-weight: 900; letter-spacing: -0.04em; line-height: 1.1; white-space: pre-line; mix-blend-mode: multiply; opacity: .93; filter: blur(.3px); }
+.ds-prop__surface p { position: absolute; left: 0; right: 0; margin: 0; text-align: center; font-family: 'Gowun Dodum', var(--font); font-weight: 400; letter-spacing: 0.14em; line-height: 1.1; white-space: pre; mix-blend-mode: multiply; opacity: .9; filter: blur(.4px); }
+.ds-prop__surface span { display: inline-block; }
+.ds-prop__surface span[data-raise] { transform: translateY(-0.32em); }
+.ds-prop__surface span[data-small] { font-size: .72em; }

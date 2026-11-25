@@ -120,11 +120,13 @@ function SurfaceText({ s, text }: { s: NonNullable<PropBeat['surface']>; text: s
     ro.observe(el);
     return () => ro.disconnect();
   }, [s, H]);
-  const parts = s.accent ? text.split(new RegExp(`([${s.accent}])`)) : [text];
+  const chars = [...text];
   return (
     <div ref={box} className="ds-prop__surface" style={{ width: W, height: H, transform: m, visibility: m ? 'visible' : 'hidden' } as CSSProperties}>
       <p style={{ top: `${s.top}%`, fontSize: s.fs * 2.2, color: s.ink }}>
-        {parts.map((t, i) => (s.accent && s.accent.includes(t) && t ? <span key={i} style={{ color: s.accentInk }}>{t}</span> : t))}
+        {chars.map((ch, i) => (
+          <span key={i} data-raise={s.raise?.includes(ch) ? '' : undefined} data-small={s.small?.includes(ch) ? '' : undefined}>{ch}</span>
+        ))}
       </p>
     </div>
   );
