@@ -705,7 +705,8 @@ export const scenario: Scenario = {
         // 대본의 (드럼롤)은 아직 소리가 없어요 → audio/sfx.ts에 추가하면 여기 sfx로 연결
         { t: 'notice', text: '두구두구두구…', sfx: 'drumroll' },
         { t: 'say', who: 'narrator', text: '드디어 밝혀지는\n선배와 새봄이의 진실은?' },
-        { t: 'say', who: 'namju', text: '우리는 CCC예요.', face: 'smile', sfx: 'reveal' },
+        { t: 'say', who: 'namju', text: '우리는…', face: 'smile' },
+        { t: 'say', who: 'namju', text: 'CCC예요.', sfx: 'reveal' },
         { t: 'say', who: 'namju', text: '대학 캠퍼스에서 같이 예배하고,\n같이 공부하고,' },
         { t: 'say', who: 'namju', text: '서로의 삶을 응원하는 동아리예요.' },
         { t: 'say', who: 'namju', text: '그리고 전국에 있는 대학교에서\n영적 운동을 일으키는\n대학생선교 단체예요!' },
@@ -768,6 +769,8 @@ export const scenario: Scenario = {
       night: true,
       beats: [
         { t: 'say', who: 'narrator', text: '오늘 정말 수고하셨고 또 만나요!' },
+        // 한 번 더 넘기면 대사창이 사라지고 검은 막이 좌우에서 닫혀요 (끝)
+        { t: 'curtain' },
       ],
       end: true,
     },

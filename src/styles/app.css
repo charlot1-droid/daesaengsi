@@ -240,3 +240,12 @@ button { font-family: inherit; }
 .app-chat__msg[data-from="me"] { justify-self: end; justify-items: end; }
 .app-chat__msg[data-from="me"] p { border-radius: 18px 18px 6px 18px; background: var(--action); color: var(--on-action); }
 .app-chat__note { justify-self: center; margin: 2px 0; padding: 4px 10px; border-radius: 999px; background: var(--panel-2); font: 500 12px / 1.3 var(--font); color: var(--muted); text-align: center; }
+
+/* ---------- 막 내리기 (마지막): 검은 막이 좌우에서 스르륵 닫혀 검은 화면으로 ---------- */
+.app-curtain { position: absolute; inset: 0; z-index: 9; overflow: hidden; pointer-events: none; }
+.app-curtain i { position: absolute; top: 0; bottom: 0; width: 50.6%; background: #0c0809; animation: 1.4s cubic-bezier(.6, 0, .25, 1) .15s both; }
+.app-curtain i:first-child { left: 0; animation-name: app-curtain-l; }
+.app-curtain i:last-child { right: 0; animation-name: app-curtain-r; }
+@keyframes app-curtain-l { from { transform: translateX(-101%); } to { transform: none; } }
+@keyframes app-curtain-r { from { transform: translateX(101%); } to { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .app-curtain i { animation-duration: .01s; } }

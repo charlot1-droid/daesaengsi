@@ -164,7 +164,13 @@ export interface ScreenBeat extends BeatBase {
   sub?: string;
 }
 
+/** 막 내리기: 대사창이 사라지고 검은 막이 좌우에서 닫혀 검은 화면으로 끝나요 (배경음악도 함께 줄어요) */
+export interface CurtainBeat extends BeatBase {
+  t: 'curtain';
+}
+
 export type Beat =
+  | CurtainBeat
   | SayBeat
   | NoticeBeat
   | NotifyBeat

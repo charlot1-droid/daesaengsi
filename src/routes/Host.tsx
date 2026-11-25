@@ -192,7 +192,9 @@ export function Host() {
   // 율동처럼 곡이 지정된 판에선 배경음악을 끄고 그 곡을 틀어요
   const curBeat = run.mode === 'beats' || run.mode === 'bad' ? currentFrame(run).beat : null;
   const clip = curBeat?.t === 'share' && curBeat.music ? `${run.scene}:${curBeat.music}` : null;
-  useEffect(() => { setBgm(clip ? null : track); }, [track, clip]);
+  // 막이 내리면 음악도 함께 줄어들며 끝나요
+  const curtainDown = curBeat?.t === 'curtain';
+  useEffect(() => { setBgm(clip || curtainDown ? null : track); }, [track, clip, curtainDown]);
   useEffect(() => {
     if (!clip) return;
     return playClip(clip.split(':').slice(1).join(':'));
@@ -352,6 +354,7 @@ export function Host() {
         shakeKey={fx === 'shake' ? frame.key : null}
         flyersKey={fx === 'flyers' ? frame.key : null}
         style={stageStyle}
+        curtain={v.curtain}
         overlay={help && <HelpPanel run={run} dispatch={dispatch} link={link} error={sendError} stageMode={stageMode} muted={muted} />}
       />
     );

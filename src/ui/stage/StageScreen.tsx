@@ -28,9 +28,11 @@ interface ScreenProps {
   flyersKey?: string | null;
   style?: CSSProperties;
   overlay?: ReactNode;
+  /** 막 내리기 (검은 막이 좌우에서 닫힘) */
+  curtain?: boolean;
 }
 
-export function StageScreen({ frame, band, read, foot, dim, shakeKey, flyersKey, style, overlay }: ScreenProps) {
+export function StageScreen({ frame, band, read, foot, dim, shakeKey, flyersKey, style, overlay, curtain }: ScreenProps) {
   const src = artSrc(frame.bg);
   const shown = src; // 배경은 전환 효과 없이 바로 바꿔요
   return (
@@ -56,6 +58,7 @@ export function StageScreen({ frame, band, read, foot, dim, shakeKey, flyersKey,
         <div />
         <div className="ds-screen__foot">{foot}</div>
       </div>
+      {curtain && <div className="app-curtain" aria-hidden="true"><i /><i /></div>}
       {overlay}
     </div>
   );
@@ -89,10 +92,12 @@ export interface BeatCtx {
 }
 
 /** 프레임 → 읽는 곳 내용 + 화면 옵션 */
-export function beatView(f: Frame, c: BeatCtx): { read: ReactNode; foot: boolean; dim: boolean } {
+export function beatView(f: Frame, c: BeatCtx): { read: ReactNode; foot: boolean; dim: boolean; curtain?: boolean } {
   const b = f.beat;
   if (!b) return { read: null, foot: true, dim: false };
   switch (b.t) {
+    case 'curtain':
+      return { read: null, foot: false, dim: false, curtain: true };
     case 'say': {
       const cast = c.scenario.cast[b.who] ?? { name: b.who, tab: 'namju' as const };
       if (c.stageMode && cast.tab !== 'namju') return { read: null, foot: true, dim: false };
