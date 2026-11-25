@@ -150,9 +150,10 @@ export function VotePad({ s, receivedAt, mine, send, onPick }: {
         {s.options.map((label, i) => {
           const n = (i + 1) as Pick;
           return (
-            <button key={n} className="ds-tap" aria-pressed={mine === n} disabled={closed || s.paused} onClick={() => onPick(n)}>
+            <button key={n} className="ds-tap" aria-pressed={mine === n} data-off={s.off?.includes(n) ? '' : undefined} disabled={closed || s.paused || !!s.off?.includes(n)} onClick={() => onPick(n)}>
               <No n={n} />
               <span>{tr(label, lang)}</span>
+              {s.off?.includes(n) && <small className="app-off-tag">{t('tried', lang)}</small>}
             </button>
           );
         })}

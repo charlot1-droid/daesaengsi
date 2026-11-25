@@ -90,8 +90,11 @@ export function supabasePlayer(): PlayerLink {
       return { ok: true, me: { pin, playerId: row.player_id, secret: row.secret, nickname } };
     },
     async resume(me) {
-      const { data, error } = await sb().rpc('player_check', { p_player: me.playerId, p_secret: me.secret });
-      return !error && data === true;
+      // 화면이 막 켜졌을 땐 네트워크가 잠깐 끊겨 있을 수 있어요 → 서버가 '아니다'라고 할 때만 다시 입장
+      try {
+        const { data, error } = await sb().rpc('player_check', { p_player: me.playerId, p_secret: me.secret });
+        return error ? true : data === true;
+      } catch { return true; }
     },
     subscribe(me, cb) {
       // 진행 상태를 받는 길 세 가지 — 하나가 막혀도 나머지로 넘어가요.

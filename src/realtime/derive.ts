@@ -55,7 +55,7 @@ export function deriveRoom(run: RunState, now: number, st: Story = story): RoomD
     case 'reveal':
       return { phase: 'wait', note: '곧 선택지가 열려요', night };
     case 'open':
-      return { phase: 'vote', round: v.round, q, options, seconds: v.seconds, leftMs: timeLeft(v, now), paused: v.pausedLeft != null, retry: v.retry, night };
+      return { phase: 'vote', round: v.round, q, options, seconds: v.seconds, leftMs: timeLeft(v, now), paused: v.pausedLeft != null, retry: v.retry, off: v.off.length ? v.off : undefined, night };
     case 'closed':
       return { phase: 'closed', round: v.round, q, options, night };
     case 'result': {

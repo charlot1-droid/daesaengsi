@@ -163,7 +163,7 @@ export function StageSplash({ b, n }: { b: SplashBeat; n?: string }) {
 }
 
 /* ---------- 배드 엔딩 체크포인트 ---------- */
-export function Checkpoint({ title, back, react, onRetry }: { title: string; back: string; react: ArtId; onRetry?: () => void }) {
+export function Checkpoint({ title, back, react, onRetry, auto }: { title: string; back: string; react: ArtId; onRetry?: () => void; auto?: React.ReactNode }) {
   return (
     <div className="ds-panel ds-bad">
       <ArtBox id={react} className="ds-bad__face" label="김남주 리액션" />
@@ -171,7 +171,10 @@ export function Checkpoint({ title, back, react, onRetry }: { title: string; bac
         <p className="ds-bad__kicker">배드 엔딩</p>
         <h2 className="ds-bad__title" style={{ whiteSpace: 'pre-line' }}>{txt(title)}</h2>
         <p className="ds-bad__back">{txt(back)}</p>
-        <button className="ds-btn" onClick={(e) => { e.stopPropagation(); onRetry?.(); }}>다시 고르기</button>
+        <div className="app-bad-actions">
+          <button className="ds-btn" onClick={(e) => { e.stopPropagation(); onRetry?.(); }}>다시 고르기</button>
+          {auto}
+        </div>
       </div>
     </div>
   );

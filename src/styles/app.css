@@ -162,15 +162,14 @@ button { font-family: inherit; }
 .app-line[data-kind="notice"] .app-line__who { background: var(--rose, #bd4069); color: #fff; }
 .app-phone-tie { display: inline-block; margin-bottom: 10px; padding: 6px 12px; border-radius: 999px; background: var(--rose, #bd4069); color: #fff; font: 700 13px / 1.2 var(--font); }
 
-/* ---------- 자동 진행 링 (결과 · 체크포인트) ---------- */
-.app-auto { position: absolute; right: calc(50% - 960 * var(--u) + 64 * var(--u)); bottom: calc(50% - 540 * var(--u) + 132 * var(--u)); z-index: 6; width: calc(76 * var(--u)); height: calc(76 * var(--u)); display: grid; place-items: center; border-radius: 50%; background: rgba(251, 236, 242, .88); box-shadow: 0 calc(6 * var(--u)) calc(18 * var(--u)) rgba(82, 45, 50, .2); -webkit-backdrop-filter: blur(calc(10 * var(--u))); backdrop-filter: blur(calc(10 * var(--u))); animation: ds-in .3s var(--ease-enter); pointer-events: none; }
-.app-auto svg { position: absolute; inset: calc(6 * var(--u)); transform: rotate(-90deg); }
-.app-auto circle { fill: none; stroke-width: 4; }
-.app-auto .track { stroke: rgba(82, 59, 55, .15); }
-.app-auto .arc { stroke: #bd4069; stroke-linecap: round; stroke-dasharray: 106.8; stroke-dashoffset: calc(106.8 * (1 - var(--p))); transition: stroke-dashoffset .1s linear; }
-.app-auto span { position: relative; font: 800 calc(28 * var(--u)) / 1 'Wanted Sans', sans-serif; color: #523b37; font-variant-numeric: tabular-nums; }
-.app-auto[data-held] .arc { stroke: rgba(82, 59, 55, .35); }
-.app-auto[data-held] span { font-size: calc(20 * var(--u)); letter-spacing: -.1em; }
+/* ---------- 자동 진행 링 (결과 · 체크포인트) — 투표 타이머와 같은 모양, 장미색 대신 코코아 ---------- */
+.app-auto .arc { stroke: var(--ink); opacity: .6; transition: stroke-dashoffset .1s linear; }
+.app-auto .ds-timer__n { color: var(--ink); }
+.app-auto[data-held] .ds-timer__n { font-size: calc(34 * var(--u)); letter-spacing: -.1em; }
+.app-auto__cap { display: none; position: absolute; left: 50%; bottom: calc(-34 * var(--u)); transform: translateX(-50%); white-space: nowrap; font: 700 calc(22 * var(--u)) / 1 var(--font); color: var(--muted); }
+.app-bad-actions { display: flex; align-items: center; gap: calc(36 * var(--u)); margin-top: calc(8 * var(--u)); }
+.app-bad-actions .app-auto { width: calc(104 * var(--u)); height: calc(104 * var(--u)); }
+.app-bad-actions .app-auto .ds-timer__n { font-size: calc(40 * var(--u)); }
 
 /* ---------- 게임 규칙처럼 번호 목록 공지 ---------- */
 .app-rules { justify-self: center; width: calc(1080 * var(--u)); padding: calc(40 * var(--u)) calc(64 * var(--u)) calc(48 * var(--u)); text-align: left; }
@@ -215,3 +214,12 @@ button { font-family: inherit; }
 .ds-prop__surface span { display: inline-block; }
 .ds-prop__surface span[data-raise] { transform: translateY(-0.32em); }
 .ds-prop__surface span[data-small] { font-size: .72em; }
+
+/* ---------- 다시 고를 때 막힌 답 (배드 엔딩을 본 답) ---------- */
+.ds-opt[data-off] { border-style: dashed; box-shadow: none; opacity: .55; }
+.ds-opt[data-off] .ds-opt__text { text-decoration: line-through; text-decoration-thickness: calc(3 * var(--u)); }
+.ds-opt .app-off-tag { display: inline-block; padding: calc(8 * var(--u)) calc(18 * var(--u)); border-radius: 999px; border: calc(2 * var(--u)) solid currentColor; color: var(--ink); font: 700 calc(26 * var(--u)) / 1 var(--font); white-space: nowrap; }
+.ds-tap[data-off] { opacity: .45; border-style: dashed; }
+.ds-tap[data-off] span { text-decoration: line-through; }
+.ds-tap .app-off-tag { margin-left: auto; font: 600 12px / 1 var(--font); color: var(--muted); }
+.ds-ask[data-phase="voting"] .ds-opt[data-off] .ds-opt__count { display: block; }

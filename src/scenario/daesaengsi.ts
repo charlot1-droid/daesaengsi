@@ -5,7 +5,7 @@
  * 대본과 다른 곳은 아래 네 가지뿐이에요.
  *  1. 팻말 → 휴대폰 투표: 오프닝 규칙 대사·규칙 판 (docx 메모 '투표시스템 되면 바꾸기')
  *  2. Stage 4(수강신청)는 대본에 없어서 뺐고, 조별과제 = Stage 4, 깊은 대화 = Stage 5로 번호를 당겼어요.
- *  3. 호감도: 대본은 Stage 3의 ♥♥♥까지만 적혀 있어서, 깊은 대화 뒤 +1, 마지막 선택 +1로 TRUE ENDING에 ♥♥♥♥♥.
+ *  3. 호감도: 대본은 Stage 3의 ♥♥♥까지만 적혀 있어서, 깊은 대화 뒤 +1, 마지막 선택 +1로 HAPPY ENDING에 ♥♥♥♥♥.
  *  4. 대본에 없는 짧은 문구: 휴대폰 결과 카드 제목(verdict), 일부 배드 엔딩 판 제목(대본 문장에서 따옴),
  *     팀 나눔 판의 제목(나레이터 대사에서 따옴).
  *
@@ -54,9 +54,9 @@ export const scenario: Scenario = {
         { t: 'say', who: 'narrator', text: '휴대폰에서 ①②③ 중 하나를\n눌러 주세요.' },
         { t: 'say', who: 'narrator', text: '셋, 잘못된 선택을 하면…' },
         { t: 'say', who: 'narrator', text: '코믹한 배드 엔딩 후\n체크포인트로 회귀합니다.' },
-        { t: 'say', who: 'narrator', text: '마지막 목표는 오직 하나,\n진엔딩입니다!' },
+        { t: 'say', who: 'narrator', text: '마지막 목표는 오직 하나,\n해피엔딩입니다!' },
         // 대본: '② 팻말 ①②③ 들기' → 휴대폰 투표로 바꿈
-        { t: 'notice', text: '① 팀별로 상의하기\n② 휴대폰에서 ①②③ 누르기\n③ 목표: TRUE ENDING ♡', sub: '게임 규칙', sfx: 'pop' },
+        { t: 'notice', text: '① 팀별로 상의하기\n② 휴대폰에서 ①②③ 누르기\n③ 목표: HAPPY ENDING ♡', sub: '게임 규칙', sfx: 'pop' },
         { t: 'say', who: 'narrator', text: '준비되셨나요?\n그럼 우리의 주인공을 소개합니다.' },
         { t: 'say', who: 'narrator', text: '이름은 김여주!\n큰 박수로 맞아 주세요!', sfx: 'applause' },
         { t: 'say', who: 'yeoju', text: '(손 흔들며) 안녕하세요~!\n잘 부탁드려요!' },
@@ -118,9 +118,9 @@ export const scenario: Scenario = {
       beats: [
         { t: 'say', who: 'narrator', text: '여주는 축제 무대 앞으로 갑니다!' },
         { t: 'prop', art: 'pr-cheer-captain', hand: 'print', text: '', size: 820, frame: true, sfx: 'whoosh' }, // 응원단장 컷인 (글자 없음)
-        { t: 'say', who: 'captain', text: '여러분!!! 소리 질러!!!!', fx: 'shake' },
+        { t: 'say', who: 'captain', text: '여러분!!! 소리 질러!!!!', fx: 'shake', sfx: 'cheer' },
         { t: 'say', who: 'yeoju', text: '(넋을 놓고) 저… 저 사람 누구야…\n심장이 왜 이래…' },
-        { t: 'notice', text: '여주의 심장 BPM: 180', sub: '응원단장 호감도 주가 +300% 폭등!', tone: 'heart', sfx: 'heart' },
+        { t: 'notice', text: '여주의 심장 BPM: 180', sub: '응원단장 호감도 주가 +300% 폭등!', tone: 'heart', sfx: 'heartbeat' },
         { t: 'say', who: 'friend', text: '야, 정신 차려. 입 벌어졌어.' },
         { t: 'say', who: 'narrator', text: '그때! 다음 순서로 학교 밴드\n동아리의 공연이 시작됩니다.' },
       ],
@@ -243,7 +243,7 @@ export const scenario: Scenario = {
       beats: [
         { t: 'say', who: 'narrator', text: '무대 위, 기타를 멘 한 사람이\n눈에 들어옵니다.' },
         { t: 'say', who: 'narrator', text: '바로 밴드 동아리의 기타리스트,\n김남주 선배!' },
-        { t: 'say', who: 'namju', text: '(기타 솔로) 지이이잉~♪' },
+        { t: 'say', who: 'namju', text: '(기타 솔로) 지이이잉~♪', sfx: 'guitar' },
         { t: 'say', who: 'yeoju', text: '(넋을 놓고) 와…\n기타 치는 손 좀 봐…' },
         { t: 'say', who: 'yeoju', text: '말 걸고 싶은데, 어떻게 하지?' },
         { t: 'say', who: 'narrator', text: '20초 드립니다!\n신중하게 골라 주세요!' },
@@ -264,7 +264,7 @@ export const scenario: Scenario = {
       bg: 'bg-festival-night',
       night: true,
       beats: [
-        { t: 'say', who: 'yeoju', text: '(맨 앞줄에서 휴대폰 플래시를 흔들며)\n꺄아아! 선배 최고!!' },
+        { t: 'say', who: 'yeoju', text: '(맨 앞줄에서 휴대폰 플래시를 흔들며)\n꺄아아! 선배 최고!!', sfx: 'cheer' },
         { t: 'sprite', face: 'laugh', outfit: 'b' },
         { t: 'say', who: 'namju', text: '거기 맨 앞에 너! 너 나와!!' },
         { t: 'say', who: 'yeoju', text: '(당황하며 자기를 가리키고)\n저요?! 저, 저 말이에요?!' },
@@ -425,7 +425,7 @@ export const scenario: Scenario = {
               back: '메뉴 고르기 전으로 회귀! 15초 안에 다시 고르세요.',
               react: 'rx-namju-broke',
               beats: [
-                { t: 'say', who: 'namju', text: '…그래요. (통장 잔고 확인 중)\n여주 씨, 라면은 좋아해요?', face: 'flustered' },
+                { t: 'say', who: 'namju', text: '…그래요. (통장 잔고 확인 중)\n여주 씨, 라면은 좋아해요?', face: 'flustered', sfx: 'coins' },
                 { t: 'prop', art: 'pr-bankbook', hand: 'print', text: '잔액 0원', place: { x: '17%', y: '33%', w: '60%', rot: '-7deg', fs: 72 }, sfx: 'bad' },
               ],
             },
@@ -618,7 +618,7 @@ export const scenario: Scenario = {
         { t: 'say', who: 'yeoju', text: '제대로 감사 인사도 못 했어요.' },
         { t: 'say', who: 'namju', text: '(잠시 멈칫, 미소) …그 마음 알아요.\n나도 신입생 때 똑같았거든요.' },
         { t: 'say', who: 'namju', text: '그때 누가 옆에 있어 줬느냐가\n대학 생활을 정말 많이 바꿔 놓더라고요.' },
-        // 대본에 없는 호감도 +1 (♥♥♥♥) — TRUE ENDING에서 5칸을 채우려고 넣었어요
+        // 대본에 없는 호감도 +1 (♥♥♥♥) — HAPPY ENDING에서 5칸을 채우려고 넣었어요
         { t: 'notify', text: '남주 선배 호감도 UP!', face: 'soft', affinity: 1, sfx: 'heart' },
       ],
       next: 'epilogue',
@@ -726,15 +726,15 @@ export const scenario: Scenario = {
       next: 'true-ending',
     },
 
-    /* ───────────── TRUE ENDING ───────────── */
+    /* ───────────── HAPPY ENDING ───────────── */
     {
       id: 'true-ending',
       stage: { n: '에필로그', name: '동아리의 정체' },
       bg: 'cg-true-ending',
       bgm: 'ending',
       beats: [
-        { t: 'splash', title: 'TRUE ENDING ♡', sfx: 'fanfare' },
-        { t: 'say', who: 'narrator', text: '축하합니다!\n여러분들이 진엔딩에 도달했습니다!' },
+        { t: 'splash', title: 'HAPPY ENDING ♡', sfx: 'fanfare' },
+        { t: 'say', who: 'narrator', text: '축하합니다!\n여러분들이 해피엔딩에 도달했습니다!' },
         { t: 'say', who: 'narrator', text: '큰 박수!', sfx: 'applause' },
       ],
       next: 'closing',

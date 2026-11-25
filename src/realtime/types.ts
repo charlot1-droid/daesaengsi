@@ -40,6 +40,8 @@ export type RoomState = Base &
         leftMs: number;
         paused: boolean;
         retry: boolean;
+        /** 이미 골라 봤던(막힌) 답 */
+        off?: Pick[];
       }
     | { phase: 'closed'; round: number; q: string; options: [string, string, string] }
     | {

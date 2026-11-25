@@ -65,6 +65,7 @@ const UI = {
   checkpoint: { ko: '곧 다시 고를 수 있어요', en: "You'll get to choose again soon" },
   bad_watch: { ko: '배드 엔딩! 무대를 봐 주세요', en: 'Bad ending! Watch the stage' },
   retry: { ko: '다시 투표! 이번엔 잘 골라 봐요.', en: 'Vote again! Choose wisely this time.' },
+  tried: { ko: '이미 골랐어요', en: 'Already tried' },
   paused: { ko: '잠깐 멈췄어요', en: 'Paused' },
   closed: { ko: '마감', en: 'Closed' },
   sec_left: { ko: '{n}초 남음', en: '{n}s left' },

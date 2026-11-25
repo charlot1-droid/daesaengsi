@@ -1,4 +1,4 @@
-import { useEffect, useState, type CSSProperties } from 'react';
+import { useEffect, useState, type CSSProperties, type ReactNode } from 'react';
 import { play } from '../../audio/sfx';
 import { shares, type Counts, type Pick } from '../../engine/affinity';
 import type { VotePhase } from '../../engine/runner';
@@ -19,6 +19,10 @@ interface Props {
   tie?: Pick[] | null;
   /** 같은 판에서 추첨을 한 번만 하도록 */
   round?: number;
+  /** 이미 골라 봤던 답 (다시 고를 때 막힘) */
+  off?: Pick[];
+  /** 결과 화면에서 타이머 자리에 보여 줄 자동 진행 링 */
+  auto?: ReactNode;
   /** 휴대폰 없이 진행 중 (팻말 모드) */
   offline: boolean;
 }
@@ -83,15 +87,16 @@ export function ChoiceBoard(p: Props) {
           )}
         </div>
         {!result && <Timer left={p.phase === 'reveal' ? p.seconds * 1000 : p.leftMs} total={p.seconds} label={timerLabel} />}
+        {result && p.auto}
       </div>
       {p.options.map((label, i) => {
         const n = (i + 1) as Pick;
         return (
-          <div key={n} className="ds-opt" data-n={n} data-win={result && shownWin === n ? '' : undefined} data-tied={tie?.includes(n) ? '' : undefined} data-landed={tie && landed && p.win === n ? '' : undefined}>
+          <div key={n} className="ds-opt" data-n={n} data-off={p.off?.includes(n) ? '' : undefined} data-win={result && shownWin === n ? '' : undefined} data-tied={tie?.includes(n) ? '' : undefined} data-landed={tie && landed && p.win === n ? '' : undefined}>
             <No n={n} />
             <p className="ds-opt__text">{label}</p>
             <span className="ds-opt__count num">
-              {result && !p.offline && (
+              {p.off?.includes(n) ? <span className="app-off-tag">이미 골랐어요</span> : result && !p.offline && (
                 <>
                   {p.counts[i]}명<small>{pct[i]}%</small>
                 </>

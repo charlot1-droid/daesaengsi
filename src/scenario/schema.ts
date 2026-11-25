@@ -17,7 +17,7 @@ export type SaebomFace = 'smile' | 'laugh' | 'surprised' | 'wave' | 'wink';
 /** 남주 의상: A = 크림 니트(기본), B = 무대 */
 export type Outfit = 'a' | 'b';
 
-export type Sfx = 'pop' | 'heart' | 'bad' | 'dm' | 'reveal' | 'whoosh' | 'applause' | 'drumroll' | 'fanfare' | 'chime';
+export type Sfx = 'pop' | 'heart' | 'bad' | 'dm' | 'reveal' | 'whoosh' | 'applause' | 'drumroll' | 'fanfare' | 'chime' | 'guitar' | 'cheer' | 'heartbeat' | 'coins';
 /** 배경음악 (public/audio/bgm-<이름>.mp3) */
 export type Bgm = 'title' | 'campus' | 'festival' | 'night' | 'tense' | 'emotional' | 'ending';
 export type Fx = 'shake' | 'flyers';

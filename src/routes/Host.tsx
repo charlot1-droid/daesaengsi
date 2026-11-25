@@ -157,6 +157,14 @@ export function Host() {
     if (left <= 0) dispatch({ type: 'CLOSE' });
   }, [left, vote?.phase, vote?.pausedLeft]);
 
+  // 들어온 사람이 모두 투표하면 타이머를 기다리지 않고 바로 마감 → 집계 (멈춤 중엔 기다려요)
+  const allVoted = !offline && vote?.phase === 'open' && vote.pausedLeft == null && poll.players > 0 && vote.voters >= poll.players;
+  useEffect(() => {
+    if (!allVoted) return;
+    const t = setTimeout(() => dispatch({ type: 'CLOSE' }), 800); // 마지막 사람이 답을 바꿀 틈을 조금
+    return () => clearTimeout(t);
+  }, [allVoted]);
+
   useEffect(() => {
     if (vote?.phase !== 'closed' || !link) return;
     if (offline) { dispatch({ type: 'RESULT', rnd: Math.random(), at: Date.now() }); return; }
@@ -231,6 +239,8 @@ export function Host() {
   useEffect(() => { if (!autoHold && auto) setAutoStart((s) => (s ? Date.now() : s)); }, [autoHold]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => { setAutoStart(0); }, [auto?.key]);
 
+  const autoNode = auto && autoStart > 0 ? <AutoRing key={`${auto.key}:${autoStart}`} ms={auto.ms} startedAt={autoStart} held={autoHold} /> : null;
+
   /* ---------- 조작 ---------- */
   const advance = useCallback(() => {
     const s = runRef.current;
@@ -299,7 +309,7 @@ export function Host() {
             q={txt(sc.choice.q)}
             options={sc.choice.options.map((o) => txt(o.label)) as [string, string, string]}
             phase={vote.phase} counts={vote.counts} voters={vote.voters} players={poll.players}
-            leftMs={left} seconds={vote.seconds} paused={vote.pausedLeft != null} win={vote.win} tie={vote.tie} round={vote.round} offline={offline || vote.manual}
+            leftMs={left} seconds={vote.seconds} paused={vote.pausedLeft != null} win={vote.win} tie={vote.tie} round={vote.round} off={vote.off} offline={offline || vote.manual} auto={autoNode}
           />
         }
         foot={foot}
@@ -312,7 +322,7 @@ export function Host() {
     screen = (
       <StageScreen
         frame={frame}
-        read={<Checkpoint title={bad.title} back={bad.back} react={bad.react} onRetry={() => dispatch({ type: 'RETRY' })} />}
+        read={<Checkpoint title={bad.title} back={bad.back} react={bad.react} onRetry={() => dispatch({ type: 'RETRY' })} auto={autoNode} />}
         style={stageStyle}
         overlay={help && <HelpPanel run={run} dispatch={dispatch} link={link} error={sendError} stageMode={stageMode} muted={muted} />}
       />
@@ -351,7 +361,6 @@ export function Host() {
       }}
     >
       {screen}
-      {auto && autoStart > 0 && <AutoRing key={`${auto.key}:${autoStart}`} ms={auto.ms} startedAt={autoStart} held={autoHold} u={u} />}
       {!fs.on && <FullscreenButton onClick={fs.toggle} />}
     </div>
   );

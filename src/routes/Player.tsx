@@ -13,12 +13,34 @@ import { t, useLang } from '../i18n/phone';
 const ME_KEY = 'daesaengsi.me';
 const VOTES_KEY = 'daesaengsi.votes';
 
+// 휴대폰 화면이 꺼졌다 켜지거나 브라우저가 탭을 새로 불러와도 이어서 들어가도록 localStorage에 (12시간 보관)
+const KEEP_MS = 12 * 60 * 60 * 1000;
 const load = <T,>(k: string): T | null => {
-  try { return JSON.parse(sessionStorage.getItem(k) ?? 'null'); } catch { return null; }
+  try {
+    const raw = JSON.parse(localStorage.getItem(k) ?? sessionStorage.getItem(k) ?? 'null');
+    if (raw && typeof raw === 'object' && 'v' in raw && 'at' in raw) return Date.now() - raw.at < KEEP_MS ? raw.v : null;
+    return raw;
+  } catch { return null; }
 };
 const save = (k: string, v: unknown) => {
-  try { sessionStorage.setItem(k, JSON.stringify(v)); } catch { /* 저장 못 해도 진행 */ }
+  try { localStorage.setItem(k, JSON.stringify({ v, at: Date.now() })); } catch { /* 저장 못 해도 진행 */ }
 };
+
+/** 게임 중엔 휴대폰 화면이 꺼지지 않게 (지원하는 브라우저에서만 · 화면을 다시 켜면 다시 요청) */
+function useWakeLock(on: boolean) {
+  useEffect(() => {
+    if (!on || !('wakeLock' in navigator)) return;
+    let lock: { release: () => Promise<void> } | null = null;
+    const ask = () => {
+      if (document.visibilityState !== 'visible') return;
+      (navigator as Navigator & { wakeLock: { request: (t: 'screen') => Promise<{ release: () => Promise<void> }> } })
+        .wakeLock.request('screen').then((l) => { lock = l; }, () => {});
+    };
+    ask();
+    document.addEventListener('visibilitychange', ask);
+    return () => { document.removeEventListener('visibilitychange', ask); void lock?.release().catch(() => {}); };
+  }, [on]);
+}
 
 export function Player() {
   const { lang } = useLang();
@@ -48,6 +70,7 @@ export function Player() {
     if (!link || !me) return;
     return link.subscribe(me, (s) => setRoom({ s, at: Date.now() }));
   }, [link, me]);
+  useWakeLock(!!me);
 
   // 새 라운드면 전송 표시 초기화
   const round = room && 'round' in room.s ? room.s.round : null;

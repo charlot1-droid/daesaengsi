@@ -28,6 +28,8 @@ export interface VoteState {
   win: Pick | null;
   /** 동률이었던 답들 (동률이 아니면 null) — 이 중에서 추첨으로 win이 정해졌어요 */
   tie: Pick[] | null;
+  /** 이미 골라서 배드 엔딩을 본 답 → 다시 고를 때 막아요 */
+  off: Pick[];
   /** 결과가 나온 시각 (동률 추첨 연출이 끝나기 전엔 휴대폰에 결과를 늦게 보내요) */
   resultAt?: number;
   /** 진행자가 1·2·3으로 직접 골랐는지 (팻말 모드) */
@@ -44,6 +46,8 @@ export interface RunState {
   round: number;
   vote: VoteState | null;
   bad: { option: Pick; frame: number } | null;
+  /** 장면마다 배드 엔딩으로 이어졌던 답들 (다시 고를 때 막기) */
+  wrong?: Record<string, Pick[]>;
   history: Omit<RunState, 'history'>[];
 }
 
@@ -147,6 +151,7 @@ function newVote(s: RunState, st: Story, retry: boolean): RunState {
     vote: {
       round, retry, seconds: retry ? ch.retrySeconds ?? 15 : ch.seconds, phase: 'reveal',
       endsAt: null, pausedLeft: null, counts: [0, 0, 0], voters: 0, win: null, tie: null, manual: false,
+      off: retry ? s.wrong?.[s.scene] ?? [] : [],
     },
   };
 }
@@ -213,19 +218,25 @@ export function reduce(s: RunState, a: Action, st: Story = story): RunState {
 
     case 'RESULT': {
       if (!s.vote || s.vote.manual) return s;
-      const counts = a.counts ?? s.vote.counts;
+      const raw = a.counts ?? s.vote.counts;
+      // 막힌 답에 들어온 표는 세지 않아요
+      const counts = raw.map((c, i) => (s.vote!.off.includes((i + 1) as Pick) ? 0 : c)) as Counts;
       const { win, tie } = winner(counts, a.rnd ?? 0);
       return { ...s, vote: { ...s.vote, phase: 'result', counts, voters: a.voters ?? s.vote.voters, win, tie, resultAt: a.at } };
     }
 
     case 'PICK':
-      if (s.mode !== 'choice' || !s.vote) return s;
+      if (s.mode !== 'choice' || !s.vote || s.vote.off.includes(a.n)) return s;
       return { ...s, vote: { ...s.vote, phase: 'result', win: a.n, tie: null, manual: s.vote.phase !== 'result' || s.vote.manual, endsAt: null, pausedLeft: null } };
 
     case 'RESOLVE': {
       const opt = winningOption(s, st);
       if (!opt || !s.vote?.win) return s;
-      if (opt.bad) return { ...snap(s), mode: 'bad', bad: { option: s.vote.win, frame: 0 } };
+      if (opt.bad) {
+        const tried = s.wrong?.[s.scene] ?? [];
+        const wrong = { ...s.wrong, [s.scene]: tried.includes(s.vote.win) ? tried : [...tried, s.vote.win] };
+        return { ...snap(s), mode: 'bad', bad: { option: s.vote.win, frame: 0 }, wrong };
+      }
       const gained = opt.affinity ?? 0;
       const next: RunState = {
         ...snap(s),
