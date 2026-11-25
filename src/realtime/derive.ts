@@ -11,6 +11,10 @@ import type { Frame } from '../engine/frames';
 
 /** 무대에 떠 있는 대사 → 휴대폰용 한 줄 */
 function lineOf(f: Frame): PhoneLine | undefined {
+  if (f.phone) {
+    const p = f.phone;
+    return { who: 'chat', text: txt(p.title), key: f.key, chat: { title: txt(p.title), time: p.time ? txt(p.time) : undefined, msgs: p.msgs.map((m) => ({ from: m.from, text: txt(m.text), name: m.name ? txt(m.name) : undefined })) } };
+  }
   const b = f.beat;
   if (!b) return undefined;
   if (b.t === 'say') return { who: b.who, text: txt(b.text), key: f.key };

@@ -103,8 +103,8 @@ function quadMatrix(w: number, h: number, q: [number, number][]): string {
   return `matrix3d(${m.map((v) => +v.toFixed(8)).join(',')})`;
 }
 
-/** 그림 속 표면에 글자를 원근까지 맞춰 붙여요 (책 표지 등) */
-function SurfaceText({ s, text }: { s: NonNullable<PropBeat['surface']>; text: string }) {
+/** 그림 속 표면에 글자를 원근까지 맞춰 붙여요 (책 표지 등). 부모 상자 크기 대비 %로 네 모서리를 받아요 */
+export function SurfaceText({ s, text }: { s: NonNullable<PropBeat['surface']>; text: string }) {
   const box = useRef<HTMLDivElement>(null);
   const [m, setM] = useState<string>();
   const W = 1000, H = Math.round(1000 / s.aspect);
@@ -112,8 +112,8 @@ function SurfaceText({ s, text }: { s: NonNullable<PropBeat['surface']>; text: s
     const el = box.current?.parentElement;
     if (!el) return;
     const fit = () => {
-      const P = el.offsetWidth;
-      setM(quadMatrix(W, H, s.quad.map(([x, y]) => [(x / 100) * P, (y / 100) * P])));
+      const PW = el.offsetWidth, PH = el.offsetHeight || el.offsetWidth;
+      setM(quadMatrix(W, H, s.quad.map(([x, y]) => [(x / 100) * PW, (y / 100) * PH])));
     };
     fit();
     const ro = new ResizeObserver(fit);

@@ -1,5 +1,5 @@
 /** 관객 휴대폰 화면들 — DS PlayerScreens (ds-phone, ds-card, ds-tap …) */
-import { useEffect, useState, type CSSProperties, type FormEvent, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type CSSProperties, type FormEvent, type ReactNode } from 'react';
 import type { Pick } from '../../engine/affinity';
 import { cleanNick, isPin, nickProblem, NICK_MAX } from '../../realtime/nickname';
 import type { PhoneLine, RoomState } from '../../realtime/types';
@@ -37,9 +37,35 @@ export function PhoneFrame({ me, night, children }: { me?: string; night?: boole
   );
 }
 
+/** 이야기 속 채팅방 (DM · 단톡방) — 무대와 같은 대화가 한 줄씩 올라와요 */
+function ChatCard({ chat }: { chat: NonNullable<PhoneLine['chat']> }) {
+  const { lang } = useLang();
+  const end = useRef<HTMLDivElement>(null);
+  useEffect(() => { end.current?.scrollIntoView({ block: 'end', behavior: 'smooth' }); }, [chat.msgs.length]);
+  return (
+    <div className="app-chat" aria-live="polite">
+      <p className="app-chat__head"><b>{tr(chat.title, lang)}</b>{chat.time && <small>{tr(chat.time, lang)}</small>}</p>
+      <div className="app-chat__body">
+        {chat.msgs.map((m, i) => (
+          m.from === 'note'
+            ? <p key={i} className="app-chat__note">{tr(m.text, lang)}</p>
+            : (
+              <div key={i} className="app-chat__msg" data-from={m.from}>
+                {m.name && <small>{tr(m.name, lang)}</small>}
+                <p>{tr(m.text, lang)}</p>
+              </div>
+            )
+        ))}
+        <div ref={end} />
+      </div>
+    </div>
+  );
+}
+
 /** 무대에 떠 있는 대사 한 줄 (나레이션은 색을 뒤집어 구분) */
 export function LineCard({ line }: { line: PhoneLine }) {
   const { lang } = useLang();
+  if (line.chat) return <ChatCard chat={line.chat} />;
   const cast = (story.scenario.cast as Record<string, { name: string; sub?: string }>)[line.who];
   const label = line.who === 'narrator' ? t('narration', lang)
     : line.who === 'notice' ? t('notice', lang)

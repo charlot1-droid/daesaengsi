@@ -5,8 +5,11 @@
 import type { Counts, Pick } from '../engine/affinity';
 
 export interface PhoneLine {
+  /** 배역 id · 'notice' · 'notify' · 'chat'(이야기 속 채팅) */
   who: string;
   text: string;
+  /** 이야기 속 채팅방: 지금까지 올라온 메시지 */
+  chat?: { title: string; time?: string; msgs: { from: 'me' | 'them' | 'note'; text: string; name?: string }[] };
   /** 같은 대사가 다시 와도 새 줄로 보이게 (장면:프레임) */
   key: string;
 }

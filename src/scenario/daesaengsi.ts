@@ -367,7 +367,7 @@ export const scenario: Scenario = {
               back: '문자 보내기 전으로 회귀! 15초 안에 다시 고르세요.',
               react: 'rx-namju-blocked',
               beats: [
-                { t: 'phone', title: '김남주', handle: 'namju_guitar', face: 'serious', time: '오늘 밤 11:42', msgs: [{ from: 'me', text: '🤗😍' }] },
+                { t: 'phone', title: '김남주', handle: 'namju_guitar', face: 'serious', time: '오늘 밤 11:42', msgs: [{ from: 'me', text: '이건 내 이모지야' }, { from: 'me', text: '🤗😍' }] },
                 { t: 'notice', text: '남주 선배님이 회원님을 차단했습니다.', sfx: 'bad' },
                 { t: 'say', who: 'yeoju', text: '(허공을 보며)\n내 이모지가 어때서ㅠㅠ…' },
               ],
@@ -392,7 +392,7 @@ export const scenario: Scenario = {
         { t: 'notify', text: '남주 선배 호감도 UP!', face: 'smile', sfx: 'heart' },
         { t: 'say', who: 'yeoju', text: '(폰을 꼭 쥐며) 답장 왔어…\n진짜 왔어…!' },
         { t: 'say', who: 'narrator', text: '이것이 바로 대학생활 필수 스킬,\n밥약입니다!' },
-        { t: 'say', who: 'narrator', text: '정답을 맞춘 여러분들에게 박수!', sfx: 'applause' },
+        { t: 'say', who: 'narrator', text: '정답을 맞춘 여러분들에게 박수!' }, // 박수는 관객이 직접 쳐요 (효과음 없음)
       ],
       next: 's3',
     },

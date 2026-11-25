@@ -60,7 +60,7 @@ export function Host() {
   const [now, setNow] = useState(() => Date.now());
   const [help, setHelp] = useState(false);
   // 첫 화면: 타이틀 → 아무 키나 누르면 QR 로비 (?scene= 으로 열었으면 건너뛰어요)
-  const [title, setTitle] = useState(() => run.mode === 'lobby');
+  const [title, setTitle] = useState(() => run.mode === 'lobby' && !new URLSearchParams(location.search).get('scene'));
   const titleRef = useRef(title);
   titleRef.current = title;
   const leaveTitle = useCallback(() => { if (titleRef.current) { setTitle(false); play('open'); } }, []);
