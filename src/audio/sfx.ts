@@ -27,7 +27,7 @@ function tone(freq: number, at: number, dur: number, type: OscillatorType = 'sin
 type Name = Sfx | 'tick' | 'open' | 'join' | 'vote';
 const FILES: Name[] = ['pop', 'heart', 'bad', 'dm', 'reveal', 'whoosh', 'tick', 'open', 'join', 'applause', 'drumroll', 'fanfare', 'chime', 'vote', 'guitar', 'cheer', 'heartbeat', 'coins'];
 const cache = new Map<Name, HTMLAudioElement>();
-const VOL: Partial<Record<Name, number>> = { tick: 0.5, applause: 1, join: 0.5, cheer: 0.9, guitar: 0.8 };
+const VOL: Partial<Record<Name, number>> = { tick: 0.5, applause: 1, join: 0.5, cheer: 0.9, guitar: 0.8, bad: 0.6 };
 
 function playFile(name: Name): boolean {
   if (!FILES.includes(name)) return false;
