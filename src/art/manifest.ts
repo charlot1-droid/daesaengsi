@@ -117,14 +117,10 @@ export const saebomSpriteId = (face: string): ArtId | null => {
 
 /**
  * 배경 그림 속 표면에 글자 얹기 (그림 크기 대비 % 네 모서리 · 왼쪽 위부터 시계 방향)
- * 해피엔딩 CG에서 새봄이 내미는 노란 책에 「새생활의 시작」
+ * (지금은 비어 있어요 — 그림에 직접 넣는 쪽이 자연스러워서)
  */
 export const ART_DECALS: Partial<Record<ArtId, { text: string; ratio: number; surface: { quad: [[number, number], [number, number], [number, number], [number, number]]; aspect: number; top: number; fs: number; ink?: string; raise?: string; small?: string } }>> = {
-  'cg-true-ending': {
-    text: '새생활의 시작',
-    ratio: 1920 / 1097,
-    surface: { quad: [[30.7, 80.4], [42.0, 80.1], [44.2, 95.3], [29.1, 96.5]], aspect: 1.25, top: 40, fs: 36, ink: '#26211f', raise: '생', small: '의' },
-  },
+  // 해피엔딩 CG의 노란 책 제목은 그림에 직접 인쇄해 넣었어요 (tools/bake-cover.py) — 겹쳐 얹으면 부자연스러워서
 };
 
 export const faceId = (face: string): ArtId => (isArtId(`face-${face}`) ? (`face-${face}` as ArtId) : 'face-smile');
