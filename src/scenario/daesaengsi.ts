@@ -417,7 +417,7 @@ export const scenario: Scenario = {
         q: '여주의 메뉴 선택은?',
         seconds: 20,
         options: [
-          { label: '학식 (가성비 최고!)', go: 's3-haksik', affinity: 1, verdict: '센스 만점' },
+          { label: '학식', go: 's3-haksik', affinity: 1, verdict: '센스 만점' },
           {
             label: '오마카세',
             bad: {
@@ -710,6 +710,11 @@ export const scenario: Scenario = {
         { t: 'say', who: 'namju', text: '그리고 전국에 있는 대학교에서\n영적 운동을 일으키는\n대학생선교 단체예요!' },
         { t: 'say', who: 'saebom', text: '여주가 힘들 때\n내가 옆에 있었던 것처럼,', face: 'smile' },
         { t: 'say', who: 'saebom', text: '우리 동아리 사람들도 서로에게\n그런 친구가 되어 주거든.' },
+        { t: 'say', who: 'namju', text: '모든 새내기가\n외롭지 않았으면 좋겠어요.', face: 'soft' },
+        { t: 'say', who: 'namju', text: '여주 씨도요.' },
+        { t: 'say', who: 'yeoju', text: '(감동하며) 그래서 다들 그렇게\n따뜻했던 거였구나…' },
+        { t: 'say', who: 'yeoju', text: '저도 함께하고 싶어요!' },
+        // 여주가 함께하겠다고 한 다음에 새봄이 환영 선물(새생시)을 건네요
         { t: 'say', who: 'saebom', text: '(새생시를 건네며) 그리고 이건\n오늘 발표 수고했다고,' },
         { t: 'say', who: 'saebom', text: '동아리 환영 선물이야!' },
         // 새봄이 건네는 「새생활의 시작」(새생시) 책자. 그림은 글자 없는 노란 책자, 제목은 화면에서 얹어요.
@@ -719,10 +724,6 @@ export const scenario: Scenario = {
           // 실제 표지처럼 글자는 모두 검정, 가는 손글씨 느낌에 '생'은 살짝 위, '의'는 작게
           surface: { quad: [[14.2, 15], [72.9, 7.7], [85.8, 83.1], [23.7, 91.7]], aspect: 0.766, top: 55, fs: 50, ink: '#26211f', raise: '생', small: '의' },
         },
-        { t: 'say', who: 'namju', text: '모든 새내기가\n외롭지 않았으면 좋겠어요.', face: 'soft' },
-        { t: 'say', who: 'namju', text: '여주 씨도요.' },
-        { t: 'say', who: 'yeoju', text: '(감동하며) 그래서 다들 그렇게\n따뜻했던 거였구나…' },
-        { t: 'say', who: 'yeoju', text: '저도 함께하고 싶어요!' },
       ],
       next: 'true-ending',
     },

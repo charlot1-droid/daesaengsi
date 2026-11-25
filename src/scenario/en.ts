@@ -153,7 +153,7 @@ export const EN: Record<string, string> = {
   "(속마음) 비싼 거 고르면\n부담스러워할 텐데…": "(inner voice) If I pick something expensive,\nhe might feel pressured…",
   "아무거나 하면\n성의 없어 보일까…?": "If I say 'anything',\nwill that seem careless…?",
   "여주의 메뉴 선택은?": "What will Yeoju pick?",
-  "학식 (가성비 최고!)": "School cafeteria (best value!)",
+  "학식": "School cafeteria",
   "센스 만점": "Great sense",
   "오마카세": "Omakase",
   "…그래요. (통장 잔고 확인 중)\n여주 씨, 라면은 좋아해요?": "…Sure. (checking his bank balance)\nYeoju, do you like ramen?",
