@@ -90,6 +90,7 @@ export const EN: Record<string, string> = {
   "신입 단톡방 링크도 거기 있어서,\n같이 다닐 사람 금방 생길 거예요.": "The freshman group chat link is there too,\nso you'll find people to hang out with soon.",
   "새터에서 열정 넘치는\n응원단 율동 시간이 시작됩니다!": "At orientation, the super-energetic\ncheer squad dance time begins!",
   "다 같이 율동 따라 하기!": "Everyone, dance along!",
+  "앉은 자리에서 그대로 따라 해 주세요!": "Follow along right from your seat!",
   "관객 참여": "Audience participation",
   "(헉헉) 이게 맞나?": "(panting) Am I doing this right?",
   "새터 마지막 밤, 장기자랑 무대에서\n밴드 공연이 시작됩니다.": "On the last night of orientation, a band\nstarts playing at the talent show.",

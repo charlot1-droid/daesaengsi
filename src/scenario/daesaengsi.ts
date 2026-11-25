@@ -225,9 +225,9 @@ export const scenario: Scenario = {
       night: true,
       beats: [
         { t: 'say', who: 'narrator', text: '새터에서 열정 넘치는\n응원단 율동 시간이 시작됩니다!' },
-        // 관객 참여 15초. 진행자: T = 타이머 처음부터, 스페이스 = 넘어가기
-        // 율동 곡: Pour Your Spirit over me (예람워십) 0:55–1:09 구간 14초
-        { t: 'share', label: '관객 참여', q: '다 같이 율동 따라 하기!', seconds: 29, music: 'dance.mp3' },
+        // 관객 참여 30초. 진행자: T = 타이머 처음부터, 스페이스 = 넘어가기
+        // 율동 곡: Pour Your Spirit over me (예람워십) 0:55–1:25 구간 30초
+        { t: 'share', label: '관객 참여', q: '다 같이 율동 따라 하기!', hint: '앉은 자리에서 그대로 따라 해 주세요!', seconds: 30, music: 'dance.mp3' },
         { t: 'say', who: 'yeoju', text: '(헉헉) 이게 맞나?' },
         { t: 'say', who: 'narrator', text: '새터 마지막 밤, 장기자랑 무대에서\n밴드 공연이 시작됩니다.' },
       ],
