@@ -41,8 +41,9 @@ export const scenario: Scenario = {
     {
       id: 'opening',
       bg: 'kv-title',
+      bgm: 'title',
       beats: [
-        { t: 'screen', view: 'title', text: '대생시', sub: '대학 생활 시뮬레이션' },
+        // 타이틀은 로비 앞 첫 화면(PRESS TO START)으로 옮겼어요
         { t: 'say', who: 'narrator', text: '안녕하세요 여러분!' },
         { t: 'say', who: 'narrator', text: '오늘 여러분은 구경꾼이 아니라,\n주인공이 될겁니다!' },
         { t: 'say', who: 'narrator', text: '룰은 간단합니다.' },
@@ -56,7 +57,7 @@ export const scenario: Scenario = {
         // 대본: '② 팻말 ①②③ 들기' → 휴대폰 투표로 바꿈
         { t: 'notice', text: '① 팀별로 상의하기\n② 휴대폰에서 ①②③ 누르기\n③ 목표: TRUE ENDING ♡', sub: '게임 규칙', sfx: 'pop' },
         { t: 'say', who: 'narrator', text: '준비되셨나요?\n그럼 우리의 주인공을 소개합니다.' },
-        { t: 'say', who: 'narrator', text: '이름은 김여주!\n큰 박수로 맞아 주세요!' },
+        { t: 'say', who: 'narrator', text: '이름은 김여주!\n큰 박수로 맞아 주세요!', sfx: 'applause' },
         { t: 'say', who: 'yeoju', text: '(손 흔들며) 안녕하세요~!\n잘 부탁드려요!' },
       ],
       next: 'prologue',
@@ -67,6 +68,7 @@ export const scenario: Scenario = {
       id: 'prologue',
       stage: { n: '프롤로그', name: '설레는 새내기 입학' },
       bg: 'bg-campus-gate',
+      bgm: 'campus',
       beats: [
         { t: 'splash', title: '설레는 새내기 입학' },
         { t: 'say', who: 'narrator', text: '수능이라는 거대한 산을 넘은 여주.' },
@@ -110,6 +112,7 @@ export const scenario: Scenario = {
       id: 's1-festival',
       stage: { n: 'Stage 1', name: '대학 생활의 첫 선택' },
       bg: 'bg-festival-night',
+      bgm: 'festival',
       night: true,
       beats: [
         { t: 'say', who: 'narrator', text: '여주는 축제 무대 앞으로 갑니다!' },
@@ -128,6 +131,7 @@ export const scenario: Scenario = {
       id: 's1-fair',
       stage: { n: 'Stage 1', name: '대학 생활의 첫 선택' },
       bg: 'bg-club-fair',
+      bgm: 'campus',
       beats: [
         { t: 'say', who: 'narrator', text: '동아리 박람회!\n전단지 폭격이 시작됩니다!', fx: 'flyers', sfx: 'whoosh' },
         { t: 'say', who: 'yeoju', text: '(양손 가득 전단지)\n가방이 왜 이렇게 무겁지…' },
@@ -216,6 +220,7 @@ export const scenario: Scenario = {
       id: 's1-ot',
       stage: { n: 'Stage 1', name: '대학 생활의 첫 선택' },
       bg: 'bg-orientation-night',
+      bgm: 'festival',
       night: true,
       beats: [
         { t: 'say', who: 'narrator', text: '새터에서 열정 넘치는\n응원단 율동 시간이 시작됩니다!' },
@@ -232,6 +237,7 @@ export const scenario: Scenario = {
       id: 's1-band',
       stage: { n: 'Stage 1', name: '대학 생활의 첫 선택' },
       bg: 'cg-band-spotlight',
+      bgm: 'festival',
       night: true,
       beats: [
         { t: 'say', who: 'narrator', text: '무대 위, 기타를 멘 한 사람이\n눈에 들어옵니다.' },
@@ -306,6 +312,7 @@ export const scenario: Scenario = {
       id: 's1-follow',
       stage: { n: 'Stage 1', name: '대학 생활의 첫 선택' },
       bg: 'bg-campus-gate',
+      bgm: 'campus',
       beats: [
         { t: 'notify', text: '남주 선배와 맞팔로우가 되었습니다!', face: 'smile', sfx: 'pop' },
         { t: 'say', who: 'narrator', text: '다음 스테이지로!' },
@@ -318,6 +325,7 @@ export const scenario: Scenario = {
       id: 's2',
       stage: { n: 'Stage 2', name: '두근두근 첫 메시지' },
       bg: 'bg-room-night',
+      bgm: 'night',
       night: true,
       beats: [
         { t: 'splash', title: '두근두근 첫 메시지', sub: '밤, 여주의 방' },
@@ -383,7 +391,7 @@ export const scenario: Scenario = {
         { t: 'notify', text: '남주 선배 호감도 UP!', face: 'smile', sfx: 'heart' },
         { t: 'say', who: 'yeoju', text: '(폰을 꼭 쥐며) 답장 왔어…\n진짜 왔어…!' },
         { t: 'say', who: 'narrator', text: '이것이 바로 대학생활 필수 스킬,\n밥약입니다!' },
-        { t: 'say', who: 'narrator', text: '정답을 맞춘 여러분들에게 박수!' },
+        { t: 'say', who: 'narrator', text: '정답을 맞춘 여러분들에게 박수!', sfx: 'applause' },
       ],
       next: 's3',
     },
@@ -393,6 +401,7 @@ export const scenario: Scenario = {
       id: 's3',
       stage: { n: 'Stage 3', name: '밥약 메뉴 고르기' },
       bg: 'bg-restaurant',
+      bgm: 'campus',
       beats: [
         { t: 'splash', title: '밥약 메뉴 고르기' },
         // 대본 수정본에서 '[화면] 오늘의 메뉴판' 줄이 빠져서 메뉴판 소품도 뺐어요 (pr-menu-board는 그대로 남겨 둠)
@@ -461,6 +470,7 @@ export const scenario: Scenario = {
       id: 's4',
       stage: { n: 'Stage 4', name: '조별과제 위기' },
       bg: 'bg-desk-2am',
+      bgm: 'tense',
       night: true,
       beats: [
         { t: 'splash', title: '조별과제 위기', sub: '새벽 2시 14분' },
@@ -552,6 +562,7 @@ export const scenario: Scenario = {
       id: 's4-end',
       stage: { n: 'Stage 4', name: '조별과제 위기' },
       bg: 'bg-bench-sunset',
+      bgm: 'emotional',
       beats: [
         { t: 'say', who: 'narrator', text: '조별과제까지 무사히 마친 여주.' },
         { t: 'say', who: 'narrator', text: '발표를 끝내고\n한숨 돌리던 그날 저녁,' },
@@ -566,6 +577,7 @@ export const scenario: Scenario = {
       id: 's5',
       stage: { n: 'Stage 5', name: '선배와의 깊은 대화' },
       bg: 'cg-bench-talk',
+      bgm: 'emotional',
       beats: [
         { t: 'splash', title: '선배와의 깊은 대화', sub: '노을 지는 캠퍼스 벤치' },
         { t: 'say', who: 'narrator', text: '벤치에 나란히 앉은\n여주와 남주 선배.' },
@@ -689,7 +701,7 @@ export const scenario: Scenario = {
         { t: 'say', who: 'namju', text: '다들 바로 자기 일처럼 나섰어요.' },
         { t: 'say', who: 'yeoju', text: '(어리둥절) 같은 동아리…?\n그러니까 그 동아리가 대체 뭔데요?!' },
         // 대본의 (드럼롤)은 아직 소리가 없어요 → audio/sfx.ts에 추가하면 여기 sfx로 연결
-        { t: 'notice', text: '두구두구두구…' },
+        { t: 'notice', text: '두구두구두구…', sfx: 'drumroll' },
         { t: 'say', who: 'narrator', text: '드디어 밝혀지는\n선배와 새봄이의 진실은?' },
         { t: 'say', who: 'namju', text: '우리는 CCC라는\n대학교 중앙 기독교 동아리예요.', face: 'smile', sfx: 'reveal' },
         { t: 'say', who: 'namju', text: '대학 캠퍼스에서 같이 예배하고,\n같이 공부하고,' },
@@ -713,10 +725,11 @@ export const scenario: Scenario = {
       id: 'true-ending',
       stage: { n: '에필로그', name: '동아리의 정체' },
       bg: 'cg-true-ending',
+      bgm: 'ending',
       beats: [
-        { t: 'splash', title: 'TRUE ENDING ♡', sfx: 'reveal' },
+        { t: 'splash', title: 'TRUE ENDING ♡', sfx: 'fanfare' },
         { t: 'say', who: 'narrator', text: '축하합니다!\n여러분들이 진엔딩에 도달했습니다!' },
-        { t: 'say', who: 'narrator', text: '큰 박수!' },
+        { t: 'say', who: 'narrator', text: '큰 박수!', sfx: 'applause' },
       ],
       next: 'closing',
     },

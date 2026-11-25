@@ -7,7 +7,8 @@ import { CONFIG } from '../config';
 import type { Pick } from '../engine/affinity';
 import { createPlayerLink } from '../realtime/index';
 import type { Me, PlayerLink, RoomState } from '../realtime/types';
-import { Closed, End, JoinForm, PhoneFrame, ShareWait, VotePad, Verdict, Waiting, type SendState } from '../ui/player/Screens';
+import { Closed, End, JoinForm, PhoneFrame, ShareWait, VotePad, Verdict, Waiting, WaitScreen, type SendState } from '../ui/player/Screens';
+import { t, useLang } from '../i18n/phone';
 
 const ME_KEY = 'daesaengsi.me';
 const VOTES_KEY = 'daesaengsi.votes';
@@ -20,6 +21,7 @@ const save = (k: string, v: unknown) => {
 };
 
 export function Player() {
+  const { lang } = useLang();
   const [link, setLink] = useState<PlayerLink | null>(null);
   const [me, setMe] = useState<Me | null>(null);
   const [checking, setChecking] = useState(true);
@@ -62,10 +64,10 @@ export function Player() {
       setJoinError(undefined);
     } else {
       setJoinError(
-        r.reason === 'pin' ? { field: 'pin', text: '열린 게임이 없어요. 번호를 다시 확인해 주세요.' }
-          : r.reason === 'name-taken' ? { field: 'nick', text: '이미 있는 이름이에요. 다른 이름을 써 주세요.' }
-            : r.reason === 'name-bad' ? { field: 'nick', text: '다른 이름을 써 주세요.' }
-              : { field: 'all', text: '연결이 불안정해요. 다시 눌러 주세요.' },
+        r.reason === 'pin' ? { field: 'pin', text: t('err_pin', lang) }
+          : r.reason === 'name-taken' ? { field: 'nick', text: t('err_taken', lang) }
+            : r.reason === 'name-bad' ? { field: 'nick', text: t('err_name', lang) }
+              : { field: 'all', text: t('err_net', lang) },
       );
     }
   };
@@ -84,7 +86,7 @@ export function Player() {
     else { setSend('failed'); setVotes((v) => ({ ...v, [r]: prev as Pick })); }
   };
 
-  if (checking) return <PhoneFrame><Waiting title="연결하는 중" /></PhoneFrame>;
+  if (checking) return <PhoneFrame><Waiting title={t('connecting', lang)} /></PhoneFrame>;
   if (!me) {
     return (
       <PhoneFrame>
@@ -96,8 +98,8 @@ export function Player() {
   const s = room?.s;
   const mine = round != null ? votes[round] ?? null : null;
   let body;
-  if (!s || s.phase === 'lobby') body = <Waiting title="입장 완료!" body="곧 시작해요. 무대 화면을 봐 주세요." />;
-  else if (s.phase === 'wait') body = <Waiting title="무대를 봐 주세요" body={s.note ?? s.stage} />;
+  if (!s || s.phase === 'lobby') body = <Waiting title={t('joined', lang)} body={t('joined_body', lang)} />;
+  else if (s.phase === 'wait') body = <WaitScreen s={s} />;
   else if (s.phase === 'vote') body = <VotePad key={s.round} s={s} receivedAt={room!.at} mine={mine} send={send} onPick={pick} />;
   else if (s.phase === 'closed') body = <Closed s={s} mine={mine} />;
   else if (s.phase === 'result') body = <Verdict s={s} mine={mine} />;

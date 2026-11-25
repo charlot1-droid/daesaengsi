@@ -5,8 +5,17 @@ body { background: var(--ground); }
 button { font-family: inherit; }
 
 /* ---------- 무대: 1920×1080을 화면에 맞추고 남는 곳은 검게 ---------- */
-.app-host { position: fixed; inset: 0; display: grid; place-items: center; background: #000; overflow: hidden; cursor: none; user-select: none; }
-.app-host[data-cursor] { cursor: default; }
+.app-host { position: fixed; inset: 0; display: grid; place-items: center; background: #000; overflow: hidden; user-select: none; }
+/* 커서: 창 모드에선 벚꽃 커서, 전체 화면에선 숨김(도움말을 열면 다시 보여요) */
+.app-host, .app-host * { cursor: url('/cursors/pointer.svg') 4 3, auto; }
+.app-host button, .app-host button *, .app-host a, .app-host a * { cursor: url('/cursors/hand.svg') 4 3, pointer; }
+.app-host[data-fs]:not([data-cursor]), .app-host[data-fs]:not([data-cursor]) * { cursor: none; }
+
+/* 전체 화면 버튼 (창 모드에서만) */
+.app-fs { position: fixed; top: 18px; right: 18px; z-index: 20; display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 16px 0 12px; border: 1.5px solid rgba(255, 255, 255, .7); border-radius: 24px; background: rgba(251, 236, 242, .82); color: #523b37; font: 700 15px / 1 'Wanted Sans', sans-serif; box-shadow: 0 6px 20px rgba(82, 45, 50, .18); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); opacity: .85; transition: opacity .2s, transform .2s; }
+.app-fs:hover { opacity: 1; transform: translateY(-1px); }
+.app-fs:focus-visible { outline: 3px solid #bd4069; outline-offset: 2px; }
+.app-fs svg { width: 20px; height: 20px; }
 .app-host > .ds-stage { position: relative; width: calc(1920 * var(--u)); }
 .app-host .ds-screen { width: calc(1920 * var(--u)); background-color: var(--ground); transition: background-image var(--m-scene) var(--ease); }
 
@@ -23,8 +32,8 @@ button { font-family: inherit; }
 /* ---------- 스탠딩 (2:3) — 대사 화면에서는 대사창 바로 아래에서 시작, 얼굴이 화면 위에서 40~55%에 ---------- */
 .app-sprite { position: absolute; left: 50%; top: calc(var(--sprite-top, 250) * var(--u)); height: calc(var(--sprite-h, 1500) * var(--u)); aspect-ratio: 2 / 3; transform: translateX(-50%); }
 .ds-screen[data-band] .app-sprite { --sprite-top: 345; --sprite-h: 1240; }
-.app-sprite[data-who="saebom"] { --sprite-top: 330; --sprite-h: 1340; }
-.ds-screen[data-band] .app-sprite[data-who="saebom"] { --sprite-top: 420; --sprite-h: 1140; } /* 새봄 162cm · 남주 183cm */
+.app-sprite[data-who="saebom"] { --sprite-top: 380; --sprite-h: 1300; }
+.ds-screen[data-band] .app-sprite[data-who="saebom"] { --sprite-top: 470; --sprite-h: 1120; } /* 새봄 162cm · 남주 183cm */
 .app-sprite[data-at="left"] { left: 31%; }
 .app-sprite[data-at="right"] { left: 69%; }
 .app-sprite img { width: 100%; height: 100%; object-fit: contain; object-position: top; animation: app-fade var(--m-line) var(--ease-enter); }
@@ -106,7 +115,46 @@ button { font-family: inherit; }
 .app-board__cell .ds-stage * { animation: none !important; }
 .app-board__meta { font: 500 16px / 1.5 var(--font); color: var(--muted); }
 
-/* ---------- 로비: 키 비주얼 오른쪽의 남주가 보이도록 판을 왼쪽에 ---------- */
-.app-host .ds-lobby, .app-board .ds-lobby { justify-self: start; width: calc(1180 * var(--u)); margin-left: calc(-96 * var(--u)); }
-.app-host .ds-lobby .ds-lobby__pin { font-size: calc(150 * var(--u)); white-space: nowrap; }
-.app-host .ds-lobby .ds-lobby__qr { width: calc(360 * var(--u)); }
+/* ---------- 동률 추첨 ---------- */
+.app-tie { justify-self: center; padding: calc(14 * var(--u)) calc(36 * var(--u)); border-radius: 999px; background: var(--rose, #bd4069); color: #fff; font: 800 calc(38 * var(--u)) / 1.2 var(--font); letter-spacing: -0.01em; box-shadow: 0 calc(10 * var(--u)) calc(30 * var(--u)) rgba(189, 64, 105, .35); animation: app-tie-pulse .6s var(--ease) infinite alternate; }
+.app-tie[data-done] { animation: none; }
+@keyframes app-tie-pulse { to { transform: scale(1.05); } }
+.ds-ask[data-spin] .ds-opt { transition: none; }
+.ds-ask[data-spin] .ds-opt:not([data-tied]) > * { opacity: .3; }
+.ds-ask[data-spin] .ds-opt[data-tied]:not([data-win]) > * { opacity: .7; }
+@media (prefers-reduced-motion: reduce) { .app-tie { animation: none; } }
+
+/* ---------- 타이틀 (첫 화면) ---------- */
+.app-title { position: absolute; left: calc(-10 * var(--u)); top: calc(230 * var(--u)); color: #fff; text-align: left; animation: ds-in var(--m-scene) var(--ease-enter); }
+.app-title::before { content: ''; position: absolute; inset: calc(-120 * var(--u)) calc(-160 * var(--u)); z-index: -1; border-radius: 50%; background: radial-gradient(closest-side, rgba(132, 58, 88, .42), rgba(132, 58, 88, .2) 55%, transparent); }
+.app-title__name { font-size: calc(250 * var(--u)); line-height: 1; font-weight: 900; letter-spacing: -0.04em; text-shadow: 0 calc(6 * var(--u)) calc(14 * var(--u)) rgba(104, 38, 66, .45), 0 calc(18 * var(--u)) calc(60 * var(--u)) rgba(104, 38, 66, .55); }
+.app-title__sub { margin-top: calc(18 * var(--u)); font-size: calc(54 * var(--u)); font-weight: 700; letter-spacing: -0.01em; text-shadow: 0 calc(3 * var(--u)) calc(16 * var(--u)) rgba(104, 38, 66, .65); }
+.app-title__press { margin-top: calc(120 * var(--u)); font-size: calc(36 * var(--u)); font-weight: 800; letter-spacing: 0.32em; text-shadow: 0 calc(2 * var(--u)) calc(14 * var(--u)) rgba(104, 38, 66, .7); animation: app-press 1.6s ease-in-out infinite; }
+@keyframes app-press { 0%, 100% { opacity: 1; } 50% { opacity: .25; } }
+@media (prefers-reduced-motion: reduce) { .app-title__press { animation: none; } }
+
+/* 로비 인원: 숫자만 크게, 늘 때마다 살짝 튀어요 */
+.app-host .ds-lobby__who { justify-content: center; }
+.app-host .ds-lobby__count { font-size: calc(48 * var(--u)); font-weight: 700; }
+.app-host .ds-lobby__count b { display: inline-block; margin-right: calc(6 * var(--u)); font-size: calc(84 * var(--u)); font-weight: 900; color: var(--rose, #bd4069); animation: app-bump .35s var(--ease-enter); }
+@keyframes app-bump { from { transform: scale(1.35); } }
+
+/* ---------- 휴대폰: 언어 · 지금 대사 ---------- */
+.app-phone-bar-end { display: inline-flex; align-items: center; gap: 10px; }
+.app-lang { display: inline-flex; padding: 3px; border-radius: 999px; background: var(--panel-2); border: 1.5px solid var(--line); }
+.app-lang button { min-width: 38px; height: 30px; padding: 0 8px; border: 0; border-radius: 999px; background: transparent; color: var(--muted); font: 700 14px / 1 var(--font); cursor: pointer; }
+.app-lang button[aria-pressed="true"] { background: var(--action); color: var(--on-action); }
+.app-phone-stage { font: 600 14px / 1.3 var(--font); color: var(--muted); }
+.app-phone-hint { font: 500 14px / 1.4 var(--font); color: var(--muted); text-align: center; }
+.app-line { padding: 20px 20px 22px; border-radius: var(--r-ui); background: var(--panel); border: 2px solid var(--line); box-shadow: var(--panel-edge); animation: ds-in var(--m-line) var(--ease-enter); }
+.app-line__who { display: inline-block; margin-bottom: 10px; padding: 5px 12px; border-radius: 999px; background: var(--ink); color: var(--ground); font: 700 13px / 1 var(--font); }
+.app-line__text { font: 500 21px / 1.55 'Gowun Dodum', var(--font); color: var(--ink); white-space: pre-line; word-break: keep-all; }
+.app-line[data-kind="narrator"] { background: rgba(74, 49, 52, .9); border-color: rgba(255, 255, 255, .14); text-align: center; }
+.app-line[data-kind="narrator"] .app-line__who { background: none; padding: 0; color: #f3b9cc; letter-spacing: .08em; }
+.app-line[data-kind="narrator"] .app-line__text { color: #fff4f8; }
+[data-theme="night"] .app-line[data-kind="narrator"] { background: rgba(255, 244, 248, .94); }
+[data-theme="night"] .app-line[data-kind="narrator"] .app-line__who { color: #bd4069; }
+[data-theme="night"] .app-line[data-kind="narrator"] .app-line__text { color: #523b37; }
+.app-line[data-kind="notice"] { text-align: center; }
+.app-line[data-kind="notice"] .app-line__who { background: var(--rose, #bd4069); color: #fff; }
+.app-phone-tie { display: inline-block; margin-bottom: 10px; padding: 6px 12px; border-radius: 999px; background: var(--rose, #bd4069); color: #fff; font: 700 13px / 1.2 var(--font); }

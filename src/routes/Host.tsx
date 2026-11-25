@@ -12,7 +12,9 @@
  * 주소 옵션: ?scene=s3 (그 장면부터) · ?link=offline (팻말 모드) · ?link=local · ?fresh (새 방)
  */
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState, type CSSProperties } from 'react';
-import { play, setMuted } from '../audio/sfx';
+import { play, preloadSfx, setMuted } from '../audio/sfx';
+import { duckBgm, setBgm, setBgmMuted } from '../audio/bgm';
+import type { Bgm } from '../scenario/schema';
 import { CONFIG } from '../config';
 import type { Pick } from '../engine/affinity';
 import { currentFrame, initial, isCheckpoint, reduce, story, timeLeft, type Action, type RunState } from '../engine/runner';
@@ -23,6 +25,7 @@ import { txt } from '../scenario/text';
 import { ChoiceBoard } from '../ui/stage/ChoiceBoard';
 import { Lobby } from '../ui/stage/Lobby';
 import { Checkpoint } from '../ui/stage/Panels';
+import { FullscreenButton, TitleScreen, useFullscreen } from '../ui/stage/Title';
 import { beatView, Foot, StageScreen, wantsBand } from '../ui/stage/StageScreen';
 
 function useStageScale() {
@@ -55,6 +58,12 @@ export function Host() {
   const [poll, setPoll] = useState<Poll>(EMPTY_POLL);
   const [now, setNow] = useState(() => Date.now());
   const [help, setHelp] = useState(false);
+  // 첫 화면: 타이틀 → 아무 키나 누르면 QR 로비 (?scene= 으로 열었으면 건너뛰어요)
+  const [title, setTitle] = useState(() => run.mode === 'lobby');
+  const titleRef = useRef(title);
+  titleRef.current = title;
+  const leaveTitle = useCallback(() => { if (titleRef.current) { setTitle(false); play('open'); } }, []);
+  const fs = useFullscreen();
   const [stageMode, setStageMode] = useState(false);
   const [muted, setMute] = useState(false);
   const [typed, setTyped] = useState(false);
@@ -89,7 +98,14 @@ export function Host() {
   }, [fast]);
 
   /* ---------- 휴대폰으로 상태 보내기 (내용이 바뀔 때만) ---------- */
-  const draft = useMemo(() => deriveRoom(run, Date.now()), [run]);
+  // 동률 추첨이 끝나면 한 번 더 계산해서 휴대폰에 결과를 보내요
+  const [tieDone, setTieDone] = useState(0);
+  useEffect(() => {
+    if (vote?.phase !== 'result' || !vote.tie || vote.tie.length < 2) return;
+    const t = setTimeout(() => setTieDone((n) => n + 1), 3500);
+    return () => clearTimeout(t);
+  }, [vote?.phase, vote?.round, vote?.tie]); // eslint-disable-line react-hooks/exhaustive-deps
+  const draft = useMemo(() => deriveRoom(run, Date.now()), [run, tieDone]); // eslint-disable-line react-hooks/exhaustive-deps
   const key = roomKey(draft);
   // 진행자 화면을 새로고침해도 번호가 뒤로 가지 않게 시각 기반으로 (휴대폰은 더 작은 번호를 무시해요)
   const seq = useRef(0);
@@ -142,19 +158,36 @@ export function Host() {
 
   useEffect(() => {
     if (vote?.phase !== 'closed' || !link) return;
-    if (offline) { dispatch({ type: 'RESULT' }); return; }
+    if (offline) { dispatch({ type: 'RESULT', rnd: Math.random(), at: Date.now() }); return; }
     const round = vote.round;
     // 마지막 표가 도착할 시간을 조금 주고 최종 집계
     const t = setTimeout(() => {
       link.poll(round).then(
-        (p) => runRef.current.vote?.round === round && dispatch({ type: 'RESULT', counts: p.counts, voters: p.voters }),
-        () => dispatch({ type: 'RESULT' }),
+        (p) => runRef.current.vote?.round === round && dispatch({ type: 'RESULT', counts: p.counts, voters: p.voters, rnd: Math.random(), at: Date.now() }),
+        () => dispatch({ type: 'RESULT', rnd: Math.random(), at: Date.now() }),
       );
     }, 400);
     return () => clearTimeout(t);
   }, [vote?.phase, vote?.round, link, offline]);
 
-  useEffect(() => { if (vote?.phase === 'result') play('reveal'); }, [vote?.phase, vote?.round, vote?.win]);
+  // 동률이면 추첨 연출(ChoiceBoard)이 소리를 내요
+  useEffect(() => { if (vote?.phase === 'result' && !(vote.tie && vote.tie.length > 1)) play('reveal'); }, [vote?.phase, vote?.round, vote?.win]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  /* ---------- 배경음악 ---------- */
+  useEffect(() => { preloadSfx(); }, []);
+  const lastBgm = useRef<Bgm>('campus');
+  if (sc.bgm) lastBgm.current = sc.bgm;
+  const voting = run.mode === 'choice' && (vote?.phase === 'reveal' || vote?.phase === 'open' || vote?.phase === 'closed');
+  const track: Bgm = run.mode === 'lobby' ? 'title' : voting ? 'vote' : sc.bgm ?? lastBgm.current;
+  useEffect(() => { setBgm(track); }, [track]);
+  // 배드 엔딩 중엔 음악을 줄여요
+  useEffect(() => { duckBgm(run.mode === 'bad' ? 0.35 : 1); }, [run.mode]);
+  // 로비에서 누가 들어오면 '띵'
+  const lastPlayers = useRef(0);
+  useEffect(() => {
+    if (run.mode === 'lobby' && !title && poll.players > lastPlayers.current) play('join');
+    lastPlayers.current = poll.players;
+  }, [poll.players]); // eslint-disable-line react-hooks/exhaustive-deps
 
   /* ---------- 화면이 바뀔 때 ---------- */
   useEffect(() => {
@@ -181,6 +214,7 @@ export function Host() {
       if (e.metaKey || e.ctrlKey || e.altKey) return;
       const s = runRef.current;
       const k = e.key.toLowerCase();
+      if (titleRef.current && !['f', 'm', 'h', '?', 'escape', 'tab', 'shift'].includes(k)) { leaveTitle(); e.preventDefault(); return; }
       if ([' ', 'arrowright', 'pagedown'].includes(k)) advance();
       else if (k === 'enter') s.vote?.phase === 'open' ? dispatch({ type: 'CLOSE' }) : advance();
       else if (['arrowleft', 'pageup', 'backspace'].includes(k)) dispatch({ type: 'BACK' });
@@ -192,16 +226,16 @@ export function Host() {
         if (s.vote?.pausedLeft != null) dispatch({ type: 'RESUME', now: Date.now() });
         else dispatch({ type: 'PAUSE', now: Date.now() });
       } else if (k === 's') setStageMode((v) => !v);
-      else if (k === 'm') setMute((v) => { setMuted(!v); return !v; });
-      else if (k === 'f') void (document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen());
+      else if (k === 'm') setMute((v) => { setMuted(!v); setBgmMuted(!v); return !v; });
+      else if (k === 'f') fs.toggle();
       else if (k === 'h' || k === '?') setHelp((v) => !v);
-      else if (k === 'escape') setHelp(false);
+      else if (k === 'escape') { setHelp(false); if (document.fullscreenElement) void document.exitFullscreen(); }
       else return;
       e.preventDefault();
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [advance]);
+  }, [advance, leaveTitle, fs.toggle]); // eslint-disable-line react-hooks/exhaustive-deps
 
   /* ---------- 그리기 ---------- */
   const players = offline ? null : poll.players;
@@ -209,7 +243,9 @@ export function Host() {
   const foot = <Foot stage={sc.stage} affinity={run.affinity} hearts={story.scenario.hearts} players={players} />;
 
   let screen;
-  if (run.mode === 'lobby') {
+  if (run.mode === 'lobby' && title) {
+    screen = <TitleScreen style={stageStyle} overlay={help && <HelpPanel run={run} dispatch={dispatch} link={link} error={sendError} stageMode={stageMode} muted={muted} />} />;
+  } else if (run.mode === 'lobby') {
     screen = (
       <StageScreen
         frame={{ bg: 'kv-title', night: false, sprite: null }}
@@ -228,7 +264,7 @@ export function Host() {
             q={txt(sc.choice.q)}
             options={sc.choice.options.map((o) => txt(o.label)) as [string, string, string]}
             phase={vote.phase} counts={vote.counts} voters={vote.voters} players={poll.players}
-            leftMs={left} seconds={vote.seconds} paused={vote.pausedLeft != null} win={vote.win} offline={offline || vote.manual}
+            leftMs={left} seconds={vote.seconds} paused={vote.pausedLeft != null} win={vote.win} tie={vote.tie} round={vote.round} offline={offline || vote.manual}
           />
         }
         foot={foot}
@@ -273,9 +309,14 @@ export function Host() {
     <div
       className="app-host"
       data-cursor={help ? '' : undefined}
-      onClick={(e) => { if (!(e.target as HTMLElement).closest('.app-help, button')) advance(); }}
+      data-fs={fs.on ? '' : undefined}
+      onClick={(e) => {
+        if ((e.target as HTMLElement).closest('.app-help, button')) return;
+        if (titleRef.current) leaveTitle(); else advance();
+      }}
     >
       {screen}
+      {!fs.on && <FullscreenButton onClick={fs.toggle} />}
     </div>
   );
 }
@@ -295,7 +336,7 @@ function HelpPanel({ run, dispatch, link, error, stageMode, muted }: {
         <dt>1 · 2 · 3</dt><dd>직접 고르기 (팻말 · 결과 바꾸기)</dd>
         <dt>T / P</dt><dd>타이머 처음부터 / 멈춤·계속</dd>
         <dt>S</dt><dd>무대 모드 {stageMode ? '켜짐' : '꺼짐'} (여주·나레이터 대사 숨김)</dd>
-        <dt>M / F</dt><dd>소리 {muted ? '꺼짐' : '켜짐'} / 전체 화면</dd>
+        <dt>M / F · Esc</dt><dd>소리 {muted ? '꺼짐' : '켜짐'} / 전체 화면 켜기 · 나가기</dd>
       </dl>
       <div className="app-help__scenes">
         {story.scenario.scenes.map((s) => (

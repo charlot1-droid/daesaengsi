@@ -17,7 +17,9 @@ export type SaebomFace = 'smile' | 'laugh' | 'surprised' | 'wave' | 'wink';
 /** 남주 의상: A = 크림 니트(기본), B = 무대 */
 export type Outfit = 'a' | 'b';
 
-export type Sfx = 'pop' | 'heart' | 'bad' | 'dm' | 'reveal' | 'whoosh';
+export type Sfx = 'pop' | 'heart' | 'bad' | 'dm' | 'reveal' | 'whoosh' | 'applause' | 'drumroll' | 'fanfare' | 'chime';
+/** 배경음악 (public/audio/bgm-<이름>.mp3) */
+export type Bgm = 'title' | 'campus' | 'festival' | 'night' | 'tense' | 'emotional' | 'ending' | 'vote';
 export type Fx = 'shake' | 'flyers';
 
 /** 화자. cast에 이름을 등록해요. */
@@ -211,6 +213,8 @@ export interface Scene {
   stage?: { n: string; name: string };
   bg: ArtId;
   night?: boolean;
+  /** 배경음악. 없으면 앞 장면 곡을 이어서 틀어요 */
+  bgm?: Bgm;
   beats: Beat[];
   choice?: Choice;
   /** 선택지가 없거나 option.go가 없을 때 다음 장면 */

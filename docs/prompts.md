@@ -21,9 +21,9 @@ Namju: 21-year-old Korean university sophomore, chemistry major and lead guitari
 IMPORTANT: Yeoju (the heroine) must NOT appear anywhere in this image — no back view, no hair, no hands, no shoulder. She is played live on stage, so the image is drawn from her point of view.
 ```
 
-**CHARACTER LOCK — 새봄 (여주의 친구)** · 기준 이미지 `saebom-sheet`
+**CHARACTER LOCK — 새봄 (여주의 친구)** · 기준 이미지 `saebom-sheet` · 11/25 장발로 바꿈 (현장의 여주 배우가 단발이라 겹치지 않게)
 ```
-Saebom: 20-year-old Korean university freshman girl, Yeoju's cheerful best friend, about 162cm. Chin-length warm dark-brown bob with soft side-swept bangs and a small butter-yellow hair clip on the left side, bright round eyes with warm brown irises, rosy cheeks, energetic friendly face. Outfit: oversized light sky-blue hoodie, light-wash straight jeans, white sneakers, small cream crossbody bag. Keep her face, hair and outfit EXACTLY identical to the Saebom character sheet.
+Saebom — 20-year-old Korean university freshman girl, about 162cm, cheerful and bright. LONG straight dark chocolate-brown hair worn down, reaching mid-back, with light see-through bangs and a small butter-yellow hair clip above her LEFT ear. Round bright eyes with warm brown irises, rosy cheeks, friendly face. Outfit (always identical): oversized light sky-blue hoodie with white drawstrings, light-wash straight jeans, white sneakers, small cream crossbody bag with a thin strap from her right shoulder. Her face, LONG hair, hair clip and outfit must match the Saebom character sheet EXACTLY.
 ```
 새봄 스탠딩: `sp-saebom-{smile, laugh, surprised, wave, wink}` — 남주 스탠딩과 같은 2:3 투명, 허벅지 위. 둘이 함께 서면 새봄 왼쪽 · 남주 오른쪽.
 
@@ -111,3 +111,9 @@ Image N: CG, landscape 16:9. <장면>. Namju <행동·표정>, looking toward th
 1. ChatGPT(Chrome)에서 생성 → `ds_<이름>.png`으로 컴퓨터의 `대생시` 폴더에 저장 (원본 보관)
 2. 작업 공간에서 WebP(배경 품질 88, 1920폭) / 투명 PNG→WebP 알파로 변환
 3. 게임 저장소 `public/art/…`와 이 디자인 시스템의 Assets에 같은 이름으로 넣음
+
+
+## 일관성 팁 (11/25)
+- 새 장면은 **새 대화**에서 남주 시트(`ds_namju_sheet.png`)와 스탠딩 한 장을 첨부하고 시작하면 옛 그림이 섞이지 않아요.
+- 남주 머리: 직모 투블럭, 앞머리가 눈썹 위. 웨이브·장발·헝클어짐이 나오면 다시 뽑기.
+- 손 흔드는 포즈는 팔과 손이 이어져 있는지 꼭 확인 (타이틀 그림에서 손이 떠 있던 문제).

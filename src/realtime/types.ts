@@ -4,6 +4,13 @@
  */
 import type { Counts, Pick } from '../engine/affinity';
 
+export interface PhoneLine {
+  who: string;
+  text: string;
+  /** 같은 대사가 다시 와도 새 줄로 보이게 (장면:프레임) */
+  key: string;
+}
+
 interface Base {
   /** 진행자가 보낸 순서 번호 (늦게 온 옛 상태 무시용) */
   seq: number;
@@ -13,7 +20,16 @@ interface Base {
 export type RoomState = Base &
   (
     | { phase: 'lobby' }
-    | { phase: 'wait'; stage?: string; note?: string }
+    | {
+        phase: 'wait';
+        stage?: string;
+        /** 스테이지 번호 · 이름 (휴대폰이 번역할 수 있게 따로) */
+        stageN?: string;
+        stageName?: string;
+        note?: string;
+        /** 지금 무대에 떠 있는 대사 (휴대폰에도 보여 줘요). who: 배역 id 또는 'notice' · 'notify' */
+        line?: PhoneLine;
+      }
     | {
         phase: 'vote';
         round: number;
@@ -32,6 +48,8 @@ export type RoomState = Base &
         q: string;
         options: [string, string, string];
         win: Pick;
+        /** 동률이었던 답들 → 추첨으로 win */
+        tie?: Pick[];
         pct: Counts;
         verdict?: string;
         bad: boolean;

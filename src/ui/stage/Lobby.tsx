@@ -47,9 +47,9 @@ export function Lobby(p: Props) {
         {p.error && <p className="ds-lobby__label" style={{ color: 'var(--alert)' }}>{p.error}</p>}
       </div>
       <div className="ds-lobby__qr">{!p.connecting && <Qr text={p.url.href} />}</div>
+      {/* 이름은 띄우지 않아요: 인원이 많으면 읽을거리만 늘고, 장난 닉네임이 화면에 뜰 수 있어서 */}
       <div className="ds-lobby__who">
-        <span className="ds-lobby__count">{p.players}명 입장</span>
-        <span className="ds-lobby__names">{p.names.slice(0, 24).join(' ')}</span>
+        <span className="ds-lobby__count num"><b key={p.players}>{p.players}</b>명 입장</span>
       </div>
     </div>
   );

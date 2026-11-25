@@ -26,6 +26,10 @@ export interface VoteState {
   counts: Counts;
   voters: number;
   win: Pick | null;
+  /** 동률이었던 답들 (동률이 아니면 null) — 이 중에서 추첨으로 win이 정해졌어요 */
+  tie: Pick[] | null;
+  /** 결과가 나온 시각 (동률 추첨 연출이 끝나기 전엔 휴대폰에 결과를 늦게 보내요) */
+  resultAt?: number;
   /** 진행자가 1·2·3으로 직접 골랐는지 (팻말 모드) */
   manual: boolean;
 }
@@ -51,7 +55,7 @@ export type Action =
   | { type: 'OPEN'; now: number }
   | { type: 'CLOSE' }
   | { type: 'TALLY'; counts: Counts; voters: number }
-  | { type: 'RESULT'; counts?: Counts; voters?: number }
+  | { type: 'RESULT'; counts?: Counts; voters?: number; rnd?: number; at?: number }
   | { type: 'PICK'; n: Pick }
   | { type: 'RESOLVE' }
   | { type: 'RETRY' }
@@ -142,7 +146,7 @@ function newVote(s: RunState, st: Story, retry: boolean): RunState {
     bad: null,
     vote: {
       round, retry, seconds: retry ? ch.retrySeconds ?? 15 : ch.seconds, phase: 'reveal',
-      endsAt: null, pausedLeft: null, counts: [0, 0, 0], voters: 0, win: null, manual: false,
+      endsAt: null, pausedLeft: null, counts: [0, 0, 0], voters: 0, win: null, tie: null, manual: false,
     },
   };
 }
@@ -210,12 +214,13 @@ export function reduce(s: RunState, a: Action, st: Story = story): RunState {
     case 'RESULT': {
       if (!s.vote || s.vote.manual) return s;
       const counts = a.counts ?? s.vote.counts;
-      return { ...s, vote: { ...s.vote, phase: 'result', counts, voters: a.voters ?? s.vote.voters, win: winner(counts) } };
+      const { win, tie } = winner(counts, a.rnd ?? 0);
+      return { ...s, vote: { ...s.vote, phase: 'result', counts, voters: a.voters ?? s.vote.voters, win, tie, resultAt: a.at } };
     }
 
     case 'PICK':
       if (s.mode !== 'choice' || !s.vote) return s;
-      return { ...s, vote: { ...s.vote, phase: 'result', win: a.n, manual: s.vote.phase !== 'result' || s.vote.manual, endsAt: null, pausedLeft: null } };
+      return { ...s, vote: { ...s.vote, phase: 'result', win: a.n, tie: null, manual: s.vote.phase !== 'result' || s.vote.manual, endsAt: null, pausedLeft: null } };
 
     case 'RESOLVE': {
       const opt = winningOption(s, st);

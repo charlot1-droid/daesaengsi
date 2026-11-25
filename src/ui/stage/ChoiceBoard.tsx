@@ -1,4 +1,5 @@
-import type { CSSProperties } from 'react';
+import { useEffect, useState, type CSSProperties } from 'react';
+import { play } from '../../audio/sfx';
 import { shares, type Counts, type Pick } from '../../engine/affinity';
 import type { VotePhase } from '../../engine/runner';
 import { No, Timer } from './bits';
@@ -14,8 +15,40 @@ interface Props {
   seconds: number;
   paused: boolean;
   win: Pick | null;
+  /** 동률이었던 답들 → 결과 화면에서 추첨 연출 후 win에 멈춰요 */
+  tie?: Pick[] | null;
+  /** 같은 판에서 추첨을 한 번만 하도록 */
+  round?: number;
   /** 휴대폰 없이 진행 중 (팻말 모드) */
   offline: boolean;
+}
+
+/** 동률 추첨 연출 시간 */
+export const TIE_SPIN_MS = 2600;
+
+/** 동률이면 동률인 답들 사이를 점점 느리게 오가다 이긴 답에서 멈춰요. 멈추기 전까지 돌고 있는 번호를 돌려줘요. */
+function useTieSpin(active: boolean, tie: Pick[] | null | undefined, win: Pick | null, key: string): Pick | null {
+  const [lit, setLit] = useState<Pick | null>(null);
+  useEffect(() => {
+    if (!active || !tie || tie.length < 2 || !win) { setLit(null); return; }
+    // 마지막 칸이 win이 되도록 거꾸로 순서를 짜요
+    const steps: Pick[] = [];
+    let i = tie.indexOf(win);
+    for (let k = 0; k < 13; k++) { steps.unshift(tie[i]); i = (i - 1 + tie.length) % tie.length; }
+    let k = 0;
+    let t: ReturnType<typeof setTimeout>;
+    const total = steps.length;
+    const next = () => {
+      setLit(steps[k]);
+      play(k === total - 1 ? 'reveal' : 'tick');
+      k += 1;
+      if (k < total) t = setTimeout(next, 70 + (k / total) ** 2 * 330);
+      else t = setTimeout(() => setLit(null), 600);
+    };
+    t = setTimeout(next, 500);
+    return () => clearTimeout(t);
+  }, [active, key]); // eslint-disable-line react-hooks/exhaustive-deps
+  return lit;
 }
 
 /**
@@ -27,9 +60,18 @@ export function ChoiceBoard(p: Props) {
   const pct = shares(p.counts);
   const total = p.counts[0] + p.counts[1] + p.counts[2];
   const timerLabel = p.phase === 'closed' ? '마감' : p.paused ? '멈춤' : undefined;
+  const tie = result && p.tie && p.tie.length > 1 ? p.tie : null;
+  const lit = useTieSpin(!!tie, tie, p.win, `${p.round ?? 0}:${p.win}:${tie?.join('')}`);
+  const spinning = lit != null;
+  const shownWin = spinning ? lit : p.win;
 
   return (
-    <div className="ds-ask" data-phase={result ? 'result' : 'voting'}>
+    <div className="ds-ask" data-phase={result ? 'result' : 'voting'} data-spin={spinning ? '' : undefined}>
+      {tie && (
+        <p className="app-tie" data-done={spinning ? undefined : ''}>
+          {spinning ? `동률! ${tie.join('번 · ')}번 중에서 추첨할게요` : `동률이라 추첨으로 ${p.win}번!`}
+        </p>
+      )}
       <div className="ds-panel ds-ask__head">
         <div>
           <h2 className="ds-ask__q">{p.q}</h2>
@@ -44,7 +86,7 @@ export function ChoiceBoard(p: Props) {
       {p.options.map((label, i) => {
         const n = (i + 1) as Pick;
         return (
-          <div key={n} className="ds-opt" data-n={n} data-win={result && p.win === n ? '' : undefined}>
+          <div key={n} className="ds-opt" data-n={n} data-win={result && shownWin === n ? '' : undefined} data-tied={tie?.includes(n) ? '' : undefined}>
             <No n={n} />
             <p className="ds-opt__text">{label}</p>
             <span className="ds-opt__count num">
