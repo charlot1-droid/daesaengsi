@@ -13,7 +13,7 @@
  */
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState, type CSSProperties } from 'react';
 import { play, preloadSfx, setMuted } from '../audio/sfx';
-import { duckBgm, setBgm, setBgmMuted } from '../audio/bgm';
+import { duckBgm, playClip, setBgm, setBgmMuted } from '../audio/bgm';
 import type { Bgm } from '../scenario/schema';
 import { CONFIG } from '../config';
 import type { Pick } from '../engine/affinity';
@@ -189,7 +189,14 @@ export function Host() {
   // 투표 중에도 장면 곡을 그대로 — 선택지 판이 뜰 때 '띠링' 효과음만
   useEffect(() => { if (vote?.phase === 'reveal') play('vote'); }, [vote?.phase, vote?.round]); // eslint-disable-line react-hooks/exhaustive-deps
   const track: Bgm = run.mode === 'lobby' ? 'title' : sc.bgm ?? lastBgm.current;
-  useEffect(() => { setBgm(track); }, [track]);
+  // 율동처럼 곡이 지정된 판에선 배경음악을 끄고 그 곡을 틀어요
+  const curBeat = run.mode === 'beats' || run.mode === 'bad' ? currentFrame(run).beat : null;
+  const clip = curBeat?.t === 'share' && curBeat.music ? `${run.scene}:${curBeat.music}` : null;
+  useEffect(() => { setBgm(clip ? null : track); }, [track, clip]);
+  useEffect(() => {
+    if (!clip) return;
+    return playClip(clip.split(':').slice(1).join(':'));
+  }, [clip]);
   // 배드 엔딩 중엔 음악을 줄여요
   useEffect(() => { duckBgm(run.mode === 'bad' ? 0.35 : 1); }, [run.mode]);
   // 입장 효과음은 뺐어요 (인원이 많으면 시끄러워서) — 숫자만 살짝 튀어요

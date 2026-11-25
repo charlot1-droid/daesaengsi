@@ -73,9 +73,10 @@ export function LineCard({ line }: { line: PhoneLine }) {
         : cast ? tr(cast.name, lang) : line.who;
   const kind = line.who === 'narrator' ? 'narrator' : line.who === 'notice' || line.who === 'notify' ? 'notice' : 'char';
   return (
-    <div className="app-line" data-kind={kind} key={line.key} aria-live="polite">
+    // 카드는 그대로 두고 글자만 살짝 바뀌어요 (카드 전체를 다시 그리면 번쩍거려 보여서)
+    <div className="app-line" data-kind={kind} aria-live="polite">
       <p className="app-line__who">{label}</p>
-      <p className="app-line__text">{tr(line.text, lang)}</p>
+      <p className="app-line__text" key={line.key}>{tr(line.text, lang)}</p>
     </div>
   );
 }
@@ -126,7 +127,7 @@ export function Waiting({ title, body, line }: { title?: string; body?: string; 
     <>
       {line ? (
         <>
-          {body && <p className="app-phone-stage">{body}</p>}
+          <p className="app-phone-stage">{body ?? ''}</p>
           <LineCard line={line} />
           <p className="app-phone-hint">{title ?? t('watch', lang)}</p>
         </>

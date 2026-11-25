@@ -80,3 +80,12 @@ if (typeof window !== 'undefined') {
   window.addEventListener('pointerdown', unlock);
   window.addEventListener('keydown', unlock);
 }
+
+/** 한 번만 트는 곡 (율동 등). 멈출 때는 부드럽게 줄이며 끝내요. 음소거 중이면 틀지 않아요 */
+export function playClip(file: string): () => void {
+  if (muted) return () => {};
+  const a = new Audio(`/audio/${file}`);
+  a.volume = 0.9;
+  a.play().catch(() => {});
+  return () => fade(a, 0, 500, () => a.pause());
+}

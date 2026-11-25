@@ -147,6 +147,8 @@ export interface ShareBeat extends BeatBase {
    * 있으면 '팀 나눔 질문 n / m' 대신 이 글씨가 뜨고, 휴대폰에는 '무대를 보고 함께해요'가 떠요.
    */
   label?: string;
+  /** 이 판이 떠 있는 동안 배경음악 대신 틀 곡 (public/audio/ 안 파일 이름, 예: 'dance.mp3') */
+  music?: string;
   /**
    * 질문 여러 개를 한 판에 번호로 늘어놓기 (원하는 질문을 골라 자유롭게 나누는 방식, 타이머는 하나).
    * 있으면 q는 판의 제목이 되고, label은 그대로 작은 글씨로만 쓰여요. 휴대폰에도 같은 목록이 떠요.
