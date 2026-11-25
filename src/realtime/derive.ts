@@ -6,7 +6,7 @@ import { txt } from '../scenario/text';
 import type { PhoneLine, RoomState } from './types';
 
 /** 무대의 동률 추첨 연출(ChoiceBoard TIE_SPIN_MS + 여유)과 맞춰요 */
-const TIE_REVEAL_MS = 3400;
+const TIE_REVEAL_MS = 4600;
 import type { Frame } from '../engine/frames';
 
 /** 무대에 떠 있는 대사 → 휴대폰용 한 줄 */

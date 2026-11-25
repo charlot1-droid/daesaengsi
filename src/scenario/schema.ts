@@ -19,7 +19,7 @@ export type Outfit = 'a' | 'b';
 
 export type Sfx = 'pop' | 'heart' | 'bad' | 'dm' | 'reveal' | 'whoosh' | 'applause' | 'drumroll' | 'fanfare' | 'chime';
 /** 배경음악 (public/audio/bgm-<이름>.mp3) */
-export type Bgm = 'title' | 'campus' | 'festival' | 'night' | 'tense' | 'emotional' | 'ending' | 'vote';
+export type Bgm = 'title' | 'campus' | 'festival' | 'night' | 'tense' | 'emotional' | 'ending';
 export type Fx = 'shake' | 'flyers';
 
 /** 화자. cast에 이름을 등록해요. */

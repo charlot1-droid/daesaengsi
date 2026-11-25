@@ -102,7 +102,7 @@ export function Host() {
   const [tieDone, setTieDone] = useState(0);
   useEffect(() => {
     if (vote?.phase !== 'result' || !vote.tie || vote.tie.length < 2) return;
-    const t = setTimeout(() => setTieDone((n) => n + 1), 3500);
+    const t = setTimeout(() => setTieDone((n) => n + 1), 4700);
     return () => clearTimeout(t);
   }, [vote?.phase, vote?.round, vote?.tie]); // eslint-disable-line react-hooks/exhaustive-deps
   const draft = useMemo(() => deriveRoom(run, Date.now()), [run, tieDone]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -143,7 +143,7 @@ export function Host() {
   /* ---------- 투표 흐름: 나타남 → 열림 → 마감 → 결과 ---------- */
   useEffect(() => {
     if (vote?.phase !== 'reveal') return;
-    const t = setTimeout(() => { dispatch({ type: 'OPEN', now: Date.now() }); play('open'); }, CONFIG.revealMs);
+    const t = setTimeout(() => { dispatch({ type: 'OPEN', now: Date.now() }); }, CONFIG.revealMs);
     return () => clearTimeout(t);
   }, [vote?.phase, vote?.round]);
 
@@ -177,8 +177,9 @@ export function Host() {
   useEffect(() => { preloadSfx(); }, []);
   const lastBgm = useRef<Bgm>('campus');
   if (sc.bgm) lastBgm.current = sc.bgm;
-  const voting = run.mode === 'choice' && (vote?.phase === 'reveal' || vote?.phase === 'open' || vote?.phase === 'closed');
-  const track: Bgm = run.mode === 'lobby' ? 'title' : voting ? 'vote' : sc.bgm ?? lastBgm.current;
+  // 투표 중에도 장면 곡을 그대로 — 선택지 판이 뜰 때 '띠링' 효과음만
+  useEffect(() => { if (vote?.phase === 'reveal') play('vote'); }, [vote?.phase, vote?.round]); // eslint-disable-line react-hooks/exhaustive-deps
+  const track: Bgm = run.mode === 'lobby' ? 'title' : sc.bgm ?? lastBgm.current;
   useEffect(() => { setBgm(track); }, [track]);
   // 배드 엔딩 중엔 음악을 줄여요
   useEffect(() => { duckBgm(run.mode === 'bad' ? 0.35 : 1); }, [run.mode]);

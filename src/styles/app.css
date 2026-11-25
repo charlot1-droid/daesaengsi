@@ -115,14 +115,22 @@ button { font-family: inherit; }
 .app-board__cell .ds-stage * { animation: none !important; }
 .app-board__meta { font: 500 16px / 1.5 var(--font); color: var(--muted); }
 
-/* ---------- 동률 추첨 ---------- */
-.app-tie { justify-self: center; padding: calc(14 * var(--u)) calc(36 * var(--u)); border-radius: 999px; background: var(--rose, #bd4069); color: #fff; font: 800 calc(38 * var(--u)) / 1.2 var(--font); letter-spacing: -0.01em; box-shadow: 0 calc(10 * var(--u)) calc(30 * var(--u)) rgba(189, 64, 105, .35); animation: app-tie-pulse .6s var(--ease) infinite alternate; }
-.app-tie[data-done] { animation: none; }
-@keyframes app-tie-pulse { to { transform: scale(1.05); } }
-.ds-ask[data-spin] .ds-opt { transition: none; }
-.ds-ask[data-spin] .ds-opt:not([data-tied]) > * { opacity: .3; }
-.ds-ask[data-spin] .ds-opt[data-tied]:not([data-win]) > * { opacity: .7; }
-@media (prefers-reduced-motion: reduce) { .app-tie { animation: none; } }
+/* ---------- 동률 추첨 ----------
+   동률인 답 사이를 장미색 테두리가 점점 느리게 왔다 갔다 → 이긴 답에서 '팡' */
+.app-tie { justify-self: center; padding: calc(14 * var(--u)) calc(36 * var(--u)); border-radius: 999px; background: var(--rose, #bd4069); color: #fff; font: 800 calc(38 * var(--u)) / 1.2 var(--font); letter-spacing: -0.01em; box-shadow: 0 calc(10 * var(--u)) calc(30 * var(--u)) rgba(189, 64, 105, .35); animation: app-tie-pulse .5s var(--ease) infinite alternate; }
+.app-tie[data-done] { animation: app-pop .5s var(--ease-enter); }
+@keyframes app-tie-pulse { to { transform: scale(1.06); } }
+.ds-ask[data-spin] .ds-opt { animation: none; transition: transform 70ms ease-out, box-shadow 70ms ease-out, border-color 70ms ease-out; }
+.ds-ask[data-spin] .ds-opt:not([data-tied]) > * { opacity: .25; }
+.ds-ask[data-spin] .ds-opt[data-tied] > * { opacity: .75; }
+.ds-ask[data-spin] .ds-opt[data-win] { transform: scale(1.04); border-color: var(--rose, #bd4069); border-width: calc(5 * var(--u)); box-shadow: 0 0 0 calc(6 * var(--u)) rgba(189, 64, 105, .25), 0 calc(14 * var(--u)) calc(40 * var(--u)) rgba(189, 64, 105, .45); z-index: 1; }
+.ds-ask[data-spin] .ds-opt[data-win] > * { opacity: 1; }
+.ds-opt[data-landed] { z-index: 1; animation: app-land .7s var(--ease-enter); border-color: var(--rose, #bd4069); border-width: calc(5 * var(--u)); }
+.ds-opt[data-landed]::after { content: '♥ ♥ ♥'; position: absolute; right: calc(200 * var(--u)); top: 50%; color: var(--rose, #bd4069); font: 900 calc(44 * var(--u)) / 1 var(--font); letter-spacing: calc(18 * var(--u)); transform: translateY(-50%); animation: app-burst 1s var(--ease-enter) forwards; pointer-events: none; }
+@keyframes app-land { 0% { transform: scale(1.04); box-shadow: 0 0 0 0 rgba(189, 64, 105, .6); } 35% { transform: scale(1.1); box-shadow: 0 0 0 calc(24 * var(--u)) rgba(189, 64, 105, .25); } 100% { transform: scale(1); box-shadow: 0 0 0 calc(40 * var(--u)) rgba(189, 64, 105, 0); } }
+@keyframes app-burst { 0% { opacity: 0; transform: translateY(-50%) scale(.4); } 30% { opacity: 1; transform: translateY(-110%) scale(1.15); } 100% { opacity: 0; transform: translateY(-190%) scale(1); } }
+@keyframes app-pop { 0% { transform: scale(.8); } 60% { transform: scale(1.12); } 100% { transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) { .app-tie, .ds-opt[data-landed], .ds-opt[data-landed]::after { animation: none; } }
 
 /* ---------- 타이틀 (첫 화면) ---------- */
 .app-title { position: absolute; left: calc(-10 * var(--u)); top: calc(230 * var(--u)); color: #fff; text-align: left; animation: ds-in var(--m-scene) var(--ease-enter); }
@@ -134,9 +142,9 @@ button { font-family: inherit; }
 @media (prefers-reduced-motion: reduce) { .app-title__press { animation: none; } }
 
 /* 로비 인원: 숫자만 크게, 늘 때마다 살짝 튀어요 */
-.app-host .ds-lobby__who { justify-content: center; }
-.app-host .ds-lobby__count { font-size: calc(48 * var(--u)); font-weight: 700; }
-.app-host .ds-lobby__count b { display: inline-block; margin-right: calc(6 * var(--u)); font-size: calc(84 * var(--u)); font-weight: 900; color: var(--rose, #bd4069); animation: app-bump .35s var(--ease-enter); }
+.app-host .ds-lobby__who { justify-content: center; align-items: center; padding-top: calc(24 * var(--u)); }
+.app-host .ds-lobby__count { display: inline-flex; align-items: baseline; gap: calc(10 * var(--u)); font-size: calc(48 * var(--u)); line-height: 1; font-weight: 700; }
+.app-host .ds-lobby__count b { display: inline-block; font-size: calc(84 * var(--u)); line-height: 1; font-weight: 900; color: var(--rose, #bd4069); font-variant-numeric: tabular-nums; transform-origin: 50% 80%; animation: app-bump .35s var(--ease-enter); }
 @keyframes app-bump { from { transform: scale(1.35); } }
 
 /* ---------- 휴대폰: 언어 · 지금 대사 ---------- */

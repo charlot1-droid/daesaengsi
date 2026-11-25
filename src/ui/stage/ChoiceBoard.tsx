@@ -24,31 +24,32 @@ interface Props {
 }
 
 /** 동률 추첨 연출 시간 */
-export const TIE_SPIN_MS = 2600;
+export const TIE_SPIN_MS = 3800;
 
 /** 동률이면 동률인 답들 사이를 점점 느리게 오가다 이긴 답에서 멈춰요. 멈추기 전까지 돌고 있는 번호를 돌려줘요. */
-function useTieSpin(active: boolean, tie: Pick[] | null | undefined, win: Pick | null, key: string): Pick | null {
+function useTieSpin(active: boolean, tie: Pick[] | null | undefined, win: Pick | null, key: string): { lit: Pick | null; landed: boolean } {
   const [lit, setLit] = useState<Pick | null>(null);
+  const [landed, setLanded] = useState(false);
   useEffect(() => {
+    setLanded(false);
     if (!active || !tie || tie.length < 2 || !win) { setLit(null); return; }
-    // 마지막 칸이 win이 되도록 거꾸로 순서를 짜요
+    // 마지막 칸이 win이 되도록 거꾸로 순서를 짜요 (동률인 답들 사이를 왔다 갔다)
     const steps: Pick[] = [];
     let i = tie.indexOf(win);
-    for (let k = 0; k < 13; k++) { steps.unshift(tie[i]); i = (i - 1 + tie.length) % tie.length; }
+    for (let k = 0; k < 16; k++) { steps.unshift(tie[i]); i = (i - 1 + tie.length) % tie.length; }
     let k = 0;
     let t: ReturnType<typeof setTimeout>;
     const total = steps.length;
     const next = () => {
       setLit(steps[k]);
-      play(k === total - 1 ? 'reveal' : 'tick');
       k += 1;
-      if (k < total) t = setTimeout(next, 70 + (k / total) ** 2 * 330);
-      else t = setTimeout(() => setLit(null), 600);
+      if (k < total) { play('tick'); t = setTimeout(next, 80 + (k / total) ** 2.2 * 520); }
+      else { play('reveal'); setLanded(true); t = setTimeout(() => setLit(null), 900); }
     };
-    t = setTimeout(next, 500);
+    t = setTimeout(next, 600);
     return () => clearTimeout(t);
   }, [active, key]); // eslint-disable-line react-hooks/exhaustive-deps
-  return lit;
+  return { lit, landed };
 }
 
 /**
@@ -61,8 +62,8 @@ export function ChoiceBoard(p: Props) {
   const total = p.counts[0] + p.counts[1] + p.counts[2];
   const timerLabel = p.phase === 'closed' ? '마감' : p.paused ? '멈춤' : undefined;
   const tie = result && p.tie && p.tie.length > 1 ? p.tie : null;
-  const lit = useTieSpin(!!tie, tie, p.win, `${p.round ?? 0}:${p.win}:${tie?.join('')}`);
-  const spinning = lit != null;
+  const { lit, landed } = useTieSpin(!!tie, tie, p.win, `${p.round ?? 0}:${p.win}:${tie?.join('')}`);
+  const spinning = lit != null && !landed;
   const shownWin = spinning ? lit : p.win;
 
   return (
@@ -86,7 +87,7 @@ export function ChoiceBoard(p: Props) {
       {p.options.map((label, i) => {
         const n = (i + 1) as Pick;
         return (
-          <div key={n} className="ds-opt" data-n={n} data-win={result && shownWin === n ? '' : undefined} data-tied={tie?.includes(n) ? '' : undefined}>
+          <div key={n} className="ds-opt" data-n={n} data-win={result && shownWin === n ? '' : undefined} data-tied={tie?.includes(n) ? '' : undefined} data-landed={tie && landed && p.win === n ? '' : undefined}>
             <No n={n} />
             <p className="ds-opt__text">{label}</p>
             <span className="ds-opt__count num">

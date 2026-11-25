@@ -24,8 +24,8 @@ function tone(freq: number, at: number, dur: number, type: OscillatorType = 'sin
   o.stop(c.currentTime + at + dur + 0.05);
 }
 
-type Name = Sfx | 'tick' | 'open' | 'join';
-const FILES: Name[] = ['pop', 'heart', 'bad', 'dm', 'reveal', 'whoosh', 'tick', 'open', 'join', 'applause', 'drumroll', 'fanfare', 'chime'];
+type Name = Sfx | 'tick' | 'open' | 'join' | 'vote';
+const FILES: Name[] = ['pop', 'heart', 'bad', 'dm', 'reveal', 'whoosh', 'tick', 'open', 'join', 'applause', 'drumroll', 'fanfare', 'chime', 'vote'];
 const cache = new Map<Name, HTMLAudioElement>();
 const VOL: Partial<Record<Name, number>> = { tick: 0.5, applause: 0.8, join: 0.5 };
 
