@@ -71,17 +71,12 @@ export async function supabaseHost(fresh = false): Promise<HostLink> {
 export function supabasePlayer(): PlayerLink {
   return {
     kind: 'supabase',
-    async join(pin, nickname, mode = 'ask'): Promise<JoinResult> {
-      let { data, error } = await sb().rpc('join_room', { p_pin: pin, p_nick: nickname, p_mode: mode });
-      // 003 마이그레이션 전이라 새 함수가 없으면 예전 방식(이름 중복 불가)으로
-      if (error && /join_room|PGRST202|function/i.test(error.message) && !/NO_ROOM|NAME_/.test(error.message)) {
-        ({ data, error } = await sb().rpc('join_room', { p_pin: pin, p_nick: nickname }));
-        if (error?.message.includes('NAME_TAKEN')) return { ok: false, reason: 'name-bad' };
-      }
+    async join(pin, nickname): Promise<JoinResult> {
+      const { data, error } = await sb().rpc('join_room', { p_pin: pin, p_nick: nickname });
       if (error) {
         const m = error.message;
         if (m.includes('NO_ROOM')) return { ok: false, reason: 'pin' };
-        if (m.includes('NAME_EXISTS')) return { ok: false, reason: 'name-exists' };
+        if (m.includes('NAME_TAKEN')) return { ok: false, reason: 'name-taken' };
         if (m.includes('NAME_BAD')) return { ok: false, reason: 'name-bad' };
         return { ok: false, reason: 'network' };
       }

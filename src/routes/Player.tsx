@@ -6,8 +6,8 @@ import { useEffect, useRef, useState } from 'react';
 import { CONFIG } from '../config';
 import type { Pick } from '../engine/affinity';
 import { createPlayerLink } from '../realtime/index';
-import type { JoinMode, Me, PlayerLink, RoomState } from '../realtime/types';
-import { Closed, End, JoinForm, SameName, PhoneFrame, ShareWait, VotePad, Verdict, Waiting, WaitScreen, type SendState } from '../ui/player/Screens';
+import type { Me, PlayerLink, RoomState } from '../realtime/types';
+import { Closed, End, JoinForm, PhoneFrame, ShareWait, VotePad, Verdict, Waiting, WaitScreen, type SendState } from '../ui/player/Screens';
 import { t, useLang } from '../i18n/phone';
 
 const ME_KEY = 'daesaengsi.me';
@@ -48,7 +48,6 @@ export function Player() {
   const [me, setMe] = useState<Me | null>(null);
   const [checking, setChecking] = useState(true);
   const [busy, setBusy] = useState(false);
-  const [same, setSame] = useState<{ pin: string; nick: string } | null>(null);
   const [joinError, setJoinError] = useState<{ field: 'pin' | 'nick' | 'all'; text: string }>();
   const [room, setRoom] = useState<{ s: RoomState; at: number } | null>(null);
   const [votes, setVotes] = useState<Record<number, Pick>>(() => load(VOTES_KEY) ?? {});
@@ -77,24 +76,20 @@ export function Player() {
   const round = room && 'round' in room.s ? room.s.round : null;
   useEffect(() => { setSend(votes[round ?? -1] ? 'sent' : 'idle'); }, [round]);
 
-  const join = async (pin: string, nick: string, mode: JoinMode = 'ask') => {
+  const join = async (pin: string, nick: string) => {
     if (!link) return;
     setBusy(true);
-    const r = await link.join(pin, nick, mode);
+    const r = await link.join(pin, nick);
     setBusy(false);
     if (r.ok) {
       save(ME_KEY, r.me);
       setMe(r.me);
-      setSame(null);
       setJoinError(undefined);
-    } else if (r.reason === 'name-exists') {
-      // 같은 이름이 이미 있어요 → "혹시 본인이에요?" (다시 들어온 거면 그 자리를 이어받아 인원이 늘지 않아요)
-      setSame({ pin, nick });
     } else {
-      setSame(null);
       setJoinError(
         r.reason === 'pin' ? { field: 'pin', text: t('err_pin', lang) }
-          : r.reason === 'name-bad' ? { field: 'nick', text: t('err_name', lang) }
+          : r.reason === 'name-taken' ? { field: 'nick', text: t('err_taken', lang) }
+            : r.reason === 'name-bad' ? { field: 'nick', text: t('err_name', lang) }
               : { field: 'all', text: t('err_net', lang) },
       );
     }
@@ -115,13 +110,6 @@ export function Player() {
   };
 
   if (checking) return <PhoneFrame><Waiting title={t('connecting', lang)} /></PhoneFrame>;
-  if (!me && same) {
-    return (
-      <PhoneFrame>
-        <SameName nick={same.nick} busy={busy} onClaim={() => void join(same.pin, same.nick, 'claim')} onNew={() => void join(same.pin, same.nick, 'new')} onBack={() => setSame(null)} />
-      </PhoneFrame>
-    );
-  }
   if (!me) {
     return (
       <PhoneFrame>

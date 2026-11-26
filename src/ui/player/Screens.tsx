@@ -120,20 +120,6 @@ export function JoinForm({ initialPin, onJoin, error, busy }: { initialPin: stri
   );
 }
 
-/** 같은 이름이 이미 있을 때: 다시 들어온 본인이면 그 자리를 이어받고, 동명이인이면 새로 들어가요 */
-export function SameName({ nick, busy, onClaim, onNew, onBack }: { nick: string; busy: boolean; onClaim: () => void; onNew: () => void; onBack: () => void }) {
-  const { lang } = useLang();
-  return (
-    <div className="ds-card">
-      <h1 className="ds-card__title">{t('same_title', lang, { n: nick })}</h1>
-      <p className="ds-card__body">{t('same_body', lang)}</p>
-      <button type="button" className="ds-btn" disabled={busy} onClick={onClaim}>{t('same_me', lang)}</button>
-      <button type="button" className="ds-btn app-btn-quiet" disabled={busy} onClick={onNew}>{t('same_new', lang)}</button>
-      <button type="button" className="app-link-btn" disabled={busy} onClick={onBack}>{t('same_back', lang)}</button>
-    </div>
-  );
-}
-
 /* ---------- 기다리기 ---------- */
 export function Waiting({ title, body, line }: { title?: string; body?: string; line?: PhoneLine }) {
   const { lang } = useLang();

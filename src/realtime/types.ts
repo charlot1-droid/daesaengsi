@@ -91,14 +91,11 @@ export interface Me {
   nickname: string;
 }
 
-export type JoinMode = 'ask' | 'claim' | 'new';
-
-export type JoinResult = { ok: true; me: Me } | { ok: false; reason: 'pin' | 'name-exists' | 'name-bad' | 'network' };
+export type JoinResult = { ok: true; me: Me } | { ok: false; reason: 'pin' | 'name-taken' | 'name-bad' | 'network' };
 
 export interface PlayerLink {
   kind: LinkKind;
-  /** mode: 'ask' 같은 이름이 있으면 name-exists · 'claim' 그 자리 이어받기 · 'new' 동명이인으로 새로 입장 */
-  join(pin: string, nickname: string, mode?: JoinMode): Promise<JoinResult>;
+  join(pin: string, nickname: string): Promise<JoinResult>;
   /** 이미 입장한 사람이 새로고침했을 때 */
   resume(me: Me): Promise<boolean>;
   subscribe(me: Me, cb: (s: RoomState) => void): () => void;
