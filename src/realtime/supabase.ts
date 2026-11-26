@@ -1,7 +1,7 @@
 /**
  * 실제 행사용: Supabase.
- *  - 진행 상태: 진행자가 RPC(host_set_state)로 rooms.state를 바꾸고, 휴대폰은 1.5초마다 RPC(room_state)로 읽어요.
- *    (실시간 채널은 쓰지 않아요 — 무료 플랜 한도 때문에)
+ *  - 진행 상태: 진행자가 RPC(host_set_state)로 rooms.state를 바꾸고, 휴대폰은 rooms 행 변경을 실시간 구독해요.
+ *    (브로드캐스트 채널과 달리 관객이 가짜 상태를 보낼 수 없어요.)
  *  - 투표: RPC(cast_vote) — 서버가 '지금 투표 중인 라운드인지' 확인하고 (방·라운드·사람)당 한 표로 덮어써요.
  *  - 집계: 진행자가 0.5초마다 RPC(host_poll)로 받아 와요.
  * 테이블·함수는 supabase/migrations/001_init.sql.
@@ -22,8 +22,6 @@ function sb(): SupabaseClient {
 }
 
 const HOST_KEY = 'daesaengsi.host';
-/** 휴대폰이 진행 상태를 읽는 주기 */
-const POLL_MS = 1500;
 
 /** 진행자 노트북을 새로고침해도 같은 방(PIN)을 이어 쓰도록 sessionStorage에 보관 */
 function loadHost(): { pin: string; key: string } | null {
@@ -47,13 +45,21 @@ export async function supabaseHost(fresh = false): Promise<HostLink> {
   }
   const { pin, key } = room;
 
-  // 휴대폰은 실시간 채널 없이 1.5초마다 rooms.state를 읽어 가요.
-  // (무료 플랜 실시간 한도: 동시 접속 200 · 초당 메시지 100 — 관객 200명이면 넘어서 쓰지 않아요)
+  // 휴대폰에 바로 보내는 길: 실시간 방송 채널. DB 변경 알림(postgres_changes)이 막혀 있어도 이걸로 넘어가요.
+  const live = sb().channel(`live-${pin}`, { config: { broadcast: { self: false, ack: false } } });
+  let liveReady = false;
+  let last: RoomState | null = null;
+  live.subscribe((status) => {
+    liveReady = status === 'SUBSCRIBED';
+    if (liveReady && last) void live.send({ type: 'broadcast', event: 'state', payload: last });
+  });
 
   return {
     kind: 'supabase',
     pin,
     async publish(state) {
+      last = state;
+      if (liveReady) void live.send({ type: 'broadcast', event: 'state', payload: state });
       const { error } = await sb().rpc('host_set_state', { p_pin: pin, p_key: key, p_state: state });
       if (error) throw error;
     },
@@ -91,30 +97,37 @@ export function supabasePlayer(): PlayerLink {
       } catch { return true; }
     },
     subscribe(me, cb) {
-      // 실시간 채널 없이 1.5초마다 현재 상태를 읽어요 (관객 200명도 무료 플랜 실시간 한도와 상관없이).
-      // 화면이 꺼졌다 켜지면 바로 한 번 더 읽어요.
+      // 진행 상태를 받는 길 세 가지 — 하나가 막혀도 나머지로 넘어가요.
+      //  1) 방송 채널 (진행자가 바로 보냄, 가장 빠름)
+      //  2) rooms 행 변경 알림 (postgres_changes)
+      //  3) 2초마다 현재 상태 다시 읽기 (위 둘이 다 끊겨도, 화면이 꺼졌다 켜져도)
       let seq = -1;
-      let busy = false;
       const take = (s: RoomState | null) => {
         if (s && typeof s.seq === 'number' && s.seq >= seq) { seq = s.seq; cb(s); }
       };
       const refetch = async () => {
-        if (busy) return;
-        busy = true;
-        try {
-          const r = await sb().rpc('room_state', { p_pin: me.pin });
-          if (!r.error) return take((r.data as RoomState) ?? null);
-          const t = await sb().from('rooms').select('state').eq('pin', me.pin).maybeSingle();
-          if (!t.error) take((t.data?.state as RoomState) ?? null);
-        } catch { /* 다음 차례에 다시 */ } finally { busy = false; }
+        const r = await sb().rpc('room_state', { p_pin: me.pin });
+        if (!r.error) return take((r.data as RoomState) ?? null);
+        const t = await sb().from('rooms').select('state').eq('pin', me.pin).maybeSingle();
+        if (!t.error) take((t.data?.state as RoomState) ?? null);
       };
+      const live = sb()
+        .channel(`live-${me.pin}`)
+        .on('broadcast', { event: 'state' }, ({ payload }) => take(payload as RoomState))
+        .subscribe((status) => { if (status === 'SUBSCRIBED') void refetch(); });
+      const rows = sb()
+        .channel(`room-${me.pin}`)
+        .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'rooms', filter: `pin=eq.${me.pin}` }, (p) => take((p.new as { state: RoomState }).state))
+        .subscribe();
       void refetch();
-      const timer = setInterval(() => { void refetch(); }, POLL_MS);
+      const timer = setInterval(() => { void refetch(); }, 2000);
       const onWake = () => { if (document.visibilityState === 'visible') void refetch(); };
       document.addEventListener('visibilitychange', onWake);
       return () => {
         clearInterval(timer);
         document.removeEventListener('visibilitychange', onWake);
+        void sb().removeChannel(live);
+        void sb().removeChannel(rows);
       };
     },
     async vote(me, round, option: Pick) {
